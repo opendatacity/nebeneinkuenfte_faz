@@ -6,9 +6,12 @@
   height: 400px; }
 
 .representative {
+  transition: all .5s ease;
   width: 10px;
   height: 10px;
   position: absolute;
   background-color: #ccc;
   border-radius: 5px;
   margin: -5px 0 0 -5px; }
+  .representative.hidden {
+    opacity: 0; }

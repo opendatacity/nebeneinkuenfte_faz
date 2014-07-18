@@ -6,6 +6,7 @@
 	height: 400px;
 }
 .representative {
+	transition: all .5s ease;
 	$r: 5px;
 	width: 2*$r;
 	height: 2*$r;
@@ -13,4 +14,7 @@
 	background-color: #ccc;
 	border-radius: $r;
 	margin: (-$r) 0 0 (-$r);
+	&.hidden {
+		opacity: 0;
+	}
 }

@@ -15,8 +15,8 @@
   };
 
   Rep = {
-    r: 8,
-    spacing: 17.5
+    r: 5,
+    spacing: 12
   };
 
   Factions = [
@@ -62,18 +62,26 @@
     var div;
     div = $('<div>');
     div.addClass('representative');
-    div.css({
-      left: x(phi, r),
-      top: y(phi, r)
-    });
-    return $('#parliament').append(div);
+    div.data('representative', rep);
+    div.addClass(_.find(Factions, {
+      name: rep.fraktion
+    })["class"]);
+    $('#parliament').append(div);
+    return div[0];
   };
 
   $.getJSON('/data/data.json', function(data) {
-    var coordinatesAtIndex, dataByFaction, phi, seats, totalSeats, _data;
+    var coordinatesAtIndex, dataByFaction, drawOrMoveRepresentatives, factionPhi, hideRepresentatives, nebeneinkuenfeSumMax, seats, totalSeats;
     data = data.data;
-    _data = _(data);
-    console.log(data);
+    window._data = _(data);
+    _data.each(function(rep) {
+      return rep.nebeneinkuenfteSum = rep.nebeneinkuenfte.reduce((function(sum, nebeneinkunft) {
+        return sum + nebeneinkunft.level;
+      }), 0);
+    });
+    nebeneinkuenfeSumMax = _data.max('nebeneinkuenfteSum').value().nebeneinkuenfteSum;
+    console.log(nebeneinkuenfeSumMax);
+    console.log(data.slice(0, 6));
     dataByFaction = _data.groupBy('fraktion').value();
     seats = _.mapValues(dataByFaction, function(f) {
       return f.length;
@@ -81,18 +89,23 @@
     totalSeats = _.reduce(seats, function(sum, num) {
       return sum + num;
     });
-    console.log(seats);
-    coordinatesAtIndex = function(factionName, index) {
-      var factionPhi, i, phi, phiInThisRow, r, repsInThisRow;
-      r = Arc.innerR;
-      factionPhi = Arc.phiMax * (seats[factionName] / totalSeats);
+    factionPhi = function(factionName) {
+      return Arc.phiMax * (seats[factionName] / totalSeats);
+    };
+    coordinatesAtIndex = function(rep, index) {
+      var fPhi, i, margin, phi, phiInThisRow, r, rMin, repsInThisRow;
+      r = Arc.innerR + Rep.spacing;
       i = -1;
-      phi = 0;
-      while (!(i >= index)) {
+      phi = null;
+      rMin = 0;
+      while (true) {
         phiInThisRow = phiAtRadius(r);
-        repsInThisRow = Math.floor(factionPhi / phiInThisRow);
+        margin = phiInThisRow;
+        fPhi = factionPhi(rep.fraktion) - 2 * margin;
+        repsInThisRow = Math.ceil(fPhi / phiInThisRow);
         if (i + repsInThisRow >= index) {
-          phi = (factionPhi / repsInThisRow) * (i + repsInThisRow - index);
+          phi = (fPhi / Math.max(repsInThisRow - 1, 1)) * (i + repsInThisRow - index);
+          phi += margin;
           break;
         }
         r += Rep.spacing;
@@ -100,25 +113,88 @@
       }
       return {
         phi: phi,
-        r: r
+        r: Math.max(r, rMin)
       };
     };
-    phi = 0;
-    return _(Factions).each(function(faction) {
-      var coords, factionName, i, r, representative, _i, _len, _ref;
-      factionName = faction.name;
-      if (!dataByFaction[factionName]) {
-        return;
+    drawOrMoveRepresentatives = function(repsByFaction) {
+      var coords, faction, factionName, i, phi, r, rep, _i, _j, _len, _len1, _ref, _results;
+      phi = 0;
+      _results = [];
+      for (_i = 0, _len = Factions.length; _i < _len; _i++) {
+        faction = Factions[_i];
+        factionName = faction.name;
+        if (!repsByFaction[factionName]) {
+          continue;
+        }
+        r = Arc.innerR;
+        _ref = repsByFaction[factionName];
+        for (i = _j = 0, _len1 = _ref.length; _j < _len1; i = ++_j) {
+          rep = _ref[i];
+          coords = coordinatesAtIndex(rep, i);
+          if (!rep.element) {
+            rep.element = drawRepresentative(rep);
+          }
+          $(rep.element).removeClass('hidden').css({
+            left: x(phi + coords.phi, coords.r),
+            top: y(phi + coords.phi, coords.r)
+          });
+        }
+        _results.push(phi += factionPhi(factionName));
       }
-      r = Arc.innerR;
-      _ref = dataByFaction[factionName];
-      for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
-        representative = _ref[i];
-        coords = coordinatesAtIndex(factionName, i);
-        console.log(coords);
-        drawRepresentative(representative, phi + coords.phi, coords.r);
+      return _results;
+    };
+    hideRepresentatives = function(repsByFaction) {
+      var faction, rep, _i, _len, _results;
+      _results = [];
+      for (_i = 0, _len = Factions.length; _i < _len; _i++) {
+        faction = Factions[_i];
+        if (!repsByFaction[faction.name]) {
+          continue;
+        }
+        _results.push((function() {
+          var _j, _len1, _ref, _results1;
+          _ref = repsByFaction[faction.name];
+          _results1 = [];
+          for (_j = 0, _len1 = _ref.length; _j < _len1; _j++) {
+            rep = _ref[_j];
+            _results1.push($(rep.element).addClass('hidden'));
+          }
+          return _results1;
+        })());
       }
-      return phi += Arc.phiMax * (seats[factionName] / totalSeats);
+      return _results;
+    };
+    drawOrMoveRepresentatives(dataByFaction);
+    $('form').on('submit', function(event) {
+      var filter, form, groupedData, inputs;
+      form = $(this);
+      inputs = form.find('input[name]:not(:checkbox), :checkbox:checked');
+      event.preventDefault();
+      filter = _(inputs.get()).groupBy('name').mapValues(function(inputs) {
+        return inputs.map(function(input) {
+          return $(input).val();
+        });
+      });
+      filter = filter.value();
+      groupedData = _data.groupBy(function(rep) {
+        return _(filter).reduce(function(sum, filterValues, filterProperty) {
+          var keep;
+          keep = _.contains(filterValues, rep[filterProperty]);
+          return Boolean(sum * keep);
+        }, true);
+      });
+      groupedData = groupedData.mapValues(function(reps) {
+        return _.groupBy(reps, 'fraktion');
+      }).value();
+      if (groupedData["true"]) {
+        drawOrMoveRepresentatives(groupedData["true"]);
+      }
+      if (groupedData["false"]) {
+        return hideRepresentatives(groupedData["false"]);
+      }
+    });
+    return $('form').on('change', 'input', function() {
+      return $(this).submit();
     });
   });
 
