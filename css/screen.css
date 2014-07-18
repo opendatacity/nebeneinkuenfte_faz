@@ -1,0 +1,14 @@
+#parliament {
+  display: block;
+  position: relative;
+  background: url(../images/parliament.svg);
+  width: 800px;
+  height: 400px; }
+
+.representative {
+  width: 10px;
+  height: 10px;
+  position: absolute;
+  background-color: #ccc;
+  border-radius: 5px;
+  margin: -5px 0 0 -5px; }
