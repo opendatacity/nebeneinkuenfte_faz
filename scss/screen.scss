@@ -1,20 +1,54 @@
 #parliament {
 	display: block;
 	position: relative;
-	background: url(../images/parliament.svg);
-	width: 800px;
+	background: url(../images/parliament.svg) bottom center no-repeat;
+	background-size: contain;
+	width: 100%;
 	height: 400px;
+	max-width: 800px;
+	max-height: 400px;
+}
+#parliament ul {
+	list-style: none;
+	margin: 0;
+	padding: 0;
 }
 .representative {
+	display: inline-block;
+	position: absolute;
 	transition: all .5s ease;
 	$r: 5px;
 	width: 2*$r;
 	height: 2*$r;
-	position: absolute;
-	background-color: #ccc;
+	background-color: rgba(0,0,0,.2);
 	border-radius: $r;
-	margin: (-$r) 0 0 (-$r);
+	//margin: (-$r) 0 0 (-$r);
 	&.hidden {
 		opacity: 0;
 	}
 }
+fieldset {
+	display: inline-block;
+	margin: 0;
+	padding: 0;
+	border: none;
+	legend {
+		font-size: 1.5em;
+	}
+	ul {
+		list-style: none;
+		padding: 0;
+	}
+	li {
+		label {
+			cursor: pointer;
+			display: block;
+			color: #666;
+			min-height: 1.3em;
+		}
+	}
+}
+label.active, label:hover {
+	color: #000;
+}
+input[type=submit] { display: none; }
