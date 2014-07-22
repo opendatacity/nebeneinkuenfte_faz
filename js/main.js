@@ -110,20 +110,27 @@
     totalSeats = _.reduce(seats, function(sum, num) {
       return sum + num;
     });
+    data = _data.where(function(rep) {
+      return rep.nebeneinkuenfteMinSum > 1;
+    }).value();
     tick = function(e) {
       var alpha;
-      console.log(_data.value()[0].x);
       alpha = e.alpha;
-      return data.forEach(function(rep, i) {
+      data.forEach(function(rep, i) {
         var center;
         center = factionCenters[rep.fraktion];
-        rep.x = (center.x - rep.x) * alpha;
-        return rep.y = (center.y - rep.y) * alpha;
+        return collide(10)(rep);
+      });
+      node.attr('cx', function(d) {
+        return d.x;
+      });
+      return node.attr('cy', function(d) {
+        return d.y;
       });
     };
     collide = function(alpha) {
-      var quadtree;
-      quadtree = d3.geom.quadtree(data);
+      var qt;
+      qt = d3.geom.quadtree(data);
       return function(d) {
         var nx1, nx2, ny1, ny2, r;
         r = d.radius;
@@ -131,13 +138,13 @@
         nx2 = d.x + r;
         ny1 = d.y - r;
         ny2 = d.y + r;
-        return quadtree.visit(function(quad, x1, y1, x2, y2) {
+        return qt.visit(function(quad, x1, y1, x2, y2) {
           var l, x, y;
           if (quad.point && quad.point !== d) {
             x = d.x - quad.point.x;
             y = d.y - quad.point.y;
             l = Math.sqrt(x * x + y * y);
-            r = d.radius;
+            r = d.radius + quad.point.radius;
             if (l < r) {
               l = (l - r) / l * alpha;
               d.x -= x *= l;
@@ -151,7 +158,7 @@
       };
     };
     svg = d3.select('svg').attr('width', Viewport.width).attr('height', Viewport.height);
-    force = d3.layout.force().nodes(data).size(Viewport).gravity(.02).charge(0).on('tick', tick).start();
+    force = d3.layout.force().nodes(data).size([Viewport.width, Viewport.height]).gravity(.05).charge(-.2).on('tick', tick).start();
     node = svg.selectAll('circle').data(data).enter().append('circle').attr('class', function(rep) {
       return _.find(factions, {
         name: rep.fraktion

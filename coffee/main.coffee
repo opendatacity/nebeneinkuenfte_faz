@@ -65,31 +65,34 @@ $.getJSON '/data/data.json', (data) ->
   seats = _.mapValues dataByFaction, (f) -> f.length
   totalSeats = _.reduce seats, (sum, num) -> sum + num
 
+  data = _data.where (rep) -> rep.nebeneinkuenfteMinSum > 1
+  .value()
+
   tick = (e) ->
-    console.log _data.value()[0].x
     alpha = e.alpha
     data.forEach (rep, i) ->
       center = factionCenters[rep.fraktion]
-      rep.x = (center.x - rep.x) * alpha
-      rep.y = (center.y - rep.y) * alpha
+      #rep.x = (center.x - rep.x) * alpha
+      #rep.y = (center.y - rep.y) * alpha
+      collide(10)(rep)
 
-    #node.attr 'cx', (d) -> d.x
-    #node.attr 'cy', (d) -> d.y
+    node.attr 'cx', (d) -> d.x
+    node.attr 'cy', (d) -> d.y
 
   collide = (alpha) ->
-    quadtree = d3.geom.quadtree(data)
+    qt = d3.geom.quadtree data
     return (d) ->
       r = d.radius
       nx1 = d.x - r
       nx2 = d.x + r
       ny1 = d.y - r
       ny2 = d.y + r
-      quadtree.visit (quad, x1, y1, x2, y2) ->
+      qt.visit (quad, x1, y1, x2, y2) ->
         if quad.point and quad.point isnt d
           x = d.x - quad.point.x
           y = d.y - quad.point.y
           l = Math.sqrt x*x + y*y
-          r = d.radius
+          r = d.radius + quad.point.radius
           if l < r
             l = (l - r) / l * alpha
             d.x -= x *= l
@@ -104,9 +107,9 @@ $.getJSON '/data/data.json', (data) ->
 
   force = d3.layout.force()
   .nodes data
-  .size Viewport
-  .gravity .02
-  .charge 0
+  .size [Viewport.width, Viewport.height]
+  .gravity .05
+  .charge -.2
   .on 'tick', tick
   .start()
 
