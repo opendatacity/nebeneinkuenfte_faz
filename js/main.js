@@ -56,7 +56,7 @@
   };
 
   $.getJSON('/data/data.json', function(data) {
-    var collide, dataByFaction, factionCenters, factions, force, groupSize, nebeneinkuenfteMinSumGroup, nebeneinkuenfteMinSumGroups, node, seats, svg, tick, totalSeats;
+    var arc, collide, dataByFaction, factionCenters, factions, force, g, groupSize, nebeneinkuenfteMinSumGroup, nebeneinkuenfteMinSumGroups, node, parliament, pie, seats, seatsArray, svg, tick, totalSeats;
     data = data.data;
     window._data = _(data);
     factions = Factions.filter(function(faction) {
@@ -78,7 +78,7 @@
       rep.nebeneinkuenfteMinSum = nebeneinkuenfteMinSum(rep);
       rep.x = Viewport.width * Math.random();
       rep.y = Viewport.height * Math.random();
-      return rep.radius = 5 * Math.sqrt(Math.log(rep.nebeneinkuenfteMinSum + 1));
+      return rep.radius = 0.05 * Math.sqrt(rep.nebeneinkuenfteMinSum);
     });
     nebeneinkuenfteMinSumGroups = [];
     groupSize = 0;
@@ -114,12 +114,13 @@
       return rep.nebeneinkuenfteMinSum > 1;
     }).value();
     tick = function(e) {
-      var alpha;
-      alpha = e.alpha;
+      var alpha, qt;
+      alpha = e.alpha * e.alpha;
+      qt = d3.geom.quadtree(data);
       data.forEach(function(rep, i) {
         var center;
         center = factionCenters[rep.fraktion];
-        return collide(10)(rep);
+        return collide(0.1, qt)(rep);
       });
       node.attr('cx', function(d) {
         return d.x;
@@ -128,9 +129,7 @@
         return d.y;
       });
     };
-    collide = function(alpha) {
-      var qt;
-      qt = d3.geom.quadtree(data);
+    collide = function(alpha, qt) {
       return function(d) {
         var nx1, nx2, ny1, ny2, r;
         r = d.radius;
@@ -139,18 +138,18 @@
         ny1 = d.y - r;
         ny2 = d.y + r;
         return qt.visit(function(quad, x1, y1, x2, y2) {
-          var l, x, y;
+          var deltaL, h, l, w;
           if (quad.point && quad.point !== d) {
-            x = d.x - quad.point.x;
-            y = d.y - quad.point.y;
-            l = Math.sqrt(x * x + y * y);
+            w = d.x - quad.point.x;
+            h = d.y - quad.point.y;
+            l = Math.sqrt(w * w + h * h);
             r = d.radius + quad.point.radius;
             if (l < r) {
-              l = (l - r) / l * alpha;
-              d.x -= x *= l;
-              d.y -= y *= l;
-              quad.point.x += x;
-              quad.point.y += y;
+              deltaL = (l - r) / l * alpha;
+              d.x -= w *= deltaL;
+              d.y -= h *= deltaL;
+              quad.point.x += w;
+              quad.point.y += h;
             }
           }
           return x1 > nx2 || x2 < nx1 || y1 > ny2 || y2 < ny1;
@@ -158,7 +157,25 @@
       };
     };
     svg = d3.select('svg').attr('width', Viewport.width).attr('height', Viewport.height);
-    force = d3.layout.force().nodes(data).size([Viewport.width, Viewport.height]).gravity(.05).charge(-.2).on('tick', tick).start();
+    pie = d3.layout.pie().sort(null).value(function(faction) {
+      return faction.seats;
+    }).startAngle(Math.PI * -0.5).endAngle(Math.PI * 0.5);
+    seatsArray = _.map(factions, function(faction) {
+      return {
+        faction: faction.name,
+        seats: seats[faction.name]
+      };
+    });
+    console.log(seatsArray);
+    parliament = svg.append('g').attr('width', Viewport.width).attr('height', Viewport.height).attr('transform', "translate(" + (Viewport.width / 2) + ", " + Viewport.height + ")");
+    g = parliament.selectAll('.faction').data(pie(_.toArray(seatsArray))).enter().append('g').attr('class', function(seats) {
+      return 'arc ' + _.find(factions, {
+        name: seats.data.faction
+      })["class"];
+    });
+    arc = d3.svg.arc().outerRadius(Arc.outerR).innerRadius(Arc.innerR);
+    g.append('path').attr('d', arc);
+    force = d3.layout.force().nodes(data).size([Viewport.width, Viewport.height * 2]).gravity(.02).charge(0).on('tick', tick).start();
     node = svg.selectAll('circle').data(data).enter().append('circle').attr('class', function(rep) {
       return _.find(factions, {
         name: rep.fraktion
@@ -169,7 +186,7 @@
       return rep.x;
     }).attr('cy', function(rep) {
       return rep.y;
-    }).call(force.drag);
+    });
     $('form').on('submit', function(event) {
       var filter, form, groupedData, inputs;
       form = $(this);

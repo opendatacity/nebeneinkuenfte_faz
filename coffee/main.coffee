@@ -41,7 +41,7 @@ $.getJSON '/data/data.json', (data) ->
     rep.nebeneinkuenfteMinSum = nebeneinkuenfteMinSum rep
     rep.x = Viewport.width * Math.random()
     rep.y = Viewport.height * Math.random()
-    rep.radius = 5*Math.sqrt Math.log(rep.nebeneinkuenfteMinSum+1)
+    rep.radius = 0.05*Math.sqrt rep.nebeneinkuenfteMinSum
   # To distribute the reps evenly in the parliament,
   # we first have to establish where we should draw the boundaries
   # between their groups
@@ -69,18 +69,18 @@ $.getJSON '/data/data.json', (data) ->
   .value()
 
   tick = (e) ->
-    alpha = e.alpha
+    alpha = e.alpha * e.alpha
+    qt = d3.geom.quadtree data
     data.forEach (rep, i) ->
       center = factionCenters[rep.fraktion]
-      #rep.x = (center.x - rep.x) * alpha
-      #rep.y = (center.y - rep.y) * alpha
-      collide(10)(rep)
+      #rep.x += (center.x - rep.x) * alpha
+      #rep.y += (center.y - rep.y) * alpha
+      collide(0.1, qt)(rep)
 
     node.attr 'cx', (d) -> d.x
     node.attr 'cy', (d) -> d.y
 
-  collide = (alpha) ->
-    qt = d3.geom.quadtree data
+  collide = (alpha, qt) ->
     return (d) ->
       r = d.radius
       nx1 = d.x - r
@@ -89,27 +89,54 @@ $.getJSON '/data/data.json', (data) ->
       ny2 = d.y + r
       qt.visit (quad, x1, y1, x2, y2) ->
         if quad.point and quad.point isnt d
-          x = d.x - quad.point.x
-          y = d.y - quad.point.y
-          l = Math.sqrt x*x + y*y
+          w = d.x - quad.point.x
+          h = d.y - quad.point.y
+          l = Math.sqrt w*w + h*h
           r = d.radius + quad.point.radius
           if l < r
-            l = (l - r) / l * alpha
-            d.x -= x *= l
-            d.y -= y *= l
-            quad.point.x += x
-            quad.point.y += y
+            deltaL = (l - r) / l * alpha
+            d.x -= w *= deltaL
+            d.y -= h *= deltaL
+            quad.point.x += w#
+            quad.point.y += h
         return x1 > nx2 or x2 < nx1 or y1 > ny2 or y2 < ny1
 
   svg = d3.select 'svg'
   .attr 'width', Viewport.width
   .attr 'height', Viewport.height
 
+  # Draw parliament wedges first
+  pie = d3.layout.pie()
+  .sort null
+  .value (faction) -> faction.seats
+  .startAngle Math.PI * -0.5
+  .endAngle Math.PI * 0.5
+
+  seatsArray = _.map factions, (faction) -> faction: faction.name, seats: seats[faction.name]
+  console.log seatsArray
+
+  parliament = svg.append 'g'
+  .attr 'width', Viewport.width
+  .attr 'height', Viewport.height
+  .attr 'transform', "translate(#{Viewport.width/2}, #{Viewport.height})"
+
+  g = parliament.selectAll '.faction'
+  .data pie _.toArray seatsArray
+  .enter().append 'g'
+  .attr 'class', (seats) -> 'arc ' + _.find(factions, name: seats.data.faction).class
+
+  arc = d3.svg.arc()
+  .outerRadius Arc.outerR
+  .innerRadius Arc.innerR
+
+  g.append 'path'
+  .attr 'd', arc
+
   force = d3.layout.force()
   .nodes data
-  .size [Viewport.width, Viewport.height]
-  .gravity .05
-  .charge -.2
+  .size [Viewport.width, Viewport.height*2]
+  .gravity .02
+  .charge 0
   .on 'tick', tick
   .start()
 
@@ -120,7 +147,6 @@ $.getJSON '/data/data.json', (data) ->
   .attr 'r', (rep) -> rep.radius
   .attr 'cx', (rep) -> rep.x
   .attr 'cy', (rep) -> rep.y
-  .call force.drag
 
   $('form').on 'submit', (event) ->
     form = $ this

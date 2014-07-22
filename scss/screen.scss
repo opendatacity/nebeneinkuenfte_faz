@@ -53,7 +53,12 @@ label.active, label:hover {
 }
 input[type=submit] { display: none; }
 
-.linke {  fill: #f0f; }
-.spd {    fill: #f00; }
-.gruene { fill: #0f0; }
-.cducsu { fill: #000; }
+.linke {  fill: #f0f; opacity: .8; }
+.spd {    fill: #f00; opacity: .8; }
+.gruene { fill: #0f0; opacity: .8; }
+.cducsu { fill: #000; opacity: .8; }
+
+.arc {
+	opacity: .3;
+}
+
