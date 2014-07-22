@@ -1,13 +1,13 @@
-#parliament {
-	display: block;
-	position: relative;
-	background: url(../images/parliament.svg) bottom center no-repeat;
-	background-size: contain;
-	width: 100%;
-	height: 400px;
-	max-width: 800px;
-	max-height: 400px;
-}
+// #parliament {
+// 	display: block;
+// 	position: relative;
+// 	background: url(../images/parliament.svg) bottom center no-repeat;
+// 	background-size: contain;
+// 	width: 100%;
+// 	height: 400px;
+// 	max-width: 800px;
+// 	max-height: 400px;
+// }
 #parliament ul {
 	list-style: none;
 	margin: 0;
@@ -52,3 +52,8 @@ label.active, label:hover {
 	color: #000;
 }
 input[type=submit] { display: none; }
+
+.linke {  fill: #f0f; }
+.spd {    fill: #f00; }
+.gruene { fill: #0f0; }
+.cducsu { fill: #000; }
