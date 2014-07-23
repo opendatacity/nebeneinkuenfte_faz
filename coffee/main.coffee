@@ -29,19 +29,11 @@ $.getJSON '/data/data.json', (data) ->
   # Which of the possible factions are actually represented in parliament?
   factions = Factions.filter (faction) -> _data.find fraktion: faction.name
 
-  factionCenters = {}
-  factions.forEach (f, i) ->
-    coordinates =
-      x: Viewport.width/factions.length * (0.5 + i),
-      y: Viewport.height/2
-    factionCenters[f.name] = coordinates
-  console.log factionCenters
-
   _data.each (rep) ->
     rep.nebeneinkuenfteMinSum = nebeneinkuenfteMinSum rep
     rep.x = Viewport.width * Math.random()
-    rep.y = Viewport.height * Math.random()
-    rep.radius = 0.05*Math.sqrt rep.nebeneinkuenfteMinSum
+    rep.y = Viewport.height * Math.random() * 0.5
+    rep.radius = 0.07*Math.sqrt rep.nebeneinkuenfteMinSum
   # To distribute the reps evenly in the parliament,
   # we first have to establish where we should draw the boundaries
   # between their groups
@@ -72,13 +64,50 @@ $.getJSON '/data/data.json', (data) ->
     alpha = e.alpha * e.alpha
     qt = d3.geom.quadtree data
     data.forEach (rep, i) ->
-      center = factionCenters[rep.fraktion]
-      #rep.x += (center.x - rep.x) * alpha
-      #rep.y += (center.y - rep.y) * alpha
+      dX = rep.x - (Viewport.width >> 1)
+      dY = rep.y - Viewport.height
+      r = Math.sqrt dX * dX + dY * dY
+
+      # Angle of the line between the CENTRE of the rep and the centre of the parliament
+      phi = Math.atan2 dX, -dY
+      # Angle between - the line from the centre of parliament through the centre of the rep
+      #               - and the the representative's tangent through the centre of parliament
+      phiOffset = Math.atan2 rep.radius, r
+
+      factionAngles = _.find seatsPie, (item) -> item.data.faction is rep.fraktion
+      minAngle = factionAngles.startAngle
+      maxAngle = factionAngles.endAngle
+
+      # Ensure representatives stay outside the inner radius
+      if r < Arc.innerR + rep.radius
+        missing = (Arc.innerR + rep.radius - r) / r
+        rep.x += dX * missing
+        rep.y += dY * missing
+      
+      rep.phi = phi
+      rep.wrongPlacement = false
+      # …and ensure they stay within their factions
+      if phi < minAngle + phiOffset
+        destinationPhi = minAngle + phiOffset
+        rep.wrongPlacement = true
+      if phi > maxAngle - phiOffset
+        destinationPhi = maxAngle - phiOffset
+        rep.wrongPlacement = true
+      if destinationPhi
+        r = Math.max Arc.innerR + rep.radius, r
+        dY = -r * Math.cos destinationPhi
+        dX =  r * Math.sin destinationPhi
+        destinationX = (Viewport.width >> 1) + dX
+        destinationY = Viewport.height + dY
+        rep.x = destinationX
+        rep.y = destinationY
+
       collide(0.1, qt)(rep)
 
     node.attr 'cx', (d) -> d.x
     node.attr 'cy', (d) -> d.y
+    node.classed 'wrongPlacement', (d) -> d.wrongPlacement
+    node.attr 'data-phi', (d) -> d.phi
 
   collide = (alpha, qt) ->
     return (d) ->
@@ -97,7 +126,7 @@ $.getJSON '/data/data.json', (data) ->
             deltaL = (l - r) / l * alpha
             d.x -= w *= deltaL
             d.y -= h *= deltaL
-            quad.point.x += w#
+            quad.point.x += w
             quad.point.y += h
         return x1 > nx2 or x2 < nx1 or y1 > ny2 or y2 < ny1
 
@@ -112,8 +141,10 @@ $.getJSON '/data/data.json', (data) ->
   .startAngle Math.PI * -0.5
   .endAngle Math.PI * 0.5
 
-  seatsArray = _.map factions, (faction) -> faction: faction.name, seats: seats[faction.name]
-  console.log seatsArray
+  # We'll be needing this not only for the pie chart but also in the collision
+  # detector to make sure that representatives stay inside their own faction
+  seatsPie = pie _.map factions, (faction) -> faction: faction.name, seats: seats[faction.name]
+  console.log seatsPie
 
   parliament = svg.append 'g'
   .attr 'width', Viewport.width
@@ -121,7 +152,7 @@ $.getJSON '/data/data.json', (data) ->
   .attr 'transform', "translate(#{Viewport.width/2}, #{Viewport.height})"
 
   g = parliament.selectAll '.faction'
-  .data pie _.toArray seatsArray
+  .data seatsPie
   .enter().append 'g'
   .attr 'class', (seats) -> 'arc ' + _.find(factions, name: seats.data.faction).class
 
@@ -132,10 +163,11 @@ $.getJSON '/data/data.json', (data) ->
   g.append 'path'
   .attr 'd', arc
 
+  # Now draw circles for the representatives
   force = d3.layout.force()
   .nodes data
   .size [Viewport.width, Viewport.height*2]
-  .gravity .02
+  .gravity .05
   .charge 0
   .on 'tick', tick
   .start()

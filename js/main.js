@@ -56,7 +56,7 @@
   };
 
   $.getJSON('/data/data.json', function(data) {
-    var arc, collide, dataByFaction, factionCenters, factions, force, g, groupSize, nebeneinkuenfteMinSumGroup, nebeneinkuenfteMinSumGroups, node, parliament, pie, seats, seatsArray, svg, tick, totalSeats;
+    var arc, collide, dataByFaction, factions, force, g, groupSize, nebeneinkuenfteMinSumGroup, nebeneinkuenfteMinSumGroups, node, parliament, pie, seats, seatsPie, svg, tick, totalSeats;
     data = data.data;
     window._data = _(data);
     factions = Factions.filter(function(faction) {
@@ -64,21 +64,11 @@
         fraktion: faction.name
       });
     });
-    factionCenters = {};
-    factions.forEach(function(f, i) {
-      var coordinates;
-      coordinates = {
-        x: Viewport.width / factions.length * (0.5 + i),
-        y: Viewport.height / 2
-      };
-      return factionCenters[f.name] = coordinates;
-    });
-    console.log(factionCenters);
     _data.each(function(rep) {
       rep.nebeneinkuenfteMinSum = nebeneinkuenfteMinSum(rep);
       rep.x = Viewport.width * Math.random();
-      rep.y = Viewport.height * Math.random();
-      return rep.radius = 0.05 * Math.sqrt(rep.nebeneinkuenfteMinSum);
+      rep.y = Viewport.height * Math.random() * 0.5;
+      return rep.radius = 0.07 * Math.sqrt(rep.nebeneinkuenfteMinSum);
     });
     nebeneinkuenfteMinSumGroups = [];
     groupSize = 0;
@@ -118,15 +108,54 @@
       alpha = e.alpha * e.alpha;
       qt = d3.geom.quadtree(data);
       data.forEach(function(rep, i) {
-        var center;
-        center = factionCenters[rep.fraktion];
+        var dX, dY, destinationPhi, destinationX, destinationY, factionAngles, maxAngle, minAngle, missing, phi, phiOffset, r;
+        dX = rep.x - (Viewport.width >> 1);
+        dY = rep.y - Viewport.height;
+        r = Math.sqrt(dX * dX + dY * dY);
+        phi = Math.atan2(dX, -dY);
+        phiOffset = Math.atan2(rep.radius, r);
+        factionAngles = _.find(seatsPie, function(item) {
+          return item.data.faction === rep.fraktion;
+        });
+        minAngle = factionAngles.startAngle;
+        maxAngle = factionAngles.endAngle;
+        if (r < Arc.innerR + rep.radius) {
+          missing = (Arc.innerR + rep.radius - r) / r;
+          rep.x += dX * missing;
+          rep.y += dY * missing;
+        }
+        rep.phi = phi;
+        rep.wrongPlacement = false;
+        if (phi < minAngle + phiOffset) {
+          destinationPhi = minAngle + phiOffset;
+          rep.wrongPlacement = true;
+        }
+        if (phi > maxAngle - phiOffset) {
+          destinationPhi = maxAngle - phiOffset;
+          rep.wrongPlacement = true;
+        }
+        if (destinationPhi) {
+          r = Math.max(Arc.innerR + rep.radius, r);
+          dY = -r * Math.cos(destinationPhi);
+          dX = r * Math.sin(destinationPhi);
+          destinationX = (Viewport.width >> 1) + dX;
+          destinationY = Viewport.height + dY;
+          rep.x = destinationX;
+          rep.y = destinationY;
+        }
         return collide(0.1, qt)(rep);
       });
       node.attr('cx', function(d) {
         return d.x;
       });
-      return node.attr('cy', function(d) {
+      node.attr('cy', function(d) {
         return d.y;
+      });
+      node.classed('wrongPlacement', function(d) {
+        return d.wrongPlacement;
+      });
+      return node.attr('data-phi', function(d) {
+        return d.phi;
       });
     };
     collide = function(alpha, qt) {
@@ -160,22 +189,22 @@
     pie = d3.layout.pie().sort(null).value(function(faction) {
       return faction.seats;
     }).startAngle(Math.PI * -0.5).endAngle(Math.PI * 0.5);
-    seatsArray = _.map(factions, function(faction) {
+    seatsPie = pie(_.map(factions, function(faction) {
       return {
         faction: faction.name,
         seats: seats[faction.name]
       };
-    });
-    console.log(seatsArray);
+    }));
+    console.log(seatsPie);
     parliament = svg.append('g').attr('width', Viewport.width).attr('height', Viewport.height).attr('transform', "translate(" + (Viewport.width / 2) + ", " + Viewport.height + ")");
-    g = parliament.selectAll('.faction').data(pie(_.toArray(seatsArray))).enter().append('g').attr('class', function(seats) {
+    g = parliament.selectAll('.faction').data(seatsPie).enter().append('g').attr('class', function(seats) {
       return 'arc ' + _.find(factions, {
         name: seats.data.faction
       })["class"];
     });
     arc = d3.svg.arc().outerRadius(Arc.outerR).innerRadius(Arc.innerR);
     g.append('path').attr('d', arc);
-    force = d3.layout.force().nodes(data).size([Viewport.width, Viewport.height * 2]).gravity(.02).charge(0).on('tick', tick).start();
+    force = d3.layout.force().nodes(data).size([Viewport.width, Viewport.height * 2]).gravity(.05).charge(0).on('tick', tick).start();
     node = svg.selectAll('circle').data(data).enter().append('circle').attr('class', function(rep) {
       return _.find(factions, {
         name: rep.fraktion
