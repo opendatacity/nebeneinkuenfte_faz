@@ -1,0 +1,12 @@
+{
+  "sources" : [
+    "coffee\/de-de.dict.coffee"
+  ],
+  "mappings" : ";AAAA;AAAA,EAAA,MAAM,CAAC,UAAP,GACE;AAAA,IAAA,MAAA,EAAQ,cAAR;AAAA,IACA,KAAA,EAAO,cADP;GADF,CAAA;AAAA",
+  "sourceRoot" : ".\/..\/",
+  "names" : [
+
+  ],
+  "file" : "de-de.dict.js",
+  "version" : 3
+}

@@ -60,6 +60,59 @@ input[type=submit] { display: none; }
 //.wrongPlacement { stroke: #fff; stroke-width: 3px; }
 
 .arc {
-	opacity: .3;
+	opacity: 0.1;
+}
+
+.hidden { display: none; }
+
+#repInspector {
+	position: absolute;
+	background-color: #fff;
+	padding: .5em;
+	max-width: 15em;
+
+	&.moving {
+		pointer-events: none;
+		thead tr, tbody tr { display: none; }
+		tbody {
+			font-style: italic;
+			&:after { content: 'Für Details klicken' }
+		}
+	}
+	&.fixed {
+		
+	}
+
+	caption {
+		text-align: left;
+	}
+	td.minAmount, td.minSum {
+		text-align: right;
+		min-width: 5em;
+	}
+	td {
+		vertical-align: bottom;
+	}
+	th { text-align: left; }
+	th.number { text-align: right; }
+	tr.cat0 {
+		opacity: .4;
+	}
+	.tableContainer {
+		position: relative;
+	}
+	.tableScroller {
+		max-height: 10em;
+		overflow: auto;
+	}
+	table {
+		display: block; max-height: 10em; overflow: auto;
+		margin-top: 1em;
+	}
+	thead {
+		position: absolute;
+		top: 0;
+	}
+	tbody { max-height: 10em; overflow: auto; }
 }
 

@@ -1,3 +1,4 @@
+@charset "UTF-8";
 #parliament ul {
   list-style: none;
   margin: 0;
@@ -53,4 +54,50 @@ input[type=submit] {
   opacity: .8; }
 
 .arc {
-  opacity: .3; }
+  opacity: 0.1; }
+
+.hidden {
+  display: none; }
+
+#repInspector {
+  position: absolute;
+  background-color: #fff;
+  padding: .5em;
+  max-width: 15em; }
+  #repInspector.moving {
+    pointer-events: none; }
+    #repInspector.moving thead tr, #repInspector.moving tbody tr {
+      display: none; }
+    #repInspector.moving tbody {
+      font-style: italic; }
+      #repInspector.moving tbody:after {
+        content: "Für Details klicken"; }
+  #repInspector caption {
+    text-align: left; }
+  #repInspector td.minAmount, #repInspector td.minSum {
+    text-align: right;
+    min-width: 5em; }
+  #repInspector td {
+    vertical-align: bottom; }
+  #repInspector th {
+    text-align: left; }
+  #repInspector th.number {
+    text-align: right; }
+  #repInspector tr.cat0 {
+    opacity: .4; }
+  #repInspector .tableContainer {
+    position: relative; }
+  #repInspector .tableScroller {
+    max-height: 10em;
+    overflow: auto; }
+  #repInspector table {
+    display: block;
+    max-height: 10em;
+    overflow: auto;
+    margin-top: 1em; }
+  #repInspector thead {
+    position: absolute;
+    top: 0; }
+  #repInspector tbody {
+    max-height: 10em;
+    overflow: auto; }
