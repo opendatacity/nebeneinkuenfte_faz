@@ -102,7 +102,7 @@ class RepInspector
     @fixed = true
     @tooltip.addClass('fixed').removeClass('moving')
 
-$.getJSON '/data/data.json', (data) ->
+$.getJSON 'data/data.json', (data) ->
   data = data.data
   window._data = _(data)
 
