@@ -108,14 +108,14 @@
       var item, minSum, row, table, tableBody, tableRow, _i, _len, _ref, _results;
       minSum = formatCurrency(rep.nebeneinkuenfteMinSum);
       this.field('name').text(rep.name).attr('href', rep.url);
-      this.field('faction').text(rep.fraktion).attr('class', 'faction ' + _.find(Factions, {
+      this.field('faction').text(T(rep.fraktion)).attr('class', 'faction ' + _.find(Factions, {
         name: rep.fraktion
       })["class"]);
       this.field('land').text(rep.land);
       this.field('mandate').text(T(rep.mandat));
       this.field('constituency').text(rep.wahlkreis);
       this.field('minSum').text(minSum);
-      this.tooltip.find('caption').text(Tp(rep.nebeneinkuenfte.length, 'Nebentaetigkeit') + (" (min. " + minSum + ")"));
+      this.field('count').text(Tp(rep.nebeneinkuenfte.length, 'Nebentaetigkeit'));
       table = this.tooltip.find('table');
       tableBody = table.find('tbody');
       tableRow = tableBody.find('tr').first().clone();

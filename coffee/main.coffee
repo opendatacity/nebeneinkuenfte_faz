@@ -50,14 +50,14 @@ class RepInspector
     minSum = formatCurrency rep.nebeneinkuenfteMinSum
     @field('name')        .text rep.name
                           .attr 'href', rep.url
-    @field('faction')     .text rep.fraktion
+    @field('faction')     .text T rep.fraktion
                           .attr 'class', 'faction ' + _.find(Factions, name: rep.fraktion).class
     @field('land')        .text rep.land
     @field('mandate')     .text T rep.mandat
     @field('constituency').text rep.wahlkreis
     @field('minSum')      .text minSum
     
-    @tooltip.find('caption').text Tp(rep.nebeneinkuenfte.length, 'Nebentaetigkeit') + " (min. #{minSum})"
+    @field('count')       .text Tp(rep.nebeneinkuenfte.length, 'Nebentaetigkeit')
 
     table = @tooltip.find 'table'
     tableBody = table.find 'tbody'

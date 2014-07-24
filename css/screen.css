@@ -21,20 +21,24 @@ fieldset {
     font: 1em/1.2 Montserrat, sans-serif;
     text-transform: uppercase;
     letter-spacing: .05em;
-    font-weight: bold; }
+    font-weight: bold;
+    margin: 1em 0 .2em 0; }
   fieldset ul {
     list-style: none;
-    padding: 0; }
+    padding-left: .4em;
+    margin: 0 0 0 .4em;
+    border-left: 1px solid #eee; }
   fieldset li label {
     font-family: Montserrat, sans-serif;
     cursor: pointer;
     display: block;
-    color: #666;
+    color: #555;
     min-height: 1.3em; }
     fieldset li label:before {
       display: inline-block;
       content: ' ';
-      width: .75em; }
+      width: .75em;
+      margin-left: -.8em; }
 
 input[type=checkbox] {
   display: none; }
@@ -42,7 +46,8 @@ input[type=checkbox] {
 label.active {
   color: #000; }
   label.active:before {
-    content: '✓'; }
+    content: '✓';
+    background-color: #fff; }
 
 input[type=submit] {
   display: none; }
@@ -94,6 +99,8 @@ input[type=submit] {
     letter-spacing: .05em;
     font-weight: bold;
     margin: .2em 0 .5em; }
+  #repInspector .faction {
+    text-transform: uppercase; }
   #repInspector .faction, #repInspector .land, #repInspector .mandate {
     font: 0.8em Montserrat, sans-serif; }
   #repInspector .faction, #repInspector .land {
@@ -132,3 +139,7 @@ input[type=submit] {
     text-align: right; }
   #repInspector td, #repInspector th, #repInspector tbody:after {
     padding: .4em 0; }
+
+.number {
+  white-space: nowrap;
+  text-align: right; }

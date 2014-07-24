@@ -37,22 +37,26 @@ fieldset {
 	border: none;
 	legend {
 		@include heading;
+		margin: 1em 0 .2em 0;
 	}
 	ul {
 		list-style: none;
-		padding: 0;
+		padding-left: .4em;
+		margin: 0 0 0 .4em;
+		border-left: 1px solid #eee;
 	}
 	li {
 		label {
 			font-family: $secondaryFont;
 			cursor: pointer;
 			display: block;
-			color: #666;
+			color: #555;
 			min-height: 1.3em;
 			&:before {
 				display: inline-block;
 				content: ' ';
 				width: .75em;
+				margin-left: -.8em;
 			}
 		}
 	}
@@ -60,9 +64,14 @@ fieldset {
 input[type=checkbox] {
 	display: none;
 }
+label:hover {
+}
 label.active {
 	color: #000;
-	&:before { content: '✓'; }
+	&:before {
+		content: '✓';
+		background-color: #fff;
+	}
 }
 input[type=submit] { display: none; }
 
@@ -107,6 +116,9 @@ input[type=submit] { display: none; }
 	h2 {
 		@include heading;
 		margin: .2em 0 .5em;
+	}
+	.faction {
+		text-transform: uppercase;
 	}
 	.faction, .land, .mandate {
 		font: .8em $secondaryFont;
@@ -156,10 +168,15 @@ input[type=submit] { display: none; }
 		text-align: left;
 		@include minorHeading;
 	}
-	th.number { text-align: right; }
+	th.number {
+		text-align: right;
+	}
 
 	td, th, tbody:after {
 		padding: .4em 0;
 	}
 }
-
+.number {
+	white-space: nowrap;
+	text-align: right;
+}

@@ -6,7 +6,9 @@
     Nebentaetigkeit0: 'keine Nebentätigkeiten',
     Nebentaetigkeit: 'Nebentätigkeit',
     Nebentaetigkeit1: 'eine Nebentätigkeit',
-    NebentaetigkeitPlural: 'Nebentätigkeiten'
+    NebentaetigkeitPlural: 'Nebentätigkeiten',
+    'Bündnis 90/Die Grünen': 'Grüne',
+    'Die Linke': 'Linke'
   };
 
 }).call(this);

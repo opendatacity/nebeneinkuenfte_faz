@@ -5,3 +5,5 @@ window.dictionary =
   Nebentaetigkeit: 'Nebentätigkeit'
   Nebentaetigkeit1: 'eine Nebentätigkeit'
   NebentaetigkeitPlural: 'Nebentätigkeiten'
+  'Bündnis 90/Die Grünen': 'Grüne'
+  'Die Linke': 'Linke'
