@@ -106,6 +106,7 @@
 
     RepInspector.prototype.update = function(rep) {
       var item, minSum, row, table, tableBody, tableRow, _i, _len, _ref, _results;
+      this.rep = rep;
       minSum = formatCurrency(rep.nebeneinkuenfteMinSum);
       this.field('name').text(rep.name).attr('href', rep.url);
       this.field('faction').text(T(rep.fraktion)).attr('class', 'faction ' + _.find(Factions, {
@@ -415,8 +416,8 @@
         y: event.pageY
       };
       rep = d3.select(this).datum();
-      inspector.update(rep);
       if (!inspector.fixed) {
+        inspector.update(rep);
         return inspector.show(position);
       }
     });
@@ -425,14 +426,20 @@
         return inspector.hide();
       }
     });
-    $(document).on('click', function() {
+    $(document).on('mouseup', function() {
       if (inspector.fixed) {
         return inspector.hide();
       }
     });
-    $('svg').on('click', 'circle', function(event) {
-      event.stopPropagation();
-      return inspector.fix();
+    $('svg').on('mouseup', 'circle', function(event) {
+      if (inspector.fixed && d3.select(this).datum() === inspector.rep) {
+        return inspector.unfix();
+      } else if (inspector.fixed) {
+        return inspector.hide();
+      } else {
+        event.stopPropagation();
+        return inspector.fix();
+      }
     });
     updateCheckboxLabelState($(':checkbox'));
     $(window).on('resize', function(event) {

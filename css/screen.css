@@ -14,7 +14,7 @@ a:visited {
 
 fieldset {
   display: inline-block;
-  margin: 0;
+  margin: 2em 2em 0 0;
   padding: 0;
   border: none; }
   fieldset legend {
@@ -79,7 +79,8 @@ input[type=submit] {
   background-color: rgba(255, 255, 255, 0.95);
   padding: .5em;
   transition: width .2s ease;
-  box-shadow: 0 0.1em 0.5em rgba(0, 0, 0, 0.1); }
+  box-shadow: 0 0.1em 0.5em rgba(0, 0, 0, 0.1);
+  margin: 1em 0 0 0; }
   #repInspector.moving {
     pointer-events: none; }
     #repInspector.moving thead, #repInspector.moving tbody, #repInspector.moving tfoot {

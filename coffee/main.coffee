@@ -47,6 +47,7 @@ class RepInspector
   field: (field) -> @tooltip.find ".#{field}"
 
   update: (rep) ->
+    @rep = rep
     minSum = formatCurrency rep.nebeneinkuenfteMinSum
     @field('name')        .text rep.name
                           .attr 'href', rep.url
@@ -319,16 +320,22 @@ $.getJSON '/data/data.json', (data) ->
   $('svg').on 'mousemove', 'circle', (event) ->
     position = x: event.pageX, y: event.pageY
     rep = d3.select(this).datum()
-    inspector.update rep
-    inspector.show position unless inspector.fixed
+    unless inspector.fixed
+      inspector.update rep
+      inspector.show position
 
   $('svg').on 'mouseleave', 'circle', -> inspector.hide() unless inspector.fixed
 
-  $(document).on 'click', -> inspector.hide() if inspector.fixed
+  $(document).on 'mouseup', -> inspector.hide() if inspector.fixed
 
-  $('svg').on 'click', 'circle', (event) ->
-    event.stopPropagation() # Otherwise the click would fire on the document node and hide the inspector
-    inspector.fix()
+  $('svg').on 'mouseup', 'circle', (event) ->
+    if inspector.fixed and d3.select(this).datum() is inspector.rep
+      inspector.unfix()
+    else if inspector.fixed
+      inspector.hide()
+    else
+      event.stopPropagation() # Otherwise the click would fire on the document node and hide the inspector
+      inspector.fix()
 
   updateCheckboxLabelState $(':checkbox')
     

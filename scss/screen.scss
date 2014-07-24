@@ -32,7 +32,7 @@ a {
 
 fieldset {
 	display: inline-block;
-	margin: 0;
+	margin: 2em 2em 0 0;
 	padding: 0;
 	border: none;
 	legend {
@@ -93,6 +93,7 @@ input[type=submit] { display: none; }
 	padding: .5em;
 	transition: width .2s ease;
 	box-shadow: 0 .1em .5em rgba(#000, .1);
+	margin: 1em 0 0 0;
 
 	&.moving {
 		//width: 15em;
