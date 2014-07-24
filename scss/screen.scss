@@ -1,39 +1,42 @@
-// #parliament {
-// 	display: block;
-// 	position: relative;
-// 	background: url(../images/parliament.svg) bottom center no-repeat;
-// 	background-size: contain;
-// 	width: 100%;
-// 	height: 400px;
-// 	max-width: 800px;
-// 	max-height: 400px;
-// }
-#parliament ul {
-	list-style: none;
-	margin: 0;
-	padding: 0;
+@import 'globals';
+
+@import url(http://fonts.googleapis.com/css?family=Montserrat:400,700);
+
+body {
+	font: 1em/1.2em $primaryFont;
 }
-.representative {
-	display: inline-block;
-	position: absolute;
-	transition: all .5s ease;
-	$r: 5px;
-	width: 2*$r;
-	height: 2*$r;
-	background-color: rgba(0,0,0,.2);
-	border-radius: $r;
-	//margin: (-$r) 0 0 (-$r);
-	&.hidden {
-		opacity: 0;
+a {
+	&:link {
+		text-decoration: none;
+		color: $linkColor;
+	}
+	&:visited {
+		color: lighten($linkColor, 10);
 	}
 }
+
+#parliament {
+	transform-origin: top left;
+	//max-width: 100%;
+}
+
+@mixin minorHeading {
+	font: 1em/1.2 $secondaryFont;
+}
+@mixin heading {
+	@include minorHeading;
+	text-transform: uppercase;
+	letter-spacing: .05em;
+	font-weight: bold;	
+}
+
 fieldset {
 	display: inline-block;
 	margin: 0;
 	padding: 0;
 	border: none;
 	legend {
-		font-size: 1.5em;
+		@include heading;
 	}
 	ul {
 		list-style: none;
@@ -41,22 +44,32 @@ fieldset {
 	}
 	li {
 		label {
+			font-family: $secondaryFont;
 			cursor: pointer;
 			display: block;
 			color: #666;
 			min-height: 1.3em;
+			&:before {
+				display: inline-block;
+				content: ' ';
+				width: .75em;
+			}
 		}
 	}
 }
-label.active, label:hover {
+input[type=checkbox] {
+	display: none;
+}
+label.active {
 	color: #000;
+	&:before { content: '✓'; }
 }
 input[type=submit] { display: none; }
 
-.linke {  fill: #f0f; opacity: .8; }
-.spd {    fill: #f00; opacity: .8; }
-.gruene { fill: #0f0; opacity: .8; }
-.cducsu { fill: #000; opacity: .8; }
+.linke {  color: #d703d7; fill: #d703d7; }
+.spd {    color: #da0000; fill: #da0000; }
+.gruene { color: #58d300; fill: #58d300; }
+.cducsu { color: #333;    fill: #333;    }
 //.wrongPlacement { stroke: #fff; stroke-width: 3px; }
 
 .arc {
@@ -67,52 +80,86 @@ input[type=submit] { display: none; }
 
 #repInspector {
 	position: absolute;
-	background-color: #fff;
+	background-color: rgba(#fff, .95);
 	padding: .5em;
-	max-width: 15em;
+	transition: width .2s ease;
+	box-shadow: 0 .1em .5em rgba(#000, .1);
 
 	&.moving {
+		//width: 15em;
 		pointer-events: none;
-		thead tr, tbody tr { display: none; }
-		tbody {
+		thead, tbody, tfoot { display: none; }
+		caption {
 			font-style: italic;
-			&:after { content: 'Für Details klicken' }
+			text-align: left;
+			&:after {
+				content: ' – Für Details klicken';
+			}
 		}
 	}
 	&.fixed {
-		
+		width: 20em;
+		caption {
+			display: none;
+		}
 	}
 
-	caption {
-		text-align: left;
+	h2 {
+		@include heading;
+		margin: .2em 0 .5em;
 	}
-	td.minAmount, td.minSum {
-		text-align: right;
-		min-width: 5em;
+	.faction, .land, .mandate {
+		font: .8em $secondaryFont;
 	}
-	td {
-		vertical-align: bottom;
+	.faction, .land {
+		padding-right: .5em;
+		margin-right: .1em;
+		border-right: 1px solid rgba(#000, .2);
 	}
-	th { text-align: left; }
-	th.number { text-align: right; }
+
 	tr.cat0 {
 		opacity: .4;
 	}
-	.tableContainer {
-		position: relative;
-	}
-	.tableScroller {
-		max-height: 10em;
-		overflow: auto;
-	}
 	table {
-		display: block; max-height: 10em; overflow: auto;
-		margin-top: 1em;
+		width: 100%;
+		display: block;
+		overflow: auto;
+		border-collapse: collapse;
+		font-size: .8em;
 	}
 	thead {
-		position: absolute;
+		// position: absolute;
 		top: 0;
+		th {
+			border-bottom: 1px solid rgba(#000, .05);
+		}
 	}
-	tbody { max-height: 10em; overflow: auto; }
+	tfoot th, tfoot td {
+		border-top: 1px solid rgba(#000, .05);
+	}
+	thead, tbody, tfoot {
+		display: block;
+	}
+	tbody {
+		max-height: 20em;
+		overflow: auto;
+	}
+	.minAmount, .minSum {
+		text-align: right;
+		min-width: 5em;
+	}
+	td, th {
+		width: 100%;
+		vertical-align: bottom;
+	}
+	th {
+		text-align: left;
+		@include minorHeading;
+	}
+	th.number { text-align: right; }
+
+	td, th, tbody:after {
+		padding: .4em 0;
+	}
 }
 

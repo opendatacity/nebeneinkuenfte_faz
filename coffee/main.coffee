@@ -15,6 +15,11 @@ Factions = [
 T = (string) ->
   return dictionary[string] if dictionary[string]
   return string
+Tp = (number, string) ->
+  return dictionary[string+number] if dictionary[string+number]
+  return number + ' ' + dictionary[string+'Plural'] if number != 1 and dictionary[string+'Plural']
+  return number + ' ' + dictionary[string] if dictionary[string]
+  return number + ' ' + string
 
 NebeneinkunftMinAmounts = [ 0.01, 1000, 3500, 7000, 15000, 30000, 50000, 75000, 100000, 150000, 250000 ]
 
@@ -23,7 +28,7 @@ nebeneinkuenfteMinSum = (rep) ->
   sum = rep.nebeneinkuenfte.reduce ((sum, einkunft) -> sum += NebeneinkunftMinAmounts[einkunft.level]), 0
   return Math.max parseInt(sum, 10), 1
 
-formatCurrency = (amount) ->
+formatCurrency = _.memoize (amount) ->
   amount = String Math.floor amount
   groups = []
   while amount.length > 0
@@ -42,13 +47,17 @@ class RepInspector
   field: (field) -> @tooltip.find ".#{field}"
 
   update: (rep) ->
+    minSum = formatCurrency rep.nebeneinkuenfteMinSum
     @field('name')        .text rep.name
                           .attr 'href', rep.url
     @field('faction')     .text rep.fraktion
+                          .attr 'class', 'faction ' + _.find(Factions, name: rep.fraktion).class
     @field('land')        .text rep.land
     @field('mandate')     .text T rep.mandat
     @field('constituency').text rep.wahlkreis
-    @field('minSum')      .text formatCurrency rep.nebeneinkuenfteMinSum
+    @field('minSum')      .text minSum
+    
+    @tooltip.find('caption').text Tp(rep.nebeneinkuenfte.length, 'Nebentaetigkeit') + " (min. #{minSum})"
 
     table = @tooltip.find 'table'
     tableBody = table.find 'tbody'
@@ -62,8 +71,17 @@ class RepInspector
       row.find('.minAmount').text formatCurrency NebeneinkunftMinAmounts[item.level]
       tableBody.append row
 
+  measure: ->
+    # If it's currently hidden, we'll first move it to [0, 0] to measure it
+    # as the browser may otherwise interfere and do its own scaling.
+    positionBackup = @position
+    @moveTo x: 0, y: 0
+    @width = @tooltip.width()
+    @height = @tooltip.height()
+    @moveTo positionBackup
   show: (position) ->
     @moveTo position if position
+    @measure() unless @visible
     @tooltip.addClass('visible').removeClass('hidden')
     @visible = true
     @unfix()
@@ -72,6 +90,9 @@ class RepInspector
     @visible = false
     @unfix()
   moveTo: (@position) ->
+    # See if the tooltip would extend beyond the side of the window.
+    if @position.x + @width > windowSize.width
+      @position.x = windowSize.width - @width
     @tooltip.css top: @position.y, left: @position.x unless @fixed
   unfix: ->
     @fixed = false
@@ -313,6 +334,11 @@ $.getJSON '/data/data.json', (data) ->
     
 
   $(window).on 'resize', (event) ->
-    aspectRatio = Viewport.height / Viewport.width
-    $('#parliament').css height: $('#parliament').width() * aspectRatio
+    window.windowSize = width: $(window).width(), height: $(window).height()
+    scale = Math.min 1, (windowSize.width - 16) / Viewport.width
+    # We can't set `.css height: Viewport.height * scale` because this
+    # would apply the transform on the _scaled_ object, thus cutting off
+    # the bottom. Instead we need to be clever with the bottom margin.
+    $('#parliament').css transform: "scale(#{scale})", marginBottom: (-1 + scale) * Viewport.height
+
   $(window).trigger('resize')
