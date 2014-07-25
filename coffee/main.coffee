@@ -37,12 +37,37 @@ formatCurrency = _.memoize (amount) ->
     amount = amount.substr 0, amount.length - 3
   return groups.join(' ') + ' €'
 
-updateCheckboxLabelState = (checkbox) -> $(checkbox).parent('label').toggleClass 'active', $(checkbox).prop('checked')
+updateCheckboxLabelState = (checkbox) ->
+  if checkbox.length > 1
+    return checkbox.each (i, box) -> updateCheckboxLabelState box
+
+  checked = $(checkbox).prop 'checked'
+  checked = true if typeof checked is 'undefined'
+  land = $(checkbox).attr 'value'
+  $(checkbox).parent('label').toggleClass 'active', checked
+  path = $("path[title=#{land}]")
+  if checked
+    path.attr 'class', 'active'
+  else
+    path.attr 'class', 'inactive'
+  showOrHideConvenienceButtons checkbox
+
+showOrHideConvenienceButtons = (checkbox) ->
+  fieldset = $(checkbox).parents('fieldset')
+  all = fieldset.find ':checkbox'
+  checked = fieldset.find ':checkbox:checked'
+  buttons = fieldset.find('.convenienceButtons')
+  buttons.toggleClass 'allChecked', checked.length == all.length
+  buttons.toggleClass 'someChecked', checked.length > 0
+  buttons.toggleClass 'noneChecked', checked.length is 0
+
 
 repRadius = (rep) -> 0.07*Math.sqrt rep.nebeneinkuenfteMinSum
 
 class RepInspector
-  constructor: (selector) -> @tooltip = $(selector)
+  constructor: (selector) ->
+    @tooltip = $(selector)
+    @tooltip.find('tbody').on 'scroll', @handleScroll
 
   field: (field) -> @tooltip.find ".#{field}"
 
@@ -71,6 +96,20 @@ class RepInspector
       row.find('.description').text item.text
       row.find('.minAmount').text formatCurrency NebeneinkunftMinAmounts[item.level]
       tableBody.append row
+
+  handleScroll: (arg) ->
+    table = if arg.target then $(arg.target) else $(arg)
+    scrollTop = table.scrollTop()
+    max = table.prop 'scrollHeight'
+    height = table.height()
+
+    scrollBottom = max - scrollTop - height
+
+    topShadow = 0.5 * Math.min scrollTop, 10
+    bottomShadow = 0.5 * Math.min scrollBottom, 10
+
+    table.siblings('thead').css 'box-shadow', "0 #{topShadow}px .5em -.3em rgba(0, 0, 0, .2)"
+    table.siblings('tfoot').css 'box-shadow', "0 -#{bottomShadow}px .5em -.3em rgba(0, 0, 0, .2)"
 
   measure: ->
     # If it's currently hidden, we'll first move it to [0, 0] to measure it
@@ -101,6 +140,45 @@ class RepInspector
   fix: ->
     @fixed = true
     @tooltip.addClass('fixed').removeClass('moving')
+    @handleScroll @tooltip.find('tbody')
+
+$(document).ready ->
+  $('#map').on 'mouseenter', 'path', ->
+    # Move to the top of the map's child nodes
+    node = $ this
+    node.insertAfter node.siblings().last()
+
+  $('#map').on 'mouseleave', 'path', ->
+    node = $ this
+    nodeClass = node.attr 'class'
+    if nodeClass is 'active'
+      node.insertAfter node.siblings().last()
+    else
+      node.insertBefore node.siblings().first()
+
+  $('#map').on 'click', 'path', ->
+    land = $(this).attr 'title'
+    checkbox = $ "input[value=#{land}]"
+    checkbox.click()
+
+  updateCheckboxLabelState $(':checkbox')
+
+  # Add 'Select All' and 'Invert Selection buttons to fieldsets'
+  $('fieldset').each (i, fieldset) ->
+    div = $ '<div class="convenienceButtons">'
+    div.append $ '<input type="button" value="Alle auswählen" class="selectAll">'
+    div.append $ '<input type="button" value="Auswahl umkehren" class="invertSelection">'
+    $(fieldset).append div
+
+  $('.invertSelection, .selectAll').click (event) ->
+    fieldset = $(this).parents('fieldset')
+    selector = ':checkbox'
+    selector += ':not(:checked)' if $(this).hasClass 'selectAll'
+    checkboxes = fieldset.find selector
+    checkboxes.each (i, c) ->
+      $(c).prop 'checked', !$(c).prop 'checked'
+      updateCheckboxLabelState c
+    $(this).parents('form').triggerHandler 'submit'
 
 $.getJSON '/data/data.json', (data) ->
   data = data.data
@@ -198,7 +276,7 @@ $.getJSON '/data/data.json', (data) ->
             quad.point.y += h
         return x1 > nx2 or x2 < nx1 or y1 > ny2 or y2 < ny1
 
-  svg = d3.select 'svg'
+  svg = d3.select '#parliament'
   .attr 'width', Viewport.width
   .attr 'height', Viewport.height
 
@@ -212,13 +290,11 @@ $.getJSON '/data/data.json', (data) ->
   # We'll be needing this not only for the pie chart but also in the collision
   # detector to make sure that representatives stay inside their own faction
   seatsPie = pie _.map factions, (faction) -> faction: faction.name, seats: seats[faction.name]
-  console.log seatsPie
 
   # Now we know where the factions are, we can initalize the representatives
   # with sensible values.
   initializeRepPositions = ->
     for faction in seatsPie
-      console.log faction
       factionName = faction.data.faction
 
       # How many reps above the significance threshold are in this faction?
@@ -300,14 +376,19 @@ $.getJSON '/data/data.json', (data) ->
   inspector.hide()
 
   $('form').on 'submit', (event) ->
+    if $(this).data 'suspendSumbit'
+      event.preventDefault()
+      return false
     form = $ this
-    inputs = form.find 'input[name]:not(:checkbox), :checkbox:checked'
+    inputs = form.find 'input[type=hidden], :checkbox:checked'
     event.preventDefault()
 
     filter = _(inputs.get())
     .groupBy('name')
     .mapValues (inputs) -> inputs.map (input) -> $(input).val()
     .value()
+
+    console.log filter
 
     filterData filter
     drawRepresentatives()
@@ -337,15 +418,15 @@ $.getJSON '/data/data.json', (data) ->
       event.stopPropagation() # Otherwise the click would fire on the document node and hide the inspector
       inspector.fix()
 
-  updateCheckboxLabelState $(':checkbox')
-    
-
   $(window).on 'resize', (event) ->
     window.windowSize = width: $(window).width(), height: $(window).height()
     scale = Math.min 1, (windowSize.width - 16) / Viewport.width
     # We can't set `.css height: Viewport.height * scale` because this
     # would apply the transform on the _scaled_ object, thus cutting off
     # the bottom. Instead we need to be clever with the bottom margin.
-    $('#parliament').css transform: "scale(#{scale})", marginBottom: (-1 + scale) * Viewport.height
+    $('#parliament').css transform: "scale(#{scale})"
+
+    $('#parliamentContainer').css width: scale * Viewport.width, height: scale * Viewport.height
 
   $(window).trigger('resize')
+

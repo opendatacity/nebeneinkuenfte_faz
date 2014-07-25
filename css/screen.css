@@ -9,8 +9,25 @@ a:link {
 a:visited {
   color: #065697; }
 
+#parliamentContainer {
+  overflow: hidden; }
+
 #parliament {
   transform-origin: top left; }
+
+#map path {
+  fill: url(#inactivePattern);
+  stroke-width: 1px;
+  stroke: #aaa;
+  cursor: pointer; }
+#map path:hover, #map path.active:hover {
+  stroke-width: 2px;
+  stroke: #333;
+  fill-opacity: .5; }
+#map path.active {
+  stroke-width: 1px;
+  fill: #fff;
+  stroke: #333; }
 
 fieldset {
   display: inline-block;
@@ -49,8 +66,17 @@ label.active {
     content: '✓';
     background-color: #fff; }
 
+#land ul {
+  display: none; }
+
 input[type=submit] {
   display: none; }
+
+.convenienceButtons {
+  transition: all .2s ease; }
+  .convenienceButtons.allChecked {
+    margin: -.2em 0 .2em;
+    opacity: 0; }
 
 .linke {
   color: #d703d7;
@@ -79,7 +105,8 @@ input[type=submit] {
   background-color: rgba(255, 255, 255, 0.95);
   padding: .5em;
   transition: width .2s ease;
-  box-shadow: 0 0.1em 0.5em rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0.1em 0.75em rgba(0, 0, 0, 0.1);
   margin: 1em 0 0 0; }
   #repInspector.moving {
     pointer-events: none; }
@@ -116,15 +143,17 @@ input[type=submit] {
     overflow: auto;
     border-collapse: collapse;
     font-size: .8em; }
-  #repInspector thead {
-    top: 0; }
-    #repInspector thead th {
-      border-bottom: 1px solid rgba(0, 0, 0, 0.05); }
-  #repInspector tfoot th, #repInspector tfoot td {
-    border-top: 1px solid rgba(0, 0, 0, 0.05); }
   #repInspector thead, #repInspector tbody, #repInspector tfoot {
-    display: block; }
+    display: block;
+    margin: 0 -.3em;
+    padding: 0 .3em; }
+  #repInspector thead, #repInspector tfoot {
+    z-index: 3; }
   #repInspector tbody {
+    z-index: 2;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    border-left: none;
+    border-right: none;
     max-height: 20em;
     overflow: auto; }
   #repInspector .minAmount, #repInspector .minSum {

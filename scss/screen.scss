@@ -15,9 +15,31 @@ a {
 	}
 }
 
+#parliamentContainer {
+	overflow: hidden;
+}
 #parliament {
 	transform-origin: top left;
 	//max-width: 100%;
+}
+
+#map {
+	path {
+		fill: url(#inactivePattern);
+		stroke-width: 1px;
+		stroke: #aaa;
+		cursor: pointer;
+	}
+	path:hover, path.active:hover {
+		stroke-width: 2px;
+		stroke: #333;
+		fill-opacity: .5;
+	}
+	path.active {
+		stroke-width: 1px;
+		fill: #fff;
+		stroke: #333;
+	}
 }
 
 @mixin minorHeading {
@@ -73,7 +95,17 @@ label.active {
 		background-color: #fff;
 	}
 }
+#land ul {
+	display: none;
+}
 input[type=submit] { display: none; }
+.convenienceButtons {
+	transition: all .2s ease;
+	&.allChecked {
+		margin: -.2em 0 .2em;
+		opacity: 0;
+	}
+}
 
 .linke {  color: #d703d7; fill: #d703d7; }
 .spd {    color: #da0000; fill: #da0000; }
@@ -92,7 +124,8 @@ input[type=submit] { display: none; }
 	background-color: rgba(#fff, .95);
 	padding: .5em;
 	transition: width .2s ease;
-	box-shadow: 0 .1em .5em rgba(#000, .1);
+	border: 1px solid rgba(#000, .1);
+	box-shadow: 0 .1em .75em rgba(#000, .1);
 	margin: 1em 0 0 0;
 
 	&.moving {
@@ -140,26 +173,29 @@ input[type=submit] { display: none; }
 		border-collapse: collapse;
 		font-size: .8em;
 	}
-	thead {
-		// position: absolute;
-		top: 0;
-		th {
-			border-bottom: 1px solid rgba(#000, .05);
-		}
-	}
 	tfoot th, tfoot td {
-		border-top: 1px solid rgba(#000, .05);
 	}
 	thead, tbody, tfoot {
 		display: block;
+		margin: 0 -.3em;
+		padding: 0 .3em;
+	}
+	thead, tfoot {
+		z-index: 3;
 	}
 	tbody {
+		z-index: 2;
+		border: 1px solid rgba(#000, .05);
+		border-left: none;
+		border-right: none;
 		max-height: 20em;
 		overflow: auto;
 	}
 	.minAmount, .minSum {
 		text-align: right;
 		min-width: 5em;
+	}
+	tfoot {
 	}
 	td, th {
 		width: 100%;
