@@ -365,7 +365,7 @@
       });
     };
     smoothen = function(object, dimension) {
-      var orderedValues, previousValues;
+      var previousValues, sum;
       if (!object._smooth) {
         object._smooth = {};
       }
@@ -377,8 +377,10 @@
       if (!(previousValues.length <= 10)) {
         previousValues.shift();
       }
-      orderedValues = _.clone(previousValues).sort();
-      return orderedValues[orderedValues.length >> 1];
+      sum = _.reduce(previousValues, function(s, n) {
+        return s + n;
+      });
+      return sum / previousValues.length;
     };
     collide = function(alpha, qt) {
       return function(d) {

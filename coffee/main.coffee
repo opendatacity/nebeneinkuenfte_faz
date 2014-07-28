@@ -261,8 +261,8 @@ $.getJSON '/data/data.json', (data) ->
     previousValues = object._smooth[dimension]
     previousValues.push object[dimension]
     previousValues.shift() unless previousValues.length <= 10
-    orderedValues = _.clone(previousValues).sort()
-    return orderedValues[orderedValues.length >> 1]
+    sum = _.reduce previousValues, (s, n) -> s + n
+    sum/previousValues.length
 
   collide = (alpha, qt) ->
     return (d) ->
