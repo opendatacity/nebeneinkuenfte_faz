@@ -36,6 +36,9 @@ fieldset {
   border: none; }
   fieldset legend {
     font: 1em/1.2 Montserrat, sans-serif;
+    cursor: default;
+    -webkit-user-select: none;
+    user-select: none;
     text-transform: uppercase;
     letter-spacing: .05em;
     font-weight: bold;
@@ -123,6 +126,9 @@ input[type=submit] {
       display: none; }
   #repInspector h2 {
     font: 1em/1.2 Montserrat, sans-serif;
+    cursor: default;
+    -webkit-user-select: none;
+    user-select: none;
     text-transform: uppercase;
     letter-spacing: .05em;
     font-weight: bold;
@@ -164,7 +170,10 @@ input[type=submit] {
     vertical-align: bottom; }
   #repInspector th {
     text-align: left;
-    font: 1em/1.2 Montserrat, sans-serif; }
+    font: 1em/1.2 Montserrat, sans-serif;
+    cursor: default;
+    -webkit-user-select: none;
+    user-select: none; }
   #repInspector th.number {
     text-align: right; }
   #repInspector td, #repInspector th, #repInspector tbody:after {

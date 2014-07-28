@@ -44,12 +44,18 @@ a {
 
 @mixin minorHeading {
 	font: 1em/1.2 $secondaryFont;
+	@include noSelect;
 }
 @mixin heading {
 	@include minorHeading;
 	text-transform: uppercase;
 	letter-spacing: .05em;
-	font-weight: bold;	
+	font-weight: bold;
+}
+@mixin noSelect {
+	cursor: default;
+	-webkit-user-select: none;
+	user-select: none;
 }
 
 fieldset {

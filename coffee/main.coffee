@@ -248,12 +248,21 @@ $.getJSON '/data/data.json', (data) ->
         rep.x = destinationX
         rep.y = destinationY
 
-      collide(.25, qt)(rep)
+      collide(.4, qt)(rep)
 
-    node.attr 'cx', (d) -> d.x
-    node.attr 'cy', (d) -> d.y
+    node.attr 'cx', (d) -> smoothen d, 'x'
+    node.attr 'cy', (d) -> smoothen d, 'y'
     node.classed 'wrongPlacement', (d) -> d.wrongPlacement
     node.attr 'data-phi', (d) -> d.phi
+
+  smoothen = (object, dimension) ->
+    object._smooth = {} unless object._smooth
+    object._smooth[dimension] = [] unless object._smooth[dimension]
+    previousValues = object._smooth[dimension]
+    previousValues.push object[dimension]
+    previousValues.shift() unless previousValues.length <= 10
+    orderedValues = _.clone(previousValues).sort()
+    return orderedValues[orderedValues.length >> 1]
 
   collide = (alpha, qt) ->
     return (d) ->
@@ -330,7 +339,7 @@ $.getJSON '/data/data.json', (data) ->
   .nodes data
   .size [Viewport.width, Viewport.height*2]
   .gravity .07
-  .charge (rep) -> -0.2 * rep.radius
+  .charge (rep) -> -0.5 * rep.radius
   .friction .9
   .on 'tick', tick
 

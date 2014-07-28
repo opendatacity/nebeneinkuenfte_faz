@@ -282,7 +282,7 @@
   });
 
   $.getJSON('/data/data.json', function(data) {
-    var arc, collide, dataByFaction, drawRepresentatives, factions, filterData, force, g, initializeRepPositions, inspector, node, parliament, pie, seats, seatsPie, svg, tick, totalSeats;
+    var arc, collide, dataByFaction, drawRepresentatives, factions, filterData, force, g, initializeRepPositions, inspector, node, parliament, pie, seats, seatsPie, smoothen, svg, tick, totalSeats;
     data = data.data;
     window._data = _(data);
     factions = Factions.filter(function(faction) {
@@ -349,13 +349,13 @@
           rep.x = destinationX;
           rep.y = destinationY;
         }
-        return collide(.25, qt)(rep);
+        return collide(.4, qt)(rep);
       });
       node.attr('cx', function(d) {
-        return d.x;
+        return smoothen(d, 'x');
       });
       node.attr('cy', function(d) {
-        return d.y;
+        return smoothen(d, 'y');
       });
       node.classed('wrongPlacement', function(d) {
         return d.wrongPlacement;
@@ -363,6 +363,22 @@
       return node.attr('data-phi', function(d) {
         return d.phi;
       });
+    };
+    smoothen = function(object, dimension) {
+      var orderedValues, previousValues;
+      if (!object._smooth) {
+        object._smooth = {};
+      }
+      if (!object._smooth[dimension]) {
+        object._smooth[dimension] = [];
+      }
+      previousValues = object._smooth[dimension];
+      previousValues.push(object[dimension]);
+      if (!(previousValues.length <= 10)) {
+        previousValues.shift();
+      }
+      orderedValues = _.clone(previousValues).sort();
+      return orderedValues[orderedValues.length >> 1];
     };
     collide = function(alpha, qt) {
       return function(d) {
@@ -430,7 +446,7 @@
     arc = d3.svg.arc().outerRadius(Arc.outerR).innerRadius(Arc.innerR);
     g.append('path').attr('d', arc);
     force = d3.layout.force().nodes(data).size([Viewport.width, Viewport.height * 2]).gravity(.07).charge(function(rep) {
-      return -0.2 * rep.radius;
+      return -0.5 * rep.radius;
     }).friction(.9).on('tick', tick);
     node = null;
     initializeRepPositions();
