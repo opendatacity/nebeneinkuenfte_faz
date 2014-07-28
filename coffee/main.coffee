@@ -156,10 +156,21 @@ $(document).ready ->
     else
       node.insertBefore node.siblings().first()
 
-  $('#map').on 'click', 'path', ->
+  # To enable multi-selection on mobile by long-tap, we need to measure the
+  # duration of the click/tap.
+  mapClickStart = null
+  $('#map').on 'mousedown', 'path', (event) -> mapClickStart = event
+
+  $('#map').on 'click', 'path', (event) ->
+    mapClickDuration = event.timeStamp - mapClickStart.timeStamp
+    selectMultiple = event.shiftKey or event.metaKey or event.ctrlKey
+    selectMultiple = selectMultiple or mapClickDuration > 500 
     land = $(this).attr 'title'
-    checkbox = $ "input[value=#{land}]"
+    fieldset = $(this).parents 'fieldset'
+    fieldset.find(':checkbox').prop('checked', false) unless selectMultiple
+    checkbox = fieldset.find "input[value=#{land}]"
     checkbox.click()
+    updateCheckboxLabelState $(':checkbox')
 
   updateCheckboxLabelState $(':checkbox')
 
@@ -278,7 +289,7 @@ $.getJSON '/data/data.json', (data) ->
 
   svg = d3.select '#parliament'
   .attr 'width', Viewport.width
-  .attr 'height', Viewport.height
+  .attr 'height', Viewport.height + 10
 
   # Draw parliament wedges first
   pie = d3.layout.pie()
@@ -301,7 +312,7 @@ $.getJSON '/data/data.json', (data) ->
       # This is not the same as the number of seats!
       factionRepCount = dataByFaction[factionName].length
       deltaAngles = faction.endAngle - faction.startAngle
-      height = 400
+      height = Viewport.height
       _(dataByFaction[factionName]).sortBy('nebeneinkuenfteMinSum').each (rep, i) ->
         i = 2 * (i % 5) + 1
         height += 2.5 * rep.radius if i == 1
@@ -427,7 +438,7 @@ $.getJSON '/data/data.json', (data) ->
     # the bottom. Instead we need to be clever with the bottom margin.
     $('#parliament').css transform: "scale(#{scale})"
 
-    $('#parliamentContainer').css width: scale * Viewport.width, height: scale * Viewport.height
+    $('#parliamentContainer').css width: scale * Viewport.width, height: scale * (Viewport.height+10)
 
   $(window).trigger('resize')
 

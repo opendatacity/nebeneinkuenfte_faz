@@ -236,6 +236,7 @@
   })();
 
   $(document).ready(function() {
+    var mapClickStart;
     $('#map').on('mouseenter', 'path', function() {
       var node;
       node = $(this);
@@ -251,11 +252,23 @@
         return node.insertBefore(node.siblings().first());
       }
     });
-    $('#map').on('click', 'path', function() {
-      var checkbox, land;
+    mapClickStart = null;
+    $('#map').on('mousedown', 'path', function(event) {
+      return mapClickStart = event;
+    });
+    $('#map').on('click', 'path', function(event) {
+      var checkbox, fieldset, land, mapClickDuration, selectMultiple;
+      mapClickDuration = event.timeStamp - mapClickStart.timeStamp;
+      selectMultiple = event.shiftKey || event.metaKey || event.ctrlKey;
+      selectMultiple = selectMultiple || mapClickDuration > 500;
       land = $(this).attr('title');
-      checkbox = $("input[value=" + land + "]");
-      return checkbox.click();
+      fieldset = $(this).parents('fieldset');
+      if (!selectMultiple) {
+        fieldset.find(':checkbox').prop('checked', false);
+      }
+      checkbox = fieldset.find("input[value=" + land + "]");
+      checkbox.click();
+      return updateCheckboxLabelState($(':checkbox'));
     });
     updateCheckboxLabelState($(':checkbox'));
     $('fieldset').each(function(i, fieldset) {
@@ -391,7 +404,7 @@
         });
       };
     };
-    svg = d3.select('#parliament').attr('width', Viewport.width).attr('height', Viewport.height);
+    svg = d3.select('#parliament').attr('width', Viewport.width).attr('height', Viewport.height + 10);
     pie = d3.layout.pie().sort(null).value(function(faction) {
       return faction.seats;
     }).startAngle(Math.PI * -0.5).endAngle(Math.PI * 0.5);
@@ -409,7 +422,7 @@
         factionName = faction.data.faction;
         factionRepCount = dataByFaction[factionName].length;
         deltaAngles = faction.endAngle - faction.startAngle;
-        height = 400;
+        height = Viewport.height;
         _results.push(_(dataByFaction[factionName]).sortBy('nebeneinkuenfteMinSum').each(function(rep, i) {
           i = 2 * (i % 5) + 1;
           if (i === 1) {
@@ -551,7 +564,7 @@
       });
       return $('#parliamentContainer').css({
         width: scale * Viewport.width,
-        height: scale * Viewport.height
+        height: scale * (Viewport.height + 10)
       });
     });
     return $(window).trigger('resize');
