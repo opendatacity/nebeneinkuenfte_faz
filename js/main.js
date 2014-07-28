@@ -282,7 +282,7 @@
   });
 
   $.getJSON('/data/data.json', function(data) {
-    var arc, collide, dataByFaction, drawRepresentatives, factions, filterData, force, g, initializeRepPositions, inspector, node, parliament, pie, seats, seatsPie, smoothen, svg, tick, totalSeats;
+    var arc, collide, dataByFaction, drawRepresentatives, factions, filterData, force, g, initializeRepPositions, inspector, node, parliament, pie, seats, seatsPie, svg, tick, totalSeats;
     data = data.data;
     window._data = _(data);
     factions = Factions.filter(function(faction) {
@@ -349,13 +349,13 @@
           rep.x = destinationX;
           rep.y = destinationY;
         }
-        return collide(.4, qt)(rep);
+        return collide(.3, qt)(rep);
       });
       node.attr('cx', function(d) {
-        return smoothen(d, 'x');
+        return d.x;
       });
       node.attr('cy', function(d) {
-        return smoothen(d, 'y');
+        return d.y;
       });
       node.classed('wrongPlacement', function(d) {
         return d.wrongPlacement;
@@ -364,28 +364,10 @@
         return d.phi;
       });
     };
-    smoothen = function(object, dimension) {
-      var previousValues, sum;
-      if (!object._smooth) {
-        object._smooth = {};
-      }
-      if (!object._smooth[dimension]) {
-        object._smooth[dimension] = [];
-      }
-      previousValues = object._smooth[dimension];
-      previousValues.push(object[dimension]);
-      if (!(previousValues.length <= 10)) {
-        previousValues.shift();
-      }
-      sum = _.reduce(previousValues, function(s, n) {
-        return s + n;
-      });
-      return sum / previousValues.length;
-    };
     collide = function(alpha, qt) {
       return function(d) {
         var nx1, nx2, ny1, ny2, r;
-        r = d.radius;
+        r = d.radius * 3;
         nx1 = d.x - r;
         nx2 = d.x + r;
         ny1 = d.y - r;
@@ -396,7 +378,7 @@
             w = d.x - quad.point.x;
             h = d.y - quad.point.y;
             l = Math.sqrt(w * w + h * h);
-            r = d.radius + quad.point.radius;
+            r = d.radius + quad.point.radius + 1;
             if (l < r) {
               deltaL = (l - r) / l * alpha;
               d.x -= w *= deltaL;
@@ -447,12 +429,14 @@
     });
     arc = d3.svg.arc().outerRadius(Arc.outerR).innerRadius(Arc.innerR);
     g.append('path').attr('d', arc);
-    force = d3.layout.force().nodes(data).size([Viewport.width, Viewport.height * 2]).gravity(.07).charge(function(rep) {
-      return -0.5 * rep.radius;
+    force = d3.layout.force().nodes(data).size([Viewport.width, Viewport.height * 2]).gravity(.1).charge(function(d) {
+      return -2 * d.radius - 1;
+    }).chargeDistance(function(d) {
+      return 3 * d.radius;
     }).friction(.9).on('tick', tick);
     node = null;
     initializeRepPositions();
-    drawRepresentatives = function() {
+    drawRepresentatives = function(initialize) {
       node = svg.selectAll('circle').data(data);
       node.enter().append('circle').attr('class', function(rep) {
         return _.find(factions, {
@@ -469,7 +453,10 @@
         return rep.radius;
       });
       node.exit().remove();
-      return force.start();
+      if (initialize) {
+        force.start();
+      }
+      return force.alpha(.07);
     };
     filterData = function(filter) {
       return _(data).each(function(rep) {
@@ -495,7 +482,7 @@
       });
     };
     filterData({});
-    drawRepresentatives();
+    drawRepresentatives(true);
     inspector = new RepInspector('#repInspector');
     inspector.hide();
     $('form').on('submit', function(event) {

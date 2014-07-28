@@ -248,25 +248,16 @@ $.getJSON '/data/data.json', (data) ->
         rep.x = destinationX
         rep.y = destinationY
 
-      collide(.4, qt)(rep)
+      collide(.3, qt)(rep) # .4
 
-    node.attr 'cx', (d) -> smoothen d, 'x'
-    node.attr 'cy', (d) -> smoothen d, 'y'
+    node.attr 'cx', (d) -> d.x
+    node.attr 'cy', (d) -> d.y
     node.classed 'wrongPlacement', (d) -> d.wrongPlacement
     node.attr 'data-phi', (d) -> d.phi
 
-  smoothen = (object, dimension) ->
-    object._smooth = {} unless object._smooth
-    object._smooth[dimension] = [] unless object._smooth[dimension]
-    previousValues = object._smooth[dimension]
-    previousValues.push object[dimension]
-    previousValues.shift() unless previousValues.length <= 10
-    sum = _.reduce previousValues, (s, n) -> s + n
-    sum/previousValues.length
-
   collide = (alpha, qt) ->
     return (d) ->
-      r = d.radius
+      r = d.radius * 3
       nx1 = d.x - r
       nx2 = d.x + r
       ny1 = d.y - r
@@ -276,7 +267,7 @@ $.getJSON '/data/data.json', (data) ->
           w = d.x - quad.point.x
           h = d.y - quad.point.y
           l = Math.sqrt(w*w + h*h)
-          r = d.radius + quad.point.radius
+          r = d.radius + quad.point.radius + 1
           if l < r
             deltaL = (l - r) / l * alpha
             d.x -= w *= deltaL
@@ -338,14 +329,15 @@ $.getJSON '/data/data.json', (data) ->
   force = d3.layout.force()
   .nodes data
   .size [Viewport.width, Viewport.height*2]
-  .gravity .07
-  .charge (rep) -> -0.5 * rep.radius
-  .friction .9
+  .gravity .1 # .13
+  .charge (d)         -> -2 * d.radius - 1
+  .chargeDistance (d) ->  3 * d.radius
+  .friction .9 # .75
   .on 'tick', tick
 
   node = null
   initializeRepPositions()
-  drawRepresentatives = ->
+  drawRepresentatives = (initialize) ->
     node = svg.selectAll 'circle'
     .data data
 
@@ -355,12 +347,12 @@ $.getJSON '/data/data.json', (data) ->
     .attr 'cx', (rep) -> rep.x = rep.initialX
     .attr 'cy', (rep) -> rep.y = rep.initialY
 
-    node.transition()
-    .attr 'r', (rep) -> rep.radius
+    node.transition().attr 'r', (rep) -> rep.radius
 
     node.exit().remove()
 
-    force.start()
+    force.start() if initialize
+    force.alpha .07
 
   filterData = (filter) ->
     _(data).each (rep) ->
@@ -379,7 +371,7 @@ $.getJSON '/data/data.json', (data) ->
 
   filterData {}
 
-  drawRepresentatives()
+  drawRepresentatives(true)
 
   inspector = new RepInspector '#repInspector'
   inspector.hide()
