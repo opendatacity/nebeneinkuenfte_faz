@@ -239,7 +239,12 @@
   })();
 
   $(document).ready(function() {
-    var mapClickStart;
+    var ignoreNext, longTap, longTapTimeout, mapClickCount;
+    $('.startCollapsed').each(function(i, e) {
+      return $(e).css({
+        height: $(e).height()
+      }).addClass('collapsed').removeClass('startCollapsed');
+    });
     $('#map').on('mouseenter touchenter', 'path', function() {
       var node;
       node = $(this);
@@ -255,19 +260,31 @@
         return node.insertBefore(node.siblings().first());
       }
     });
-    mapClickStart = null;
+    longTap = false;
+    longTapTimeout = null;
     $('#map').on('touchstart', 'path', function(event) {
-      return mapClickStart = event;
+      var land;
+      longTap = false;
+      land = $(this);
+      return longTapTimeout = setTimeout(function() {
+        longTap = true;
+        return land.trigger('touchend');
+      }, 500);
     });
+    mapClickCount = 0;
+    ignoreNext = false;
     $('#map').on('mouseup touchend', 'path', function(event) {
-      var checkbox, fieldset, land, mapClickDuration, selectMultiple;
-      if (mapClickStart) {
-        mapClickDuration = event.timeStamp - mapClickStart.timeStamp;
+      var checkbox, fieldset, hint, land, selectMultiple;
+      mapClickCount++;
+      clearTimeout(longTapTimeout);
+      event.preventDefault();
+      if (ignoreNext) {
+        return ignoreNext = false;
       }
-      selectMultiple = event.shiftKey || event.metaKey || event.ctrlKey;
-      if (mapClickStart) {
-        selectMultiple = selectMultiple || mapClickDuration > 500;
+      if (longTap) {
+        ignoreNext = true;
       }
+      selectMultiple = event.shiftKey || event.metaKey || event.ctrlKey || longTap;
       land = $(this).attr('title');
       fieldset = $(this).parents('fieldset');
       if (!selectMultiple) {
@@ -275,7 +292,19 @@
       }
       checkbox = fieldset.find("input[value=" + land + "]");
       checkbox.click();
-      return updateCheckboxLabelState($(':checkbox'));
+      updateCheckboxLabelState($(':checkbox'));
+      hint = fieldset.find('.uiHint');
+      if (mapClickCount === 2 && !selectMultiple) {
+        if (Modernizr.touch) {
+          hint.text('Durch langes Tippen können Sie mehrere Länder auswählen.');
+        }
+        hint.removeClass('collapsed');
+        return setTimeout((function() {
+          return hint.addClass('collapsed');
+        }), 8000);
+      } else if (mapClickCount > 2 && selectMultiple) {
+        return hint.addClass('collapsed');
+      }
     });
     updateCheckboxLabelState($(':checkbox'));
     $('fieldset').each(function(i, fieldset) {

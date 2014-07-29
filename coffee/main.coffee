@@ -145,6 +145,13 @@ class RepInspector
     tbody.scrollTop 0
 
 $(document).ready ->
+
+  # Collapse everything that's supposed to start collapsed
+  $('.startCollapsed').each (i, e) ->
+    $(e).css height: $(e).height()
+    .addClass 'collapsed'
+    .removeClass 'startCollapsed'
+
   $('#map').on 'mouseenter touchenter', 'path', ->
     # Move to the top of the map's child nodes
     node = $ this
@@ -160,19 +167,43 @@ $(document).ready ->
 
   # To enable multi-selection on mobile by long-tap, we need to measure the
   # duration of the click/tap.
-  mapClickStart = null
-  $('#map').on 'touchstart', 'path', (event) -> mapClickStart = event
+  longTap = false
+  longTapTimeout = null
+  $('#map').on 'touchstart', 'path', (event) ->
+    longTap = false
+    land = $ this
+    longTapTimeout = setTimeout ->
+      longTap = true
+      land.trigger 'touchend'
+    , 500
 
+  # Count clicks on the map so we can display a hint about multiple selection
+  # after the second click
+  mapClickCount = 0
+  ignoreNext = false
   $('#map').on 'mouseup touchend', 'path', (event) ->
-    mapClickDuration = event.timeStamp - mapClickStart.timeStamp if mapClickStart
-    selectMultiple = event.shiftKey or event.metaKey or event.ctrlKey
-    selectMultiple = selectMultiple or mapClickDuration > 500  if mapClickStart
+    mapClickCount++
+    clearTimeout longTapTimeout
+    event.preventDefault() # To avoid grey rectangle on iOS
+
+    return ignoreNext = false if ignoreNext
+    ignoreNext = true if longTap
+
+    selectMultiple = event.shiftKey or event.metaKey or event.ctrlKey or longTap
     land = $(this).attr 'title'
     fieldset = $(this).parents 'fieldset'
     fieldset.find(':checkbox').prop('checked', false) unless selectMultiple
     checkbox = fieldset.find "input[value=#{land}]"
     checkbox.click()
     updateCheckboxLabelState $(':checkbox')
+
+    hint = fieldset.find('.uiHint')
+    if mapClickCount == 2 and not selectMultiple
+      hint.text 'Durch langes Tippen können Sie mehrere Länder auswählen.' if Modernizr.touch
+      hint.removeClass 'collapsed'
+      setTimeout (-> hint.addClass 'collapsed'), 8000
+    else if mapClickCount > 2 and selectMultiple
+      hint.addClass 'collapsed'
 
   updateCheckboxLabelState $(':checkbox')
 

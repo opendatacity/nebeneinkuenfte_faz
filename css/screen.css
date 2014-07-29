@@ -87,6 +87,22 @@ label.active {
 #land ul {
   display: none; }
 
+.uiHint {
+  transition: all .2s ease;
+  font-size: .8em;
+  color: #999;
+  opacity: 1;
+  height: auto !important; }
+  .uiHint .modifierKey {
+    width: 0;
+    overflow: hidden; }
+  .uiHint .modifierKey:before {
+    content: "⇧"; }
+
+.collapsed, .startCollapsed {
+  opacity: 0;
+  height: 0 !important; }
+
 input[type=submit] {
   display: none; }
 
