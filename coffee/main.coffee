@@ -193,7 +193,7 @@ $(document).ready ->
       updateCheckboxLabelState c
     $(this).parents('form').triggerHandler 'submit'
 
-$.getJSON '/data/data.json', (data) ->
+$.getJSON 'data/data.json', (data) ->
   data = data.data
   window._data = _(data)
 

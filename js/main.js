@@ -301,7 +301,7 @@
     });
   });
 
-  $.getJSON('/data/data.json', function(data) {
+  $.getJSON('data/data.json', function(data) {
     var arc, collide, dataByFaction, drawRepresentatives, factions, filterData, force, g, initializeRepPositions, inspector, node, parliament, pie, seats, seatsPie, svg, tick, totalSeats;
     data = data.data;
     window._data = _(data);
