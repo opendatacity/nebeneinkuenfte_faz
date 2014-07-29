@@ -171,10 +171,10 @@
       max = table.prop('scrollHeight');
       height = table.height();
       scrollBottom = max - scrollTop - height;
-      topShadow = 0.5 * Math.min(scrollTop, 10);
-      bottomShadow = 0.5 * Math.min(scrollBottom, 10);
-      table.siblings('thead').css('box-shadow', "0 " + topShadow + "px .5em -.3em rgba(0, 0, 0, .2)");
-      return table.siblings('tfoot').css('box-shadow', "0 -" + bottomShadow + "px .5em -.3em rgba(0, 0, 0, .2)");
+      topShadow = Math.max(0, 0.5 * Math.min(scrollTop, 15));
+      bottomShadow = Math.max(0, 0.5 * Math.min(scrollBottom, 15));
+      table.siblings('thead').css('-webkit-box-shadow', "0 " + topShadow + "px .5em -.5em rgba(0, 0, 0, .3)");
+      return table.siblings('tfoot').css('-webkit-box-shadow', "0 -" + bottomShadow + "px .5em -.5em rgba(0, 0, 0, .3)");
     };
 
     RepInspector.prototype.measure = function() {
@@ -226,9 +226,12 @@
     };
 
     RepInspector.prototype.fix = function() {
+      var tbody;
       this.fixed = true;
       this.tooltip.addClass('fixed').removeClass('moving');
-      return this.handleScroll(this.tooltip.find('tbody'));
+      tbody = this.tooltip.find('tbody');
+      this.handleScroll(tbody);
+      return tbody.scrollTop(0);
     };
 
     return RepInspector;
@@ -237,12 +240,12 @@
 
   $(document).ready(function() {
     var mapClickStart;
-    $('#map').on('mouseenter', 'path', function() {
+    $('#map').on('mouseenter touchenter', 'path', function() {
       var node;
       node = $(this);
       return node.insertAfter(node.siblings().last());
     });
-    $('#map').on('mouseleave', 'path', function() {
+    $('#map').on('mouseleave touchleave', 'path', function() {
       var node, nodeClass;
       node = $(this);
       nodeClass = node.attr('class');
@@ -253,14 +256,18 @@
       }
     });
     mapClickStart = null;
-    $('#map').on('mousedown', 'path', function(event) {
+    $('#map').on('touchstart', 'path', function(event) {
       return mapClickStart = event;
     });
-    $('#map').on('click', 'path', function(event) {
+    $('#map').on('mouseup touchend', 'path', function(event) {
       var checkbox, fieldset, land, mapClickDuration, selectMultiple;
-      mapClickDuration = event.timeStamp - mapClickStart.timeStamp;
+      if (mapClickStart) {
+        mapClickDuration = event.timeStamp - mapClickStart.timeStamp;
+      }
       selectMultiple = event.shiftKey || event.metaKey || event.ctrlKey;
-      selectMultiple = selectMultiple || mapClickDuration > 500;
+      if (mapClickStart) {
+        selectMultiple = selectMultiple || mapClickDuration > 500;
+      }
       land = $(this).attr('title');
       fieldset = $(this).parents('fieldset');
       if (!selectMultiple) {
@@ -404,7 +411,7 @@
         });
       };
     };
-    svg = d3.select('#parliament').attr('width', Viewport.width).attr('height', Viewport.height + 10);
+    svg = d3.select('#parliament').attr('width', Viewport.width).attr('height', Viewport.height + 10).attr('viewBox', "0 0 " + Viewport.width + " " + Viewport.height);
     pie = d3.layout.pie().sort(null).value(function(faction) {
       return faction.seats;
     }).startAngle(Math.PI * -0.5).endAngle(Math.PI * 0.5);
@@ -512,7 +519,6 @@
           return $(input).val();
         });
       }).value();
-      console.log(filter);
       filterData(filter);
       return drawRepresentatives();
     });
@@ -520,8 +526,9 @@
       $(this).submit();
       return updateCheckboxLabelState(this);
     });
-    $('svg').on('mousemove', 'circle', function(event) {
+    $('svg').on('mousemove touchend', 'circle', function(event) {
       var position, rep;
+      event.preventDefault();
       position = {
         x: event.pageX,
         y: event.pageY
@@ -542,7 +549,7 @@
         return inspector.hide();
       }
     });
-    $('svg').on('mouseup', 'circle', function(event) {
+    $('svg').on('mouseup touchend', 'circle', function(event) {
       if (inspector.fixed && d3.select(this).datum() === inspector.rep) {
         return inspector.unfix();
       } else if (inspector.fixed) {
@@ -558,14 +565,8 @@
         width: $(window).width(),
         height: $(window).height()
       };
-      scale = Math.min(1, (windowSize.width - 16) / Viewport.width);
-      $('#parliament').css({
-        transform: "scale(" + scale + ")"
-      });
-      return $('#parliamentContainer').css({
-        width: scale * Viewport.width,
-        height: scale * (Viewport.height + 10)
-      });
+      scale = Math.min(1, ($('#parliament').width() - 16) / Viewport.width);
+      return $('#parliament').height((Viewport.height * scale) + 10);
     });
     return $(window).trigger('resize');
   });

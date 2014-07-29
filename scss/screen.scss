@@ -17,13 +17,22 @@ a {
 
 #parliamentContainer {
 	overflow: hidden;
+	float: left;
+	width: 100%;
 }
 #parliament {
-	transform-origin: top left;
-	//max-width: 100%;
+	width: 100%;
+	height: auto;
+	max-width: 800px;
+	margin: 0 auto;
 }
 
 #map {
+	svg {
+		width: 100%;
+		max-width: 100%;
+		max-height: 14em;
+	}
 	path {
 		fill: url(#inactivePattern);
 		stroke-width: 1px;
@@ -58,7 +67,11 @@ a {
 	user-select: none;
 }
 
+form {
+	@include noSelect;
+}
 fieldset {
+	position: relative;
 	display: inline-block;
 	margin: 2em 2em 0 0;
 	padding: 0;
@@ -106,7 +119,17 @@ label.active {
 }
 input[type=submit] { display: none; }
 .convenienceButtons {
+	position: absolute;
+	top: 0;
+	right: 0;
+	text-align: right;
+	display: inline-block;
 	transition: all .2s ease;
+
+	input {
+		width: 2em;
+	}
+
 	&.allChecked {
 		margin: -.2em 0 .2em;
 		opacity: 0;
@@ -157,6 +180,9 @@ input[type=submit] { display: none; }
 		@include heading;
 		margin: .2em 0 .5em;
 	}
+	.meta {
+		@include noSelect;
+	}
 	.faction {
 		text-transform: uppercase;
 	}
@@ -175,7 +201,6 @@ input[type=submit] { display: none; }
 	table {
 		width: 100%;
 		display: block;
-		overflow: auto;
 		border-collapse: collapse;
 		font-size: .8em;
 	}
@@ -196,6 +221,7 @@ input[type=submit] { display: none; }
 		border-right: none;
 		max-height: 20em;
 		overflow: auto;
+		-webkit-overflow-scrolling: touch;
 	}
 	.minAmount, .minSum {
 		text-align: right;
@@ -223,3 +249,38 @@ input[type=submit] { display: none; }
 	white-space: nowrap;
 	text-align: right;
 }
+
+@media screen and (max-height: 500px) {
+	form {
+		position: absolute;
+		height: 3em;
+		overflow: hidden;
+		bottom: 0;
+		left: 0;
+		margin: 0;
+		background-color: rgba(#fff, .7);
+		transition: all .2s ease;
+
+		&:hover {
+			bottom: 0;
+			height: 80%;
+		}
+	}
+}
+
+@media screen and (min-width: 800px) and (max-height: 730px) {
+	#parliamentContainer {
+		position: absolute;
+		margin-right: 15em;
+		float: left;
+	}
+	form {
+		position: absolute;
+		top: 0;
+		right: 0;
+		display: inline-block;
+		width: 15em;
+		float: right;
+	}
+}
+

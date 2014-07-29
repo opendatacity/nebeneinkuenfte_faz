@@ -10,11 +10,20 @@ a:visited {
   color: #065697; }
 
 #parliamentContainer {
-  overflow: hidden; }
+  overflow: hidden;
+  float: left;
+  width: 100%; }
 
 #parliament {
-  transform-origin: top left; }
+  width: 100%;
+  height: auto;
+  max-width: 800px;
+  margin: 0 auto; }
 
+#map svg {
+  width: 100%;
+  max-width: 100%;
+  max-height: 14em; }
 #map path {
   fill: url(#inactivePattern);
   stroke-width: 1px;
@@ -29,7 +38,13 @@ a:visited {
   fill: #fff;
   stroke: #333; }
 
+form {
+  cursor: default;
+  -webkit-user-select: none;
+  user-select: none; }
+
 fieldset {
+  position: relative;
   display: inline-block;
   margin: 2em 2em 0 0;
   padding: 0;
@@ -76,7 +91,14 @@ input[type=submit] {
   display: none; }
 
 .convenienceButtons {
+  position: absolute;
+  top: 0;
+  right: 0;
+  text-align: right;
+  display: inline-block;
   transition: all .2s ease; }
+  .convenienceButtons input {
+    width: 2em; }
   .convenienceButtons.allChecked {
     margin: -.2em 0 .2em;
     opacity: 0; }
@@ -133,6 +155,10 @@ input[type=submit] {
     letter-spacing: .05em;
     font-weight: bold;
     margin: .2em 0 .5em; }
+  #repInspector .meta {
+    cursor: default;
+    -webkit-user-select: none;
+    user-select: none; }
   #repInspector .faction {
     text-transform: uppercase; }
   #repInspector .faction, #repInspector .land, #repInspector .mandate {
@@ -146,7 +172,6 @@ input[type=submit] {
   #repInspector table {
     width: 100%;
     display: block;
-    overflow: auto;
     border-collapse: collapse;
     font-size: .8em; }
   #repInspector thead, #repInspector tbody, #repInspector tfoot {
@@ -161,7 +186,8 @@ input[type=submit] {
     border-left: none;
     border-right: none;
     max-height: 20em;
-    overflow: auto; }
+    overflow: auto;
+    -webkit-overflow-scrolling: touch; }
   #repInspector .minAmount, #repInspector .minSum {
     text-align: right;
     min-width: 5em; }
@@ -182,3 +208,30 @@ input[type=submit] {
 .number {
   white-space: nowrap;
   text-align: right; }
+
+@media screen and (max-height: 500px) {
+  form {
+    position: absolute;
+    height: 3em;
+    overflow: hidden;
+    bottom: 0;
+    left: 0;
+    margin: 0;
+    background-color: rgba(255, 255, 255, 0.7);
+    transition: all .2s ease; }
+    form:hover {
+      bottom: 0;
+      height: 80%; } }
+@media screen and (min-width: 800px) and (max-height: 730px) {
+  #parliamentContainer {
+    position: absolute;
+    margin-right: 15em;
+    float: left; }
+
+  form {
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: inline-block;
+    width: 15em;
+    float: right; } }

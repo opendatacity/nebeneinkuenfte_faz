@@ -11,7 +11,7 @@
 </head>
 <body>
 	<div id="parliamentContainer">
-		<svg id="parliament">
+		<svg id="parliament" preserveAspectRatio>
 			<defs>
 				<pattern id="stripe" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
 					<polygon opacity="0.5" fill="#fff" points="0,0 10,0 0,10 "/>
@@ -20,9 +20,9 @@
 			</defs>
 		</svg>
 	</div>
-	<div id="repInspector">
+	<div id="repInspector" class="hidden">
 		<h2><a href="#" class="name"></a></h2>
-		<p><span class="faction"></span> <span class="land"></span> <span class="mandate"></span></p>
+		<p class="meta"><span class="faction"></span> <span class="land"></span> <span class="mandate"></span></p>
 
 		<table class="nebeneinkuenfte">
 			<caption><span class="count">Nebeneinkünfte</span> (<abbr title="mindestens">min.</abbr> <span class="number minSum"></span>)</caption>
@@ -69,7 +69,7 @@
 				<li><label><input type="checkbox" checked name="land" value="Thüringen"> Thüringen</label></li>
 			</ul>
 			<div id="map">
-				<svg height="420" width="300">
+				<svg height="280" width="200" viewbox="0 0 300 420" preserveAspectRatio>
 					<defs>
 						<pattern id="inactivePattern" x="0" y="0" width="10" height="10" patternUnits="userSpaceOnUse">
 							<polygon opacity="0.5" fill="#aaa" points="0,0 5,0 0,5 "/>
@@ -100,7 +100,10 @@
 	</form>
 	<script src="js/lib/d3.min.js" charset="utf-8"></script>
 	<script src="bower_components/jquery/dist/jquery.min.js" charset="utf-8"></script>
+	<script src="bower_components/jquery/dist/jquery.min.js" charset="utf-8"></script>
 	<script src="bower_components/lodash/dist/lodash.js" charset="utf-8"></script>
+	<script src="js/lib/modernizr.custom.60457.js" charset="utf-8"></script>
+	<script src="js/lib/fastclick.js" charset="utf-8"></script>
 	<script src="js/de-de.dict.js" charset="utf-8"></script>
 	<script src="js/main.js" charset="utf-8"></script>
 </body>

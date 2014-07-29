@@ -105,11 +105,11 @@ class RepInspector
 
     scrollBottom = max - scrollTop - height
 
-    topShadow = 0.5 * Math.min scrollTop, 10
-    bottomShadow = 0.5 * Math.min scrollBottom, 10
+    topShadow = Math.max 0, 0.5 * Math.min(scrollTop, 15)
+    bottomShadow = Math.max 0, 0.5 * Math.min(scrollBottom, 15)
 
-    table.siblings('thead').css 'box-shadow', "0 #{topShadow}px .5em -.3em rgba(0, 0, 0, .2)"
-    table.siblings('tfoot').css 'box-shadow', "0 -#{bottomShadow}px .5em -.3em rgba(0, 0, 0, .2)"
+    table.siblings('thead').css '-webkit-box-shadow', "0 #{topShadow}px .5em -.5em rgba(0, 0, 0, .3)"
+    table.siblings('tfoot').css '-webkit-box-shadow', "0 -#{bottomShadow}px .5em -.5em rgba(0, 0, 0, .3)"
 
   measure: ->
     # If it's currently hidden, we'll first move it to [0, 0] to measure it
@@ -140,15 +140,17 @@ class RepInspector
   fix: ->
     @fixed = true
     @tooltip.addClass('fixed').removeClass('moving')
-    @handleScroll @tooltip.find('tbody')
+    tbody = @tooltip.find('tbody')
+    @handleScroll tbody
+    tbody.scrollTop 0
 
 $(document).ready ->
-  $('#map').on 'mouseenter', 'path', ->
+  $('#map').on 'mouseenter touchenter', 'path', ->
     # Move to the top of the map's child nodes
     node = $ this
     node.insertAfter node.siblings().last()
 
-  $('#map').on 'mouseleave', 'path', ->
+  $('#map').on 'mouseleave touchleave', 'path', ->
     node = $ this
     nodeClass = node.attr 'class'
     if nodeClass is 'active'
@@ -159,12 +161,12 @@ $(document).ready ->
   # To enable multi-selection on mobile by long-tap, we need to measure the
   # duration of the click/tap.
   mapClickStart = null
-  $('#map').on 'mousedown', 'path', (event) -> mapClickStart = event
+  $('#map').on 'touchstart', 'path', (event) -> mapClickStart = event
 
-  $('#map').on 'click', 'path', (event) ->
-    mapClickDuration = event.timeStamp - mapClickStart.timeStamp
+  $('#map').on 'mouseup touchend', 'path', (event) ->
+    mapClickDuration = event.timeStamp - mapClickStart.timeStamp if mapClickStart
     selectMultiple = event.shiftKey or event.metaKey or event.ctrlKey
-    selectMultiple = selectMultiple or mapClickDuration > 500 
+    selectMultiple = selectMultiple or mapClickDuration > 500  if mapClickStart
     land = $(this).attr 'title'
     fieldset = $(this).parents 'fieldset'
     fieldset.find(':checkbox').prop('checked', false) unless selectMultiple
@@ -290,6 +292,7 @@ $.getJSON '/data/data.json', (data) ->
   svg = d3.select '#parliament'
   .attr 'width', Viewport.width
   .attr 'height', Viewport.height + 10
+  .attr 'viewBox', "0 0 #{Viewport.width} #{Viewport.height}"
 
   # Draw parliament wedges first
   pie = d3.layout.pie()
@@ -400,8 +403,6 @@ $.getJSON '/data/data.json', (data) ->
     .mapValues (inputs) -> inputs.map (input) -> $(input).val()
     .value()
 
-    console.log filter
-
     filterData filter
     drawRepresentatives()
     #hideRepresentatives groupedData.false if groupedData.false
@@ -410,7 +411,8 @@ $.getJSON '/data/data.json', (data) ->
     $(this).submit()
     updateCheckboxLabelState this
 
-  $('svg').on 'mousemove', 'circle', (event) ->
+  $('svg').on 'mousemove touchend', 'circle', (event) ->
+    event.preventDefault()
     position = x: event.pageX, y: event.pageY
     rep = d3.select(this).datum()
     unless inspector.fixed
@@ -421,7 +423,7 @@ $.getJSON '/data/data.json', (data) ->
 
   $(document).on 'mouseup', -> inspector.hide() if inspector.fixed
 
-  $('svg').on 'mouseup', 'circle', (event) ->
+  $('svg').on 'mouseup touchend', 'circle', (event) ->
     if inspector.fixed and d3.select(this).datum() is inspector.rep
       inspector.unfix()
     else if inspector.fixed
@@ -432,13 +434,7 @@ $.getJSON '/data/data.json', (data) ->
 
   $(window).on 'resize', (event) ->
     window.windowSize = width: $(window).width(), height: $(window).height()
-    scale = Math.min 1, (windowSize.width - 16) / Viewport.width
-    # We can't set `.css height: Viewport.height * scale` because this
-    # would apply the transform on the _scaled_ object, thus cutting off
-    # the bottom. Instead we need to be clever with the bottom margin.
-    $('#parliament').css transform: "scale(#{scale})"
-
-    $('#parliamentContainer').css width: scale * Viewport.width, height: scale * (Viewport.height+10)
-
+    scale = Math.min 1, ($('#parliament').width() - 16) / Viewport.width
+    $('#parliament').height (Viewport.height * scale) + 10
   $(window).trigger('resize')
 
