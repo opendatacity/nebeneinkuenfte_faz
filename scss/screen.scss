@@ -1,7 +1,6 @@
 @import "globals";
 @import "mixins";
-
-@import url(http://fonts.googleapis.com/css?family=Montserrat:400,700);
+@import "webfonts";
 
 .unsupportedMessage {
 	display: none;
