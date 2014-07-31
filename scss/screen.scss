@@ -63,7 +63,8 @@ abbr {
 	}
 	path {
 		cursor: pointer;
-		fill: url(#inactivePattern);
+		fill: #ddd;
+		//fill: url(#inactivePattern);
 		stroke-width: 1px;
 		stroke: #aaa;
 	}

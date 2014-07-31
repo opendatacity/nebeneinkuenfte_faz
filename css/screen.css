@@ -52,7 +52,7 @@ abbr {
     max-height: 14em; }
   #map path {
     cursor: pointer;
-    fill: url(#inactivePattern);
+    fill: #ddd;
     stroke-width: 1px;
     stroke: #aaa; }
   #map path:hover,
