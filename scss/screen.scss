@@ -1,6 +1,27 @@
 @import 'globals';
+@import 'mixins';
 
 @import url(http://fonts.googleapis.com/css?family=Montserrat:400,700);
+
+.unsupportedMessage {
+	display: none;
+}
+body.unsupported {
+	margin: 0;
+	.unsupportedMessage {
+		font: 1.2em $secondaryFont;
+		padding: 1em;
+		position: fixed;
+		display: block;
+		background-color: #fff;
+		width: 100%;
+		height: 100%;
+		z-index: 20;
+		&:before {
+			content: 'ಠ_ಠ';
+		}
+	}
+}
 
 body {
 	font: 1em/1.2em $primaryFont;
@@ -14,13 +35,18 @@ a {
 		color: lighten($linkColor, 10);
 	}
 }
+abbr {
+	border: none;
+	cursor: inherit;
+}
 
 #parliamentContainer {
 	overflow: hidden;
-	float: left;
 	width: 100%;
+	margin: 0 auto;
 }
 #parliament {
+	z-index: 3;
 	width: 100%;
 	height: auto;
 	max-width: 800px;
@@ -28,6 +54,8 @@ a {
 }
 
 #map {
+	width: 10em;
+	height: 14em;
 	svg {
 		width: 100%;
 		max-width: 100%;
@@ -51,28 +79,15 @@ a {
 	}
 }
 
-@mixin minorHeading {
-	font: 1em/1.2 $secondaryFont;
-	@include noSelect;
-}
-@mixin heading {
-	@include minorHeading;
-	text-transform: uppercase;
-	letter-spacing: .05em;
-	font-weight: bold;
-}
-@mixin noSelect {
-	cursor: default;
-	-webkit-user-select: none;
-	user-select: none;
-}
-
 form {
 	@include noSelect;
+	text-align: center;
 }
 fieldset {
 	position: relative;
+	vertical-align: top;
 	display: inline-block;
+	text-align: left;
 	margin: 2em 2em 0 0;
 	padding: 0;
 	border: none;
@@ -93,6 +108,7 @@ fieldset {
 			display: block;
 			color: #555;
 			min-height: 1.3em;
+			transition: padding .1s ease;
 			&:before {
 				display: inline-block;
 				content: ' ';
@@ -106,6 +122,7 @@ input[type=checkbox] {
 	display: none;
 }
 label:hover {
+	padding-left: .1em;
 }
 label.active {
 	color: #000;
@@ -122,11 +139,14 @@ label.active {
 	font-size: .8em;
 	color: #999;
 	opacity: 1;
-	height: auto !important;
-	.modifierKey {
-		width: 0;
-		overflow: hidden;
-	}
+	height: auto;
+	position: absolute;
+	bottom: 100%;
+	margin-bottom: -1.5em;
+	padding: .2em;
+	background-color: rgba(#fff, .9);
+	transition: all .3s ease;
+	pointer-events: none;
 	.modifierKey:before {
 		content: "⇧";
 	}
@@ -134,17 +154,19 @@ label.active {
 
 .collapsed, .startCollapsed {
 	opacity: 0;
-	height: 0 !important;
+	bottom: 95%;
 }
 
 input[type=submit] { display: none; }
 .convenienceButtons {
 	position: absolute;
+	margin: 0;
 	top: 0;
 	right: 0;
 	text-align: right;
 	display: inline-block;
 	transition: all .2s ease;
+	@include noSelect;
 
 	input {
 		width: 2em;
@@ -160,37 +182,52 @@ input[type=submit] { display: none; }
 .spd {    color: #da0000; fill: #da0000; }
 .gruene { color: #58d300; fill: #58d300; }
 .cducsu { color: #333;    fill: #333;    }
+
+circle {
+	cursor: pointer;
+}
+
+circle.linke:hover {  fill: lighten(#d703d7, 20); }
+circle.spd:hover {    fill: lighten(#da0000, 20); }
+circle.gruene:hover { fill: lighten(#58d300, 20); }
+circle.cducsu:hover { fill: lighten(#333, 20);    }
 //.wrongPlacement { stroke: #fff; stroke-width: 3px; }
 
 .arc {
-	opacity: 0.1;
+	opacity: 0.25;
 }
 
 .hidden { display: none; }
 
-#repInspector {
+.repInspector {
+	box-sizing: border-box;
 	position: absolute;
+	z-index: 10;
 	background-color: rgba(#fff, .95);
-	padding: .5em;
-	transition: width .2s ease;
-	border: 1px solid rgba(#000, .1);
+	padding: .65em;
+	border: $subtleBorder;
 	box-shadow: 0 .1em .75em rgba(#000, .1);
 	margin: 1em 0 0 0;
+	max-height: 100%;
+	border-radius: 4px;
 
 	&.moving {
 		//width: 15em;
 		pointer-events: none;
 		thead, tbody, tfoot { display: none; }
 		caption {
-			font-style: italic;
 			text-align: left;
+			display: block;
+			@include noSelect;
 			&:after {
-				content: ' – Für Details klicken';
+				display: block;
+				content: ' (Für Details klicken)';
 			}
 		}
 	}
 	&.fixed {
-		width: 20em;
+		width: 22em;
+		overflow: auto;
 		caption {
 			display: none;
 		}
@@ -199,6 +236,7 @@ input[type=submit] { display: none; }
 	h2 {
 		@include heading;
 		margin: .2em 0 .5em;
+		padding: 0 1.5em 0 0; // for close button; remove on wider screens
 	}
 	.meta {
 		@include noSelect;
@@ -212,7 +250,7 @@ input[type=submit] { display: none; }
 	.faction, .land {
 		padding-right: .5em;
 		margin-right: .1em;
-		border-right: 1px solid rgba(#000, .2);
+		border-right: $subtleBorder;
 	}
 
 	tr.cat0 {
@@ -225,11 +263,13 @@ input[type=submit] { display: none; }
 		font-size: .8em;
 	}
 	tfoot th, tfoot td {
+		padding: 0;
+		line-height: 2em;
 	}
 	thead, tbody, tfoot {
 		display: block;
-		margin: 0 -.3em;
-		padding: 0 .3em;
+		margin: 0 -.8em;
+		padding: 0 .8em;
 	}
 	thead, tfoot {
 		z-index: 3;
@@ -239,7 +279,7 @@ input[type=submit] { display: none; }
 		border: 1px solid rgba(#000, .05);
 		border-left: none;
 		border-right: none;
-		max-height: 20em;
+		max-height: 10em;
 		overflow: auto;
 		-webkit-overflow-scrolling: touch;
 	}
@@ -261,46 +301,190 @@ input[type=submit] { display: none; }
 		text-align: right;
 	}
 
-	td, th, tbody:after {
-		padding: .4em 0;
+	td, th {
+		padding: .3em 0;
 	}
+	.convenienceButtons {
+		top: 1em;
+		right: 1em;
+		.close {
+			@include heading;
+			line-height: 2em;
+			margin: -.25em;
+			background-color: transparent;
+			border: none;
+			width: 2em;
+			height: 2em;
+			border-radius: 1em;
+			cursor: pointer;
+			outline: none;
+			&:hover {
+				background-color: rgba(#000, .2);
+			}
+			&:active {
+				background-color: rgba(#000, .3);
+			}
+		}
+	}
+}
+.repInspector.clone {
+	left: 0 !important;
+	top: 0 !important;
+	display: block;
+	visibility: hidden;
 }
 .number {
 	white-space: nowrap;
 	text-align: right;
+	.digitGroup {
+		padding-right: .2em;
+	}
+	.euro {
+		font-size: .85em;
+	}
 }
 
-@media screen and (max-height: 500px) {
-	form {
-		position: absolute;
-		height: 3em;
-		overflow: hidden;
-		bottom: 0;
-		left: 0;
+.touch {
+	#map {
+		width: 15em;
+		height: 18em;
+		padding-top: 3em;
+	}
+	#map svg {
+		-webkit-transform: scale(1.5);
+	}
+}
+footer, aside {
+	clear: both;
+	max-width: 800px;
+	margin: .5em auto;
+	padding-top: .5em;
+	font: .8em $secondaryFont;
+	color: #aaa;
+	p {
+		float: left;
 		margin: 0;
-		background-color: rgba(#fff, .7);
-		transition: all .2s ease;
-
-		&:hover {
-			bottom: 0;
-			height: 80%;
+	}
+}
+footer {
+	nav ul {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		float: right;
+		li {
+			display: inline;
+			border-right: $subtleBorder;
+			a {
+				padding: 0 .5em;
+			}
+			&:last-of-type {
+				border: none;
+			}
 		}
 	}
 }
 
-@media screen and (min-width: 800px) and (max-height: 730px) {
-	#parliamentContainer {
-		position: absolute;
-		margin-right: 15em;
-		float: left;
+@media screen and (max-width: 599px) and (max-height: 599px) {
+	.repInspector {
+		position: fixed;
+		box-sizing: border-box;
+		width: 100% !important;
+		height: 100% !important;
+		max-height: 100% !important;
+		top: 0% !important;
+		left: 0 !important;
+		margin: -1px 0 0 0;
+		border-left: none;
+		border-right: none;
+		border-bottom: none;
+		padding: 1em;
+		transition: top .5s ease;
+		box-shadow: none;
+		border-radius: 0;
 	}
-	form {
-		position: absolute;
-		top: 0;
-		right: 0;
-		display: inline-block;
-		width: 15em;
-		float: right;
+	.repInspector.fixed {
+		margin: 0;
+	}
+	.repInspector.hidden, .repInspector.moving {
+		margin-top: 1px;
+		display: block;
+		top: 100% !important;
 	}
 }
 
+@media screen and (min-width: 600px), screen and (min-height: 600px) {
+	.repInspector {
+		h2 {
+			padding: 0;
+		}
+		.close {
+			display: none;
+		}
+	}
+}
+
+@media screen and (min-aspect-ratio: 4/3) and (min-height: 350px) and (max-height: 700px) and (max-width: 999px) {
+	form {
+		z-index: 5;
+		position: fixed;
+		bottom: -15em;
+		left: 0;
+		padding: .5em;
+		height: 16em;
+		width: 100%;
+		background: rgba(#fff, .9);
+		border-top: $subtleBorder;
+		transition: all .2s ease;
+		&:hover {
+			bottom: 0;
+			margin-top: 0;
+		}
+	}
+	fieldset, fieldset legend {
+		margin-top: 0;
+		padding-top: 0;
+	}
+	.touch form {
+		height: 20em;
+	}
+}
+@media screen and (min-aspect-ratio: 9/4) and (min-width: 1000px) {
+	fieldset, #parliament {
+		float: left;
+	}
+	form {
+		max-width: 12em;
+		float: left;
+	}
+	fieldset {
+		margin-top: 0;
+		margin-bottom: 1em;
+	}
+	#parliamentContainer {
+		float: left;
+		margin-right: 2em;
+	}
+	#parliament {
+		position: fixed;
+	}
+	.uiHint {
+		top: 0%;
+		margin-left: -110%;
+		text-align: right;
+		width: 100%;
+	}
+	.collapsed, .startCollapsed {
+		opacity: 0;
+		top: 0%;
+		margin-left: -100%;
+	}
+	footer {
+		margin-left: 0;
+	}
+}
+@media screen and (max-width: 550px) {
+	fieldset {
+		float: left;
+	}
+}

@@ -1,17 +1,23 @@
+<!DOCTYPE html>
 <html lang="de">
 
 <head>
 	<meta charset="utf-8" />
 
-	<title></title>
+	<title>Nebeneinkünfte der Bundestagsabgeordneten</title>
 
 	<link rel="stylesheet" href="css/screen.css">
 	<meta name="viewport" content="width=device-width, user-scalable=no">
 
 </head>
-<body>
+<!--[if lte IE 8]><body class="unsupported"><![endif]-->
+<!--[if gt IE 8]><body><![endif]-->
+<!--[if !IE]> --><body><!-- <![endif]-->
+	<div class="unsupportedMessage">
+		<p>Leider kann diese interaktive Grafik in Ihrem Browser nicht dargestellt werden.</p>
+	</div>
 	<div id="parliamentContainer">
-		<svg id="parliament" preserveAspectRatio>
+		<svg id="parliament" preserveAspectRatio="xMinYMid">
 			<defs>
 				<pattern id="stripe" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
 					<polygon opacity="0.5" fill="#fff" points="0,0 10,0 0,10 "/>
@@ -20,12 +26,13 @@
 			</defs>
 		</svg>
 	</div>
-	<div id="repInspector" class="hidden">
+	<div id="repInspector" class="repInspector hidden moving">
 		<h2><a href="#" class="name"></a></h2>
 		<p class="meta"><span class="faction"></span> <span class="land"></span> <span class="mandate"></span></p>
+		<p class="convenienceButtons"><input type="button" class="button close" value="×"></p>
 
 		<table class="nebeneinkuenfte">
-			<caption><span class="count">Nebeneinkünfte</span> (<abbr title="mindestens">min.</abbr> <span class="number minSum"></span>)</caption>
+			<caption><span class="count">Nebeneinkünfte</span>, <abbr title="mindestens">min.</abbr> <span class="number minSum"></span></caption>
 			<thead>
 				<tr>
 					<th>Tätigkeit</th>
@@ -99,6 +106,17 @@
 		</fieldset>
 		<input type="submit">
 	</form>
+	<aside>
+		<p>Dargestellt sind alle Abgeordneten, die mindestens eine Nebentätigkeit über <span class="number"><span class="group">1</span><span class="group">000</span></span> Euro ausgeübt haben. Alle Angaben ohne Gewähr.</p>
+	</aside>
+	<footer>
+		<p>Eine Visualisierung von OpenDataCity und FAZ.net.</p>
+		<nav>
+			<ul>
+				<li>Lizenz: <a rel="license" href="http://creativecommons.org/licenses/by/3.0/de/">cc-by 3.0 de</a></li><li><a href="#">Daten</a></li><li><a href="#">Erläuterungen</a></li><li><a href="#">Quellcode</a></li>
+			</ul>
+		</nav>
+	</footer>
 	<script src="js/lib/d3.min.js" charset="utf-8"></script>
 	<script src="bower_components/jquery/dist/jquery.min.js" charset="utf-8"></script>
 	<script src="bower_components/lodash/dist/lodash.js" charset="utf-8"></script>

@@ -1,0 +1,15 @@
+@mixin minorHeading {
+	font: 1em/1.2 $secondaryFont;
+}
+@mixin heading {
+	@include minorHeading;
+	@include noSelect;
+	text-transform: uppercase;
+	letter-spacing: .05em;
+	font-weight: bold;
+}
+@mixin noSelect {
+	cursor: default;
+	-webkit-user-select: none;
+	user-select: none;
+}

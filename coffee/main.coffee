@@ -28,14 +28,18 @@ nebeneinkuenfteMinSum = (rep) ->
   sum = rep.nebeneinkuenfte.reduce ((sum, einkunft) -> sum += NebeneinkunftMinAmounts[einkunft.level]), 0
   return Math.max parseInt(sum, 10), 1
 
-formatCurrency = _.memoize (amount) ->
+formatCurrency = _.memoize (amount, html) ->
+  prepend = if html then '<span class="digitGroup">' else ''
+  append = if html then '</span>' else ''
+  glue = if html then '' else ' '
+  currency = if html then '<span class="euro">€</span>' else '€'
   amount = String Math.floor amount
   groups = []
   while amount.length > 0
     group = amount.substr -3, 3
-    groups.unshift group
+    groups.unshift prepend + group + append
     amount = amount.substr 0, amount.length - 3
-  return groups.join(' ') + ' €'
+  return groups.join(glue) + glue + currency
 
 updateCheckboxLabelState = (checkbox) ->
   if checkbox.length > 1
@@ -61,19 +65,25 @@ showOrHideConvenienceButtons = (checkbox) ->
   buttons.toggleClass 'someChecked', checked.length > 0
   buttons.toggleClass 'noneChecked', checked.length is 0
 
-
-repRadius = (rep) -> 0.07*Math.sqrt rep.nebeneinkuenfteMinSum
+getEventPosition = (event) ->
+  if event.originalEvent.touches
+    offset = $(event.target).offset()
+    return x: offset.left, y: offset.top
+  return x: event.pageX, y: event.pageY
 
 class RepInspector
   constructor: (selector) ->
     @tooltip = $(selector)
     @tooltip.find('tbody').on 'scroll', @handleScroll
+    @tooltip.find('input.close').on 'mouseup touchend', null, inspector: this, (event) ->
+      event.data.inspector.hide()
+      event.preventDefault()
 
   field: (field) -> @tooltip.find ".#{field}"
 
   update: (rep) ->
     @rep = rep
-    minSum = formatCurrency rep.nebeneinkuenfteMinSum
+    minSum = formatCurrency rep.nebeneinkuenfteMinSum, true
     @field('name')        .text rep.name
                           .attr 'href', rep.url
     @field('faction')     .text T rep.fraktion
@@ -81,7 +91,7 @@ class RepInspector
     @field('land')        .text rep.land
     @field('mandate')     .text T rep.mandat
     @field('constituency').text rep.wahlkreis
-    @field('minSum')      .text minSum
+    @field('minSum')      .html minSum
     
     @field('count')       .text Tp(rep.nebeneinkuenfte.length, 'Nebentaetigkeit')
 
@@ -94,7 +104,7 @@ class RepInspector
       row = tableRow.clone()
       row.addClass 'cat' + item.level
       row.find('.description').text item.text
-      row.find('.minAmount').text formatCurrency NebeneinkunftMinAmounts[item.level]
+      row.find('.minAmount').html formatCurrency NebeneinkunftMinAmounts[item.level], true
       tableBody.append row
 
   handleScroll: (arg) ->
@@ -114,35 +124,47 @@ class RepInspector
   measure: ->
     # If it's currently hidden, we'll first move it to [0, 0] to measure it
     # as the browser may otherwise interfere and do its own scaling.
-    positionBackup = @position
-    @moveTo x: 0, y: 0
-    @width = @tooltip.width()
-    @height = @tooltip.height()
-    @moveTo positionBackup
+    clone = @tooltip.clone()
+    clone.addClass 'clone'
+    clone.removeAttr 'id style'
+    clone.insertAfter @tooltip
+    @width = clone.outerWidth()+1
+    @height = clone.outerHeight(true)
+    clone.remove()
   show: (position) ->
+    @measure()
     @moveTo position if position
-    @measure() unless @visible
     @tooltip.addClass('visible').removeClass('hidden')
     @visible = true
-    @unfix()
+    @unfix() if @fixed
   hide: ->
     @tooltip.addClass('hidden').removeClass('visible')
     @visible = false
     @unfix()
   moveTo: (@position) ->
     # See if the tooltip would extend beyond the side of the window.
-    if @position.x + @width > windowSize.width
-      @position.x = windowSize.width - @width
-    @tooltip.css top: @position.y, left: @position.x unless @fixed
+    topMargin = parseInt @tooltip.css('marginTop'), 10
+    x = @position.x
+    y = @position.y
+    if x + @width > windowSize.width
+      x = Math.max 0, windowSize.width - @width
+    if y + @height > windowSize.height
+      y = Math.max 0 - topMargin, windowSize.height - @height
+    @tooltip.css top: y, left: x
   unfix: ->
     @fixed = false
     @tooltip.addClass('moving').removeClass('fixed')
+    @measure()
+    @moveTo @position
   fix: ->
     @fixed = true
     @tooltip.addClass('fixed').removeClass('moving')
     tbody = @tooltip.find('tbody')
-    @handleScroll tbody
     tbody.scrollTop 0
+    tbody.css maxHeight: Math.min 300, $(window).height() - 170
+    @handleScroll tbody
+    @measure()
+    @moveTo @position
 
 $(document).ready ->
 
@@ -177,13 +199,22 @@ $(document).ready ->
       land.trigger 'touchend'
     , 500
 
+  $('#map').on 'dblclick', 'path', ->
+    checkboxes = $(this).parents('fieldset').find(':checkbox')
+    checkboxes.prop 'checked', true
+    updateCheckboxLabelState checkboxes
+    $(this).parents('form').submit()
+
   # Count clicks on the map so we can display a hint about multiple selection
   # after the second click
   mapClickCount = 0
+  mapClickCountResetTimeout = null
   ignoreNext = false
   $('#map').on 'mouseup touchend', 'path', (event) ->
     mapClickCount++
     clearTimeout longTapTimeout
+    clearTimeout mapClickCountResetTimeout
+    mapClickCountResetTimeout = setTimeout (-> mapClickCount = 0), 30000
     event.preventDefault() # To avoid grey rectangle on iOS
 
     return ignoreNext = false if ignoreNext
@@ -208,11 +239,11 @@ $(document).ready ->
   updateCheckboxLabelState $(':checkbox')
 
   # Add 'Select All' and 'Invert Selection buttons to fieldsets'
-  $('fieldset').each (i, fieldset) ->
-    div = $ '<div class="convenienceButtons">'
-    div.append $ '<input type="button" value="Alle auswählen" class="selectAll">'
-    div.append $ '<input type="button" value="Auswahl umkehren" class="invertSelection">'
-    $(fieldset).append div
+  # $('fieldset').each (i, fieldset) ->
+  #   div = $ '<div class="convenienceButtons">'
+  #   div.append $ '<input type="button" value="Alle auswählen" class="selectAll">'
+  #   div.append $ '<input type="button" value="Auswahl umkehren" class="invertSelection">'
+  #   $(fieldset).append div
 
   $('.invertSelection, .selectAll').click (event) ->
     fieldset = $(this).parents('fieldset')
@@ -233,7 +264,6 @@ $.getJSON 'data/data.json', (data) ->
 
   _data.each (rep) ->
     rep.nebeneinkuenfteMinSum = nebeneinkuenfteMinSum rep
-    rep.radius = repRadius rep
     rep.nebeneinkuenfte.sort (a, b) -> b.level - a.level
   # To distribute the reps evenly in the parliament,
   # we first have to establish where we should draw the boundaries
@@ -243,14 +273,28 @@ $.getJSON 'data/data.json', (data) ->
   seats = _.mapValues dataByFaction, (f) -> f.length
   totalSeats = _.reduce seats, (sum, num) -> sum + num
 
+  minSumPerSeat = _.mapValues dataByFaction, (representatives, faction) ->
+    minSum = _.reduce representatives, ((sum, rep) -> sum + rep.nebeneinkuenfteMinSum), 0
+    factionSeats = seats[faction]
+    minSum/factionSeats
+  repRadiusScaleFactor = 1000 / _.max minSumPerSeat
+
+  repRadius = (rep) -> repRadiusScaleFactor * Math.sqrt rep.nebeneinkuenfteMinSum
+  _data.each (rep) -> rep.radius = repRadius rep
+
   data = _data.where (rep) -> rep.nebeneinkuenfteMinSum > 1
   .value()
   console.log data
   # Recalculate dataByFaction from `data`
   dataByFaction = _.groupBy data, 'fraktion'
 
-
+  # To improve performance, we'll measure how long it takes the browser
+  # to render the first 5 ticks and then only render every n-th tick.
+  renderStart = null
+  renderInterval = 1
+  tickI = 0
   tick = (e) ->
+    renderStart = new Date() if renderStart is null
     alpha = e.alpha * e.alpha
     qt = d3.geom.quadtree data
     data.forEach (rep, i) ->
@@ -294,10 +338,15 @@ $.getJSON 'data/data.json', (data) ->
 
       collide(.3, qt)(rep) # .4
 
-    node.attr 'cx', (d) -> d.x
-    node.attr 'cy', (d) -> d.y
-    node.classed 'wrongPlacement', (d) -> d.wrongPlacement
-    node.attr 'data-phi', (d) -> d.phi
+    if tickI % renderInterval == 0 or alpha < 1e-3
+      node.attr 'cx', (d) -> d.x
+      node.attr 'cy', (d) -> d.y
+    tickI++
+
+    if tickI == 5
+      renderSpeed = (new Date() - renderStart) / 5
+      # We're aiming at 25-30 f/s, or about 40 s/f
+      renderInterval = Math.ceil renderSpeed/40
 
   collide = (alpha, qt) ->
     return (d) ->
@@ -392,7 +441,9 @@ $.getJSON 'data/data.json', (data) ->
     .attr 'cx', (rep) -> rep.x = rep.initialX
     .attr 'cy', (rep) -> rep.y = rep.initialY
 
-    node.transition().attr 'r', (rep) -> rep.radius
+    node.transition()
+    .attr 'r', (rep) -> rep.radius
+    .style 'opacity', (rep) -> if rep.radius < 1 then 0 else 1
 
     node.exit().remove()
 
@@ -419,7 +470,6 @@ $.getJSON 'data/data.json', (data) ->
   drawRepresentatives(true)
 
   inspector = new RepInspector '#repInspector'
-  inspector.hide()
 
   $('form').on 'submit', (event) ->
     if $(this).data 'suspendSumbit'
@@ -444,28 +494,38 @@ $.getJSON 'data/data.json', (data) ->
 
   $('svg').on 'mousemove touchend', 'circle', (event) ->
     event.preventDefault()
-    position = x: event.pageX, y: event.pageY
+    position = getEventPosition event
     rep = d3.select(this).datum()
-    unless inspector.fixed
+    unless inspector.visible
       inspector.update rep
       inspector.show position
+    unless inspector.fixed
+      inspector.moveTo position
 
   $('svg').on 'mouseleave', 'circle', -> inspector.hide() unless inspector.fixed
 
-  $(document).on 'mouseup', -> inspector.hide() if inspector.fixed
+  $(document).on 'mouseup', (event) ->
+    inspector.hide() if inspector.fixed and $(event.target).parents('.repInspector').length < 1
 
   $('svg').on 'mouseup touchend', 'circle', (event) ->
+    position = getEventPosition event
+    rep = d3.select(this).datum()
     if inspector.fixed and d3.select(this).datum() is inspector.rep
       inspector.unfix()
+      inspector.moveTo position
     else if inspector.fixed
-      inspector.hide()
+      inspector.update rep
+      inspector.show position
     else
       event.stopPropagation() # Otherwise the click would fire on the document node and hide the inspector
       inspector.fix()
 
   $(window).on 'resize', (event) ->
     window.windowSize = width: $(window).width(), height: $(window).height()
-    scale = Math.min 1, ($('#parliament').width() - 16) / Viewport.width
-    $('#parliament').height (Viewport.height * scale) + 10
+    wScale = Math.min 1, (windowSize.width - 16) / Viewport.width
+    hScale = Math.min 1, (windowSize.height - 16) / (Viewport.height + 10)
+    scale = Math.min wScale, hScale
+    $('#parliament, #parliamentContainer').height (Viewport.height + 10) * scale
+    .width Viewport.width * scale
   $(window).trigger('resize')
 
