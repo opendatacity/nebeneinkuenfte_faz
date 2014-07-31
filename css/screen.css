@@ -3,19 +3,20 @@
 .unsupportedMessage {
   display: none; }
 
-body.unsupported {
+/*body*/
+.unsupported {
   margin: 0; }
-  body.unsupported .unsupportedMessage {
+  .unsupported .unsupportedMessage {
     font: 1.2em Montserrat, sans-serif;
-    padding: 1em;
     position: fixed;
+    z-index: 20;
     display: block;
-    background-color: #fff;
     width: 100%;
     height: 100%;
-    z-index: 20; }
-    body.unsupported .unsupportedMessage:before {
-      content: 'ಠ_ಠ'; }
+    padding: 1em;
+    background-color: #fff; }
+    .unsupported .unsupportedMessage:before {
+      content: "ಠ_ಠ"; }
 
 body {
   font: 1em/1.2em Georgia, serif; }
@@ -27,8 +28,8 @@ a:visited {
   color: #065697; }
 
 abbr {
-  border: none;
-  cursor: inherit; }
+  cursor: inherit;
+  border: none; }
 
 #parliamentContainer {
   overflow: hidden;
@@ -38,8 +39,8 @@ abbr {
 #parliament {
   z-index: 3;
   width: 100%;
-  height: auto;
   max-width: 800px;
+  height: auto;
   margin: 0 auto; }
 
 #map {
@@ -50,11 +51,12 @@ abbr {
     max-width: 100%;
     max-height: 14em; }
   #map path {
+    cursor: pointer;
     fill: url(#inactivePattern);
     stroke-width: 1px;
-    stroke: #aaa;
-    cursor: pointer; }
-  #map path:hover, #map path.active:hover {
+    stroke: #aaa; }
+  #map path:hover,
+  #map path.active:hover {
     stroke-width: 2px;
     stroke: #333;
     fill-opacity: .5; }
@@ -64,100 +66,130 @@ abbr {
     stroke: #333; }
 
 form {
+  text-align: center;
   cursor: default;
-  -webkit-user-select: none;
   user-select: none;
-  text-align: center; }
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none; }
 
 fieldset {
   position: relative;
-  vertical-align: top;
   display: inline-block;
-  text-align: left;
-  margin: 2em 2em 0 0;
+  margin: 2em 1em 0 0;
   padding: 0;
+  text-align: left;
+  vertical-align: top;
   border: none; }
   fieldset legend {
+    margin: 1em 0 .2em 0;
     font: 1em/1.2 Montserrat, sans-serif;
-    cursor: default;
-    -webkit-user-select: none;
-    user-select: none;
     text-transform: uppercase;
     letter-spacing: .05em;
     font-weight: bold;
-    margin: 1em 0 .2em 0; }
+    cursor: default;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none; }
   fieldset ul {
-    list-style: none;
-    padding-left: .4em;
-    margin: 0 0 0 .4em;
-    border-left: 1px solid #eee; }
+    margin: 0;
+    padding: 0;
+    list-style: none; }
   fieldset li label {
     font-family: Montserrat, sans-serif;
-    cursor: pointer;
-    display: block;
-    color: #555;
+    display: inline-block;
     min-height: 1.3em;
-    transition: padding .1s ease; }
+    padding: 0 .1em 0 .8em;
+    cursor: pointer;
+    transition: background-color 0.1s ease;
+    -webkit-transition: background-color 0.1s ease;
+    -moz-transition: background-color 0.1s ease;
+    -ms-transition: background-color 0.1s ease;
+    -o-transition: background-color 0.1s ease;
+    color: #555; }
     fieldset li label:before {
       display: inline-block;
-      content: ' ';
-      width: .75em;
-      margin-left: -.8em; }
+      width: .6em;
+      margin-left: -.7em;
+      content: " "; }
 
 input[type=checkbox] {
   display: none; }
 
 label:hover {
-  padding-left: .1em; }
+  background-color: rgba(0, 0, 0, 0.1); }
 
 label.active {
-  color: #000; }
+  color: #000;
+  border-left-color: transparent; }
   label.active:before {
-    content: '✓';
-    background-color: #fff; }
+    content: "✓"; }
 
 #land ul {
   display: none; }
 
 .uiHint {
-  transition: all .2s ease;
   font-size: .8em;
-  color: #999;
-  opacity: 1;
-  height: auto;
   position: absolute;
   bottom: 100%;
+  height: auto;
   margin-bottom: -1.5em;
   padding: .2em;
-  background-color: rgba(255, 255, 255, 0.9);
-  transition: all .3s ease;
-  pointer-events: none; }
+  transition: all 0.2s ease;
+  -webkit-transition: all 0.2s ease;
+  -moz-transition: all 0.2s ease;
+  -ms-transition: all 0.2s ease;
+  -o-transition: all 0.2s ease;
+  pointer-events: none;
+  opacity: 1;
+  color: #999;
+  background-color: rgba(255, 255, 255, 0.9); }
   .uiHint .modifierKey:before {
     content: "⇧"; }
 
-.collapsed, .startCollapsed {
-  opacity: 0;
-  bottom: 95%; }
+.collapsed,
+.startCollapsed {
+  bottom: 95%;
+  opacity: 0; }
 
 input[type=submit] {
   display: none; }
 
 .convenienceButtons {
   position: absolute;
-  margin: 0;
-  top: 0;
-  right: 0;
-  text-align: right;
+  top: 1em;
+  right: 1em;
   display: inline-block;
-  transition: all .2s ease;
-  cursor: default;
-  -webkit-user-select: none;
-  user-select: none; }
-  .convenienceButtons input {
-    width: 2em; }
-  .convenienceButtons.allChecked {
-    margin: -.2em 0 .2em;
-    opacity: 0; }
+  margin: 0; }
+  .convenienceButtons .close {
+    line-height: 2em;
+    width: 2em;
+    height: 2em;
+    margin: -.25em;
+    cursor: pointer;
+    border: none;
+    border-radius: 1em;
+    outline: none;
+    background-color: transparent;
+    font: 1em/1.2 Montserrat, sans-serif;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    font-weight: bold;
+    cursor: default;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none; }
+    .convenienceButtons .close:hover {
+      background-color: rgba(0, 0, 0, 0.2); }
+    .convenienceButtons .close:active {
+      background-color: rgba(0, 0, 0, 0.3); }
+
+form .convenienceButtons {
+  display: none;
+  top: .4em;
+  right: 1em; }
 
 .linke {
   color: #d703d7;
@@ -191,90 +223,96 @@ circle.cducsu:hover {
   fill: #666666; }
 
 .arc {
-  opacity: 0.25; }
+  opacity: .25; }
 
 .hidden {
   display: none; }
 
 .repInspector {
-  box-sizing: border-box;
   position: absolute;
   z-index: 10;
-  background-color: rgba(255, 255, 255, 0.95);
+  box-sizing: border-box;
+  max-height: 100%;
+  margin: 1em 0 0 0;
   padding: .65em;
   border: 1px solid rgba(0, 0, 0, 0.2);
-  box-shadow: 0 0.1em 0.75em rgba(0, 0, 0, 0.1);
-  margin: 1em 0 0 0;
-  max-height: 100%;
-  border-radius: 4px; }
+  border-radius: 4px;
+  background-color: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 0.1em 0.75em rgba(0, 0, 0, 0.1); }
   .repInspector.moving {
     pointer-events: none; }
-    .repInspector.moving thead, .repInspector.moving tbody, .repInspector.moving tfoot {
+    .repInspector.moving thead,
+    .repInspector.moving tbody,
+    .repInspector.moving tfoot {
       display: none; }
     .repInspector.moving caption {
-      text-align: left;
       display: block;
+      text-align: left;
       cursor: default;
+      user-select: none;
       -webkit-user-select: none;
-      user-select: none; }
+      -moz-user-select: none;
+      -ms-user-select: none; }
       .repInspector.moving caption:after {
         display: block;
-        content: ' (Für Details klicken)'; }
+        content: " (Für Details klicken)"; }
   .repInspector.fixed {
-    width: 22em;
-    overflow: auto; }
+    overflow: auto;
+    width: 22em; }
     .repInspector.fixed caption {
       display: none; }
   .repInspector h2 {
+    margin: .2em 0 .5em;
+    padding: 0 1.5em 0 0;
     font: 1em/1.2 Montserrat, sans-serif;
-    cursor: default;
-    -webkit-user-select: none;
-    user-select: none;
     text-transform: uppercase;
     letter-spacing: .05em;
-    font-weight: bold;
-    margin: .2em 0 .5em;
-    padding: 0 1.5em 0 0; }
-  .repInspector .meta {
-    cursor: default;
-    -webkit-user-select: none;
-    user-select: none; }
+    font-weight: bold; }
   .repInspector .faction {
     text-transform: uppercase; }
-  .repInspector .faction, .repInspector .land, .repInspector .mandate {
+  .repInspector .faction,
+  .repInspector .land,
+  .repInspector .mandate {
     font: 0.8em Montserrat, sans-serif; }
-  .repInspector .faction, .repInspector .land {
-    padding-right: .5em;
+  .repInspector .faction,
+  .repInspector .land {
     margin-right: .1em;
+    padding-right: .5em;
     border-right: 1px solid rgba(0, 0, 0, 0.2); }
   .repInspector tr.cat0 {
     opacity: .4; }
   .repInspector table {
-    width: 100%;
+    font-size: .8em;
     display: block;
-    border-collapse: collapse;
-    font-size: .8em; }
-  .repInspector tfoot th, .repInspector tfoot td {
-    padding: 0;
-    line-height: 2em; }
-  .repInspector thead, .repInspector tbody, .repInspector tfoot {
+    width: 100%;
+    border-collapse: collapse; }
+  .repInspector tfoot th,
+  .repInspector tfoot td {
+    line-height: 2em;
+    padding: 0; }
+  .repInspector thead,
+  .repInspector tbody,
+  .repInspector tfoot {
     display: block;
     margin: 0 -.8em;
     padding: 0 .8em; }
-  .repInspector thead, .repInspector tfoot {
+  .repInspector thead,
+  .repInspector tfoot {
     z-index: 3; }
   .repInspector tbody {
     z-index: 2;
-    border: 1px solid rgba(0, 0, 0, 0.05);
-    border-left: none;
-    border-right: none;
-    max-height: 10em;
     overflow: auto;
+    max-height: 10em;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    border-right: none;
+    border-left: none;
     -webkit-overflow-scrolling: touch; }
-  .repInspector .minAmount, .repInspector .minSum {
-    text-align: right;
-    min-width: 5em; }
-  .repInspector td, .repInspector th {
+  .repInspector .minAmount,
+  .repInspector .minSum {
+    min-width: 5em;
+    text-align: right; }
+  .repInspector td,
+  .repInspector th {
     width: 100%;
     vertical-align: bottom; }
   .repInspector th {
@@ -282,42 +320,19 @@ circle.cducsu:hover {
     font: 1em/1.2 Montserrat, sans-serif; }
   .repInspector th.number {
     text-align: right; }
-  .repInspector td, .repInspector th {
+  .repInspector td,
+  .repInspector th {
     padding: .3em 0; }
-  .repInspector .convenienceButtons {
-    top: 1em;
-    right: 1em; }
-    .repInspector .convenienceButtons .close {
-      font: 1em/1.2 Montserrat, sans-serif;
-      cursor: default;
-      -webkit-user-select: none;
-      user-select: none;
-      text-transform: uppercase;
-      letter-spacing: .05em;
-      font-weight: bold;
-      line-height: 2em;
-      margin: -.25em;
-      background-color: transparent;
-      border: none;
-      width: 2em;
-      height: 2em;
-      border-radius: 1em;
-      cursor: pointer;
-      outline: none; }
-      .repInspector .convenienceButtons .close:hover {
-        background-color: rgba(0, 0, 0, 0.2); }
-      .repInspector .convenienceButtons .close:active {
-        background-color: rgba(0, 0, 0, 0.3); }
 
 .repInspector.clone {
-  left: 0 !important;
   top: 0 !important;
+  left: 0 !important;
   display: block;
   visibility: hidden; }
 
 .number {
-  white-space: nowrap;
-  text-align: right; }
+  text-align: right;
+  white-space: nowrap; }
   .number .digitGroup {
     padding-right: .2em; }
   .number .euro {
@@ -326,118 +341,174 @@ circle.cducsu:hover {
 .touch #map {
   width: 15em;
   height: 18em;
-  padding-top: 3em; }
+  padding-top: 3.1em; }
 .touch #map svg {
-  -webkit-transform: scale(1.5); }
+  transform: scale(1.5);
+  -webkit-transform: scale(1.5);
+  -moz-transform: scale(1.5);
+  -ms-transform: scale(1.5);
+  -o-transform: scale(1.5); }
+.touch label {
+  padding-top: .2em;
+  padding-bottom: .2em; }
 
-footer, aside {
+footer,
+aside {
+  font: 0.8em Montserrat, sans-serif;
   clear: both;
   max-width: 800px;
   margin: .5em auto;
   padding-top: .5em;
-  font: 0.8em Montserrat, sans-serif;
   color: #aaa; }
-  footer p, aside p {
+  footer p,
+  aside p {
     float: left;
     margin: 0; }
 
 footer nav ul {
-  list-style: none;
+  float: right;
   margin: 0;
   padding: 0;
-  float: right; }
+  list-style: none; }
   footer nav ul li {
     display: inline;
-    border-right: 1px solid rgba(0, 0, 0, 0.2); }
-    footer nav ul li a {
-      padding: 0 .5em; }
+    border-right: 1px solid rgba(0, 0, 0, 0.2);
+    padding: 0 .4em 0 .1em; }
     footer nav ul li:last-of-type {
       border: none; }
 
-@media screen and (max-width: 599px) and (max-height: 599px) {
+@media screen and (max-width: 500px) {
   .repInspector {
     position: fixed;
+    top: 0 !important;
+    left: 0 !important;
     box-sizing: border-box;
     width: 100% !important;
     height: 100% !important;
     max-height: 100% !important;
-    top: 0% !important;
-    left: 0 !important;
     margin: -1px 0 0 0;
-    border-left: none;
+    padding: 1em;
+    transition: top 0.5s ease;
+    -webkit-transition: top 0.5s ease;
+    -moz-transition: top 0.5s ease;
+    -ms-transition: top 0.5s ease;
+    -o-transition: top 0.5s ease;
     border-right: none;
     border-bottom: none;
-    padding: 1em;
-    transition: top .5s ease;
-    box-shadow: none;
-    border-radius: 0; }
+    border-left: none;
+    border-radius: 0;
+    box-shadow: none; }
 
   .repInspector.fixed {
     margin: 0; }
 
-  .repInspector.hidden, .repInspector.moving {
-    margin-top: 1px;
+  .repInspector.hidden,
+  .repInspector.moving {
+    top: 100% !important;
     display: block;
-    top: 100% !important; } }
-@media screen and (min-width: 600px), screen and (min-height: 600px) {
-  .repInspector h2 {
-    padding: 0; }
-  .repInspector .close {
-    display: none; } }
-@media screen and (min-aspect-ratio: 4 / 3) and (min-height: 350px) and (max-height: 700px) and (max-width: 999px) {
-  form {
-    z-index: 5;
-    position: fixed;
-    bottom: -15em;
-    left: 0;
-    padding: .5em;
-    height: 16em;
-    width: 100%;
-    background: rgba(255, 255, 255, 0.9);
-    border-top: 1px solid rgba(0, 0, 0, 0.2);
-    transition: all .2s ease; }
-    form:hover {
-      bottom: 0;
-      margin-top: 0; }
+    margin-top: 1px; }
 
-  fieldset, fieldset legend {
+  body.inspectorFixed {
+    overflow: hidden; } }
+@media screen and (min-width: 501px) {
+  html:not(.touch) .repInspector h2 {
+    padding: 0; }
+  html:not(.touch) .repInspector .close {
+    display: none; } }
+.short.narrow {
+  margin-bottom: 5em; }
+  .short.narrow form {
+    box-sizing: border-box;
+    overflow: auto;
+    position: fixed;
+    z-index: 5;
+    bottom: -14em;
+    left: 0;
+    width: 100%;
+    height: 16em;
+    padding: .5em;
+    transition: bottom 0.5s ease;
+    -webkit-transition: bottom 0.5s ease;
+    -moz-transition: bottom 0.5s ease;
+    -ms-transition: bottom 0.5s ease;
+    -o-transition: bottom 0.5s ease;
+    border-top: 1px solid rgba(0, 0, 0, 0.2);
+    background: rgba(255, 255, 255, 0.9); }
+    .short.narrow form.fullScreen {
+      height: 100% !important;
+      bottom: 0 !important;
+      margin-top: 0 !important; }
+      .short.narrow form.fullScreen .convenienceButtons {
+        display: inline-block; }
+  .short.narrow fieldset,
+  .short.narrow fieldset legend {
     margin-top: 0;
     padding-top: 0; }
 
-  .touch form {
-    height: 20em; } }
-@media screen and (min-aspect-ratio: 9 / 4) and (min-width: 1000px) {
-  fieldset, #parliament {
-    float: left; }
+.fullScreen .uiHint {
+  width: 100%;
+  top: 90%;
+  z-index: 6; }
 
-  form {
-    max-width: 12em;
-    float: left; }
+.fullScreen .collapsed {
+  top: 85%; }
 
-  fieldset {
-    margin-top: 0;
-    margin-bottom: 1em; }
+html:not(.touch) form:hover {
+  bottom: 0 !important;
+  margin-top: 0 !important; }
 
-  #parliamentContainer {
-    float: left;
-    margin-right: 2em; }
+.touch .short.narrow form {
+  height: 20em;
+  bottom: -18em; }
 
-  #parliament {
-    position: fixed; }
+.short.wide fieldset,
+.short.wide #parliament {
+  float: left; }
+.short.wide form {
+  float: left;
+  max-width: 12em; }
+.short.wide fieldset {
+  margin-top: 0;
+  margin-bottom: 1em; }
+.short.wide #parliamentContainer {
+  float: left;
+  margin-right: 2em; }
+.short.wide #parliament {
+  position: fixed; }
+.short.wide .uiHint {
+  top: 0;
+  width: 100%;
+  margin-left: -110%;
+  text-align: right; }
+.short.wide .collapsed,
+.short.wide .startCollapsed {
+  top: 0;
+  margin-left: -100%;
+  opacity: 0; }
+.short.wide footer {
+  margin-left: 0; }
 
-  .uiHint {
-    top: 0%;
-    margin-left: -110%;
-    text-align: right;
-    width: 100%; }
+@media screen and (max-height: 450px) {
+  .short.wide legend {
+    display: none; } }
+@media print {
+  * {
+    position: static !important; }
 
-  .collapsed, .startCollapsed {
-    opacity: 0;
-    top: 0%;
-    margin-left: -100%; }
+  .repInspector {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    border: none;
+    box-shadow: none;
+    padding: none;
+    max-height: none !important; }
+    .repInspector.moving {
+      display: none; }
 
-  footer {
-    margin-left: 0; } }
-@media screen and (max-width: 550px) {
-  fieldset {
-    float: left; } }
+  thead,
+  tfoot {
+    box-shadow: none !important; }
+
+  tbody {
+    max-height: none !important; } }

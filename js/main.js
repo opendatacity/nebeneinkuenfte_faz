@@ -248,6 +248,7 @@
     RepInspector.prototype.unfix = function() {
       this.fixed = false;
       this.tooltip.addClass('moving').removeClass('fixed');
+      $('body').removeClass('inspectorFixed');
       this.measure();
       return this.moveTo(this.position);
     };
@@ -256,6 +257,7 @@
       var tbody;
       this.fixed = true;
       this.tooltip.addClass('fixed').removeClass('moving');
+      $('body').addClass('inspectorFixed');
       tbody = this.tooltip.find('tbody');
       tbody.scrollTop(0);
       tbody.css({
@@ -277,12 +279,12 @@
         height: $(e).height()
       }).addClass('collapsed').removeClass('startCollapsed');
     });
-    $('#map').on('mouseenter touchenter', 'path', function() {
+    $('#map').on('mouseenter touchstart', 'path', function() {
       var node;
       node = $(this);
       return node.insertAfter(node.siblings().last());
     });
-    $('#map').on('mouseleave touchleave', 'path', function() {
+    $('#map').on('mouseleave touchend', 'path', function() {
       var node, nodeClass;
       node = $(this);
       nodeClass = node.attr('class');
@@ -656,8 +658,21 @@
         return inspector.fix();
       }
     });
+    $('form').on('touchstart', function(event) {
+      $(this).addClass('fullScreen');
+      return event.stopPropagation();
+    });
+    $('form').on('touchend', '.close', function(event) {
+      return $(this).parents('form').removeClass('fullScreen');
+    });
+    $('.toggler').on('mouseup touchend', function(event) {
+      return $(this.getAttribute('href')).toggleClass('hidden');
+    });
+    $('.toggler').click(function(event) {
+      return event.preventDefault();
+    });
     $(window).on('resize', function(event) {
-      var hScale, scale, wScale;
+      var body, hScale, hSpace, scale, vSpace, wScale;
       window.windowSize = {
         width: $(window).width(),
         height: $(window).height()
@@ -665,7 +680,27 @@
       wScale = Math.min(1, (windowSize.width - 16) / Viewport.width);
       hScale = Math.min(1, (windowSize.height - 16) / (Viewport.height + 10));
       scale = Math.min(wScale, hScale);
-      return $('#parliament, #parliamentContainer').height((Viewport.height + 10) * scale).width(Viewport.width * scale);
+      $('#parliament, #parliamentContainer').height((Viewport.height + 10) * scale).width(Viewport.width * scale);
+      body = $('body');
+      vSpace = windowSize.height - 26 - Viewport.height * scale;
+      hSpace = windowSize.width - 16 - Viewport.width * scale;
+      if (vSpace < 300 || vSpace < 500 && Modernizr.touch) {
+        body.removeClass('tall').addClass('short');
+      } else {
+        body.addClass('tall').removeClass('short');
+      }
+      if (hSpace > 220) {
+        return body.addClass('wide').removeClass('narrow');
+      } else {
+        return body.removeClass('wide').addClass('narrow');
+      }
+    });
+    $('label, a').on('touchend', function(event) {
+      event.preventDefault();
+      return $(this).trigger('click');
+    });
+    $('svg').on('touchend', function(event) {
+      return event.preventDefault();
     });
     return $(window).trigger('resize');
   });

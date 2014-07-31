@@ -154,11 +154,13 @@ class RepInspector
   unfix: ->
     @fixed = false
     @tooltip.addClass('moving').removeClass('fixed')
+    $('body').removeClass 'inspectorFixed'
     @measure()
     @moveTo @position
   fix: ->
     @fixed = true
     @tooltip.addClass('fixed').removeClass('moving')
+    $('body').addClass 'inspectorFixed'
     tbody = @tooltip.find('tbody')
     tbody.scrollTop 0
     tbody.css maxHeight: Math.min 300, $(window).height() - 170
@@ -174,12 +176,12 @@ $(document).ready ->
     .addClass 'collapsed'
     .removeClass 'startCollapsed'
 
-  $('#map').on 'mouseenter touchenter', 'path', ->
+  $('#map').on 'mouseenter touchstart', 'path', ->
     # Move to the top of the map's child nodes
     node = $ this
     node.insertAfter node.siblings().last()
 
-  $('#map').on 'mouseleave touchleave', 'path', ->
+  $('#map').on 'mouseleave touchend', 'path', ->
     node = $ this
     nodeClass = node.attr 'class'
     if nodeClass is 'active'
@@ -520,6 +522,16 @@ $.getJSON 'data/data.json', (data) ->
       event.stopPropagation() # Otherwise the click would fire on the document node and hide the inspector
       inspector.fix()
 
+  $('form').on 'touchstart', (event) ->
+    $(this).addClass 'fullScreen'
+    event.stopPropagation()
+  $('form').on 'touchend', '.close', (event) ->
+    $(this).parents('form').removeClass 'fullScreen'
+
+  $('.toggler').on 'mouseup touchend', (event) ->
+    $(this.getAttribute 'href').toggleClass 'hidden'
+  $('.toggler').click (event) -> event.preventDefault()
+
   $(window).on 'resize', (event) ->
     window.windowSize = width: $(window).width(), height: $(window).height()
     wScale = Math.min 1, (windowSize.width - 16) / Viewport.width
@@ -527,5 +539,28 @@ $.getJSON 'data/data.json', (data) ->
     scale = Math.min wScale, hScale
     $('#parliament, #parliamentContainer').height (Viewport.height + 10) * scale
     .width Viewport.width * scale
+
+    # Due to the variable height of the parliament we can't reliably use media
+    # queries. Instead we'll attach/remove classes from the body depending on
+    # the most suitable layout.
+    body = $('body')
+    vSpace = windowSize.height - 26 - Viewport.height * scale
+    hSpace = windowSize.width - 16 - Viewport.width * scale
+    if vSpace < 300 or vSpace < 500 and Modernizr.touch
+      body.removeClass('tall').addClass('short')
+    else
+      body.addClass('tall').removeClass('short')
+      
+    if hSpace > 220
+      body.addClass('wide').removeClass('narrow')
+    else
+      body.removeClass('wide').addClass('narrow')
+
+  $('label, a').on 'touchend', (event) ->
+    event.preventDefault()
+    $(this).trigger 'click'
+
+  $('svg').on 'touchend', (event) -> event.preventDefault()
+
   $(window).trigger('resize')
 

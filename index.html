@@ -54,6 +54,7 @@
 		</table>
 	</div>
 	<form action="/">
+		<p class="convenienceButtons"><input type="button" class="button close" value="×"></p>
 		<fieldset id="land">
 			<legend>Bundesland</legend>
 			<input type="hidden" name="land" value="">
@@ -106,17 +107,20 @@
 		</fieldset>
 		<input type="submit">
 	</form>
-	<aside>
-		<p>Dargestellt sind alle Abgeordneten, die mindestens eine Nebentätigkeit über <span class="number"><span class="group">1</span><span class="group">000</span></span> Euro ausgeübt haben. Alle Angaben ohne Gewähr.</p>
-	</aside>
 	<footer>
 		<p>Eine Visualisierung von OpenDataCity und FAZ.net.</p>
 		<nav>
 			<ul>
-				<li>Lizenz: <a rel="license" href="http://creativecommons.org/licenses/by/3.0/de/">cc-by 3.0 de</a></li><li><a href="#">Daten</a></li><li><a href="#">Erläuterungen</a></li><li><a href="#">Quellcode</a></li>
+				<li>Lizenz: <a rel="license" href="http://creativecommons.org/licenses/by/3.0/de/">cc-by&nbsp;3.0&nbsp;de</a></li>
+				<li><a href="#">Daten</a></li>
+				<li><a href="#notes" class="toggler">Erläuterungen</a></li>
+				<li><a href="#">Quellcode</a></li>
 			</ul>
 		</nav>
 	</footer>
+	<aside id="notes" class="hidden">
+		<p>Dargestellt sind alle Abgeordneten, die in der laufenden Legislaturperiode mindestens eine Nebentätigkeit über <span class="number"><span class="group">1</span><span class="group">000</span></span> Euro ausgeübt haben. Alle Angaben ohne Gewähr.</p>
+	</aside>
 	<script src="js/lib/d3.min.js" charset="utf-8"></script>
 	<script src="bower_components/jquery/dist/jquery.min.js" charset="utf-8"></script>
 	<script src="bower_components/lodash/dist/lodash.js" charset="utf-8"></script>
