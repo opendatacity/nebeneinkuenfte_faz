@@ -1,5 +1,5 @@
-/**
- * @license
+
+/* @preserve
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
  * Build: `lodash modern -o ./dist/lodash.js`
  * Copyright 2012-2013 The Dojo Foundation <http://dojofoundation.org/>
@@ -7,7 +7,9 @@
  * Copyright 2009-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
  * Available under MIT license <http://lodash.com/license>
  */
-;(function() {
+ (function() {
+
+  
 
   /** Used as a safe reference for `undefined` in pre ES5 environments */
   var undefined;

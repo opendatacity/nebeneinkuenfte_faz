@@ -9,6 +9,7 @@
 	<link rel="stylesheet" href="css/screen.css">
 	<meta name="viewport" content="width=device-width, user-scalable=no">
 
+	<meta name="author" content="Philipp Bock/OpenDataCity; http://opendatacity.de, http://philippbock.de">
 </head>
 <!--[if lte IE 8]><body class="unsupported"><![endif]-->
 <!--[if gt IE 8]><body><![endif]-->
@@ -137,12 +138,16 @@
 	<aside id="notes" class="hidden">
 		<p>Dargestellt sind alle Abgeordneten, die in der laufenden Legislaturperiode mindestens eine Nebentätigkeit über <span class="number"><span class="group">1</span><span class="group">000</span></span> Euro ausgeübt haben. Alle Angaben ohne Gewähr.</p>
 	</aside>
-	<script src="js/lib/d3.min.js" charset="utf-8"></script>
-	<script src="bower_components/jquery/dist/jquery.min.js" charset="utf-8"></script>
-	<script src="bower_components/lodash/dist/lodash.js" charset="utf-8"></script>
-	<script src="js/lib/modernizr.custom.60457.js" charset="utf-8"></script>
-	<script src="js/de-de.dict.js" charset="utf-8"></script>
+
+	<script type="text/javascript">var dataPath = 'data/data.json';</script>
+	<!--[if gt IE 8]>
+	<script src="js/dependencies.min.js" charset="utf-8"></script>
 	<script src="js/main.js" charset="utf-8"></script>
+	<![endif]-->
+	<!--[if !IE]> -->
+	<script src="js/dependencies.min.js" charset="utf-8"></script>
+	<script src="js/dist.js" charset="utf-8"></script>
+	<!-- <![endif]-->
 </body>
 
 </html>
