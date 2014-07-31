@@ -497,13 +497,23 @@ footer {
 		margin-top: 0;
 		padding-top: 0;
 	}
+	.uiHint {
+		width: 100%;
+		bottom: 10%;
+		left: 100%;
+	}
+	.collapsed {
+		left: 95%;
+	}
 }
-.fullScreen	.uiHint {
+.short.narrow .fullScreen .uiHint {
 	width: 100%;
+	left: 0;
+	bottom: auto;
 	top: 90%;
 	z-index: 6;
 }
-.fullScreen .collapsed {
+.short.narrow .fullScreen .collapsed {
 	top: 85%;
 }
 
