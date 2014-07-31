@@ -1,5 +1,7 @@
 'use strict'
 
+dataPath = 'data/data.json'
+
 Viewport = width: 800, height: 400, center: {x: 400, y: 400}
 Arc = innerR: 100, outerR: 400, phiMax: 180
 Rep = r: 5, spacing: 12
@@ -257,7 +259,7 @@ $(document).ready ->
       updateCheckboxLabelState c
     $(this).parents('form').triggerHandler 'submit'
 
-$.getJSON 'data/data.json', (data) ->
+$.getJSON dataPath, (data) ->
   data = data.data
   window._data = _(data)
 
@@ -279,7 +281,7 @@ $.getJSON 'data/data.json', (data) ->
     minSum = _.reduce representatives, ((sum, rep) -> sum + rep.nebeneinkuenfteMinSum), 0
     factionSeats = seats[faction]
     minSum/factionSeats
-  repRadiusScaleFactor = 1000 / _.max minSumPerSeat
+  repRadiusScaleFactor = 900 / _.max minSumPerSeat
 
   repRadius = (rep) -> repRadiusScaleFactor * Math.sqrt rep.nebeneinkuenfteMinSum
   _data.each (rep) -> rep.radius = repRadius rep

@@ -107,17 +107,18 @@ fieldset {
 	}
 	li {
 		label {
+			$tickWidth: .7em;
 			font-family: $secondaryFont;
 			display: inline-block;
 			min-height: 1.3em;
-			padding: 0 .1em 0 .8em;
+			padding: 0 .1em 0 ($tickWidth + .3em);
 			cursor: pointer;
 			@include transition(background-color, .1s);
 			color: #555;
 			&:before {
 				display: inline-block;
-				width: .6em;
-				margin-left: -.7em;
+				width: $tickWidth;
+				margin-left: (-1 * $tickWidth) - .3em;
 				content: " ";
 			}
 		}
@@ -384,8 +385,8 @@ circle.cducsu:hover {
 		@include transform(scale(1.5));
 	}
 	label {
-		padding-top: .2em;
-		padding-bottom: .2em;
+		padding-top: .4em;
+		padding-bottom: .4em;
 	}
 }
 footer,

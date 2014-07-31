@@ -100,7 +100,7 @@ fieldset {
     font-family: Montserrat, sans-serif;
     display: inline-block;
     min-height: 1.3em;
-    padding: 0 .1em 0 .8em;
+    padding: 0 0.1em 0 1em;
     cursor: pointer;
     transition: background-color 0.1s ease;
     -webkit-transition: background-color 0.1s ease;
@@ -110,8 +110,8 @@ fieldset {
     color: #555; }
     fieldset li label:before {
       display: inline-block;
-      width: .6em;
-      margin-left: -.7em;
+      width: 0.7em;
+      margin-left: -1em;
       content: " "; }
 
 input[type=checkbox] {
@@ -349,8 +349,8 @@ circle.cducsu:hover {
   -ms-transform: scale(1.5);
   -o-transform: scale(1.5); }
 .touch label {
-  padding-top: .2em;
-  padding-bottom: .2em; }
+  padding-top: .4em;
+  padding-bottom: .4em; }
 
 footer,
 aside {
