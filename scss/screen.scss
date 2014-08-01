@@ -3,22 +3,28 @@
 @import "webfonts";
 
 .unsupportedMessage {
+	font: 1.2em $secondaryFont;
+	position: fixed;
+	z-index: 20;
 	display: none;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	padding: 1em;
+	background-color: #eee;
+	color: #555;
+	&:before {
+		content: "ಠ_ಠ";
+	}
 }
-/*body*/.unsupported {
+
+/*body*/.unsupported,
+/*html*/.no-svg,
+/*html*/.no-inlinesvg {
 	margin: 0;
 	.unsupportedMessage {
-		font: 1.2em $secondaryFont;
-		position: fixed;
-		z-index: 20;
 		display: block;
-		width: 100%;
-		height: 100%;
-		padding: 1em;
-		background-color: #fff;
-		&:before {
-			content: "ಠ_ಠ";
-		}
 	}
 }
 
