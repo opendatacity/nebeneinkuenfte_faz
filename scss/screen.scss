@@ -302,12 +302,10 @@ form .convenienceButtons {
 
 .touch {
 	#map {
-		width: 15em;
-		height: 18em;
-		padding-top: 3.1em;
+		display: none;
 	}
-	#map svg {
-		@include transform(scale(1.5));
+	#land ul {
+		display: block;
 	}
 	label {
 		padding-top: .4em;

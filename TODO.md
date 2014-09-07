@@ -15,13 +15,6 @@
 
 5. Absender, Links, Erläuterungen
 
-
-# Grafik
-
-- Buttonlayout: Vgl. Buttons "Bilderstrecke"/"Zur Homepage": http://www.faz.net/aktuell/sport/sportpolitik/vorstellung-berliner-und-hamburger-olympia-bewerbungen-13129924.html  
-  Farbe: #C60000, hover #890000.
-
-
 # Navigation
 
 - Hat man ein Bundesland ausgewählt, ist der Weg zurück zu allen Bundesländern zu umständlich. Daher: Klickt man ein Bundesland an, erscheint Textlink „Alle Länder“. Außerdem wird die Länderauswahl durch erneutes Anklicken  des Bundeslandes wieder aufgehoben.

@@ -371,12 +371,9 @@ form .convenienceButtons {
     font-size: .85em; }
 
 .touch #map {
-  width: 15em;
-  height: 18em;
-  padding-top: 3.1em; }
-.touch #map svg {
-  -webkit-transform: scale(1.5);
-          transform: scale(1.5); }
+  display: none; }
+.touch #land ul {
+  display: block; }
 .touch label {
   padding-top: .4em;
   padding-bottom: .4em; }
