@@ -14,21 +14,10 @@
 @mixin noSelect {
 	cursor: default;
 	user-select: none;
-	-webkit-user-select: none;
-	-moz-user-select: none;
-	-ms-user-select: none;
 }
 @mixin transition ($property, $duration: .2s, $timing: ease) {
 	transition: $property $duration $timing;
-	-webkit-transition: $property $duration $timing;
-	-moz-transition: $property $duration $timing;
-	-ms-transition: $property $duration $timing;
-	-o-transition: $property $duration $timing;
 }
 @mixin transform ($args) {
 	transform: $args;
-	-webkit-transform: $args;
-	-moz-transform: $args;
-	-ms-transform: $args;
-	-o-transform: $args;
 }

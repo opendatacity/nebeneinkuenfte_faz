@@ -36,7 +36,7 @@ module.exports = (grunt) ->
           'bower_components/jquery/dist/jquery.js',
           'bower_components/lodash/dist/lodash.js',
           'js/lib/*.js',
-          '<%= coffee.dist.dest %>'
+          '<%= coffee.compile.dest %>'
         ]
         dest: 'js/dist.js'
 
@@ -45,13 +45,26 @@ module.exports = (grunt) ->
         options:
           sourcemap: 'auto'
           style: 'nested'
-        src: 'scss/screen.scss'
-        dest: 'css/screen.css'
+        src: '<%= sass.dist.src %>'
+        dest: '<%= sass.dist.dest %>'
       dist:
         options:
           sourcemap: 'none'
           style: 'compressed'
         src: 'scss/screen.scss'
+        dest: '.tmp/css/screen.css'
+
+    autoprefixer:
+      dev:
+        options:
+          browsers: ['last 2 Chrome versions', 'last 2 Safari versions', 'last 2 Firefox versions']
+          map: true
+        src: '<%= autoprefixer.dist.src %>'
+        dest: '<%= autoprefixer.dist.dest %>'
+      dist:
+        options:
+          browsers: ['> 1%', 'IE >= 9']
+        src: '.tmp/css/screen.css'
         dest: 'css/screen.css'
 
     uglify:
@@ -71,13 +84,17 @@ module.exports = (grunt) ->
       coffee:
         files: '<%= coffee.compile.src %>'
         tasks: ['coffeelint:dev', 'coffee']
+        options: livereload: false
       sass:
         files: 'scss/*.scss'
-        tasks: ['sass:dev']
+        tasks: ['sass:dev', 'autoprefixer:dev']
         options: livereload: false
       css:
         files: 'css/*.css'
-        tasks: []
+        tasks: [] # trigger livereload
+      js:
+        files: 'js/*.js'
+        tasks: [] # trigger livereload
 
     connect:
       server:
@@ -92,10 +109,11 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks 'grunt-contrib-concat'
   grunt.loadNpmTasks 'grunt-contrib-uglify'
   grunt.loadNpmTasks 'grunt-contrib-sass'
+  grunt.loadNpmTasks 'grunt-autoprefixer'
   grunt.loadNpmTasks 'grunt-contrib-watch'
   grunt.loadNpmTasks 'grunt-contrib-connect'
 
   # Default task.
-  grunt.registerTask 'dist', ['coffeelint:dist', 'coffee', 'concat', 'uglify', 'sass:dist']
-  grunt.registerTask 'default', ['coffeelint:dev', 'coffee', 'sass:dev']
+  grunt.registerTask 'dist', ['coffeelint:dist', 'coffee', 'concat', 'uglify', 'sass:dist', 'autoprefixer:dist']
+  grunt.registerTask 'default', ['coffeelint:dev', 'coffee', 'sass:dev', 'autoprefixer:dev']
   grunt.registerTask 'server', ['connect', 'watch']

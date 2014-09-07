@@ -24,6 +24,7 @@
     "grunt-contrib-sass": "~0.8.1",
     "coffeelint": "~1.6.0",
     "grunt-coffeelint": "0.0.13",
-    "grunt-contrib-connect": "~0.8.0"
+    "grunt-contrib-connect": "~0.8.0",
+    "grunt-autoprefixer": "~1.0.1"
   }
 }
