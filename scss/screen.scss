@@ -89,7 +89,7 @@ abbr {
 form {
 	text-align: center;
 
-	@include noSelect;
+	@extend %no-select;
 }
 fieldset {
 	position: relative;
@@ -103,7 +103,7 @@ fieldset {
 	legend {
 		margin: 1em 0 .2em 0;
 
-		@include heading;
+		@extend %heading;
 	}
 	ul {
 		margin: 0;
@@ -190,7 +190,7 @@ input[type=submit] {
 		outline: none;
 		background-color: transparent;
 
-		@include heading;
+		@extend %heading;
 		&:hover {
 			background-color: rgba(#000, .2);
 		}
@@ -272,7 +272,7 @@ circle.cducsu:hover {
 			display: block;
 			text-align: left;
 
-			@include noSelect;
+			@extend %no-select;
 			&:after {
 				display: block;
 				content: " (Für Details klicken)";
@@ -290,7 +290,7 @@ circle.cducsu:hover {
 		margin: .2em 0 .5em;
 		padding: 0 1.5em 0 0; // for close button; remove on wider screens
 
-		@include headingSelectable;
+		@extend %heading-selectable;
 	}
 	.faction {
 		text-transform: uppercase;
@@ -353,7 +353,7 @@ circle.cducsu:hover {
 	th {
 		text-align: left;
 
-		@include minorHeading;
+		@extend %heading-minor;
 	}
 	th.number {
 		text-align: right;

@@ -1,17 +1,17 @@
-@mixin minorHeading {
+%heading-minor {
 	font: 1em/1.2 $secondaryFont;
 }
-@mixin headingSelectable {
-	@include minorHeading;
+%heading-selectable {
+	@extend %heading-minor;
 	text-transform: uppercase;
 	letter-spacing: .05em;
 	font-weight: bold;
 }
-@mixin heading {
-	@include headingSelectable;
-	@include noSelect;
+%heading {
+	@extend %heading-selectable;
+	@extend %no-select;
 }
-@mixin noSelect {
+%no-select {
 	cursor: default;
 	user-select: none;
 }
