@@ -1,5 +1,9 @@
 $font-primary: Georgia, "Linux Libertine", serif;
 $font-secondary: Verdana, sans-serif;
+
 $color-link: #c60000;
+$color-primary: #000;
+$color-diminished: lighten($color-primary, 66%);
+
 $subtleBorder: 1px solid rgba(#000, .2);
 $modalSlidingDuration: .5s;

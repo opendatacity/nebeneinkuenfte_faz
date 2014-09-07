@@ -41,13 +41,15 @@ fieldset legend, .convenienceButtons .close, form, .repInspector.moving caption 
 body {
   font: 1em/1.2em Georgia, "Linux Libertine", serif; }
 
-a:link {
+a {
   text-decoration: none;
   color: #c60000; }
-a:hover {
-  border-bottom: 1px solid #c60000; }
-a:visited {
-  color: #f90000; }
+  a:hover {
+    border-bottom: 1px solid #c60000; }
+  a:visited {
+    color: #f90000; }
+  a:visited:hover {
+    border-bottom-color: #f90000; }
 
 abbr {
   cursor: inherit;
@@ -143,7 +145,6 @@ label.active {
   transition: all 0.2s ease;
   pointer-events: none;
   opacity: 1;
-  color: #999;
   background-color: rgba(255, 255, 255, 0.9); }
   .uiHint .modifierKey:before {
     content: "⇧"; }
@@ -262,7 +263,7 @@ circle.cducsu:hover {
     padding-right: .5em;
     border-right: 1px solid rgba(0, 0, 0, 0.2); }
   .repInspector tr.cat0 {
-    opacity: .4; }
+    color: #a8a8a8; }
   .repInspector table {
     font-size: .8em;
     display: block;
@@ -304,6 +305,14 @@ circle.cducsu:hover {
   .repInspector td,
   .repInspector th {
     padding: .3em 0; }
+  .repInspector a {
+    color: #000; }
+    .repInspector a:hover {
+      border-bottom: 1px solid #000; }
+    .repInspector a:visited {
+      color: #1a1a1a; }
+    .repInspector a:visited:hover {
+      border-bottom-color: #1a1a1a; }
 
 .repInspector.clone {
   top: 0 !important;
@@ -337,7 +346,7 @@ aside {
   max-width: 800px;
   margin: .5em auto;
   padding-top: .5em;
-  color: #aaa; }
+  color: #a8a8a8; }
   footer p,
   aside p {
     float: left;
