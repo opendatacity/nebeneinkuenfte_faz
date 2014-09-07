@@ -1,0 +1,49 @@
+#map {
+	width: 10em;
+	height: 14em;
+	svg {
+		width: 100%;
+		max-width: 100%;
+		max-height: 14em;
+	}
+	path {
+		cursor: pointer;
+		fill: #ddd;
+		//fill: url(#inactivePattern);
+		stroke-width: 1px;
+		stroke: #aaa;
+	}
+	path:hover,
+	path.active:hover {
+		stroke-width: 2px;
+		stroke: #333;
+		fill-opacity: .5;
+	}
+	path.active {
+		stroke-width: 1px;
+		fill: #fff;
+		stroke: #333;
+	}
+}
+
+circle {
+	cursor: pointer;
+}
+
+circle.linke:hover {
+	fill: lighten(#d703d7, 20);
+}
+circle.spd:hover {
+	fill: lighten(#da0000, 20);
+}
+circle.gruene:hover {
+	fill: lighten(#58d300, 20);
+}
+circle.cducsu:hover {
+	fill: lighten(#333, 20);
+}
+//.wrongPlacement { stroke: #fff; stroke-width: 3px; }
+
+.arc {
+	opacity: .25;
+}
