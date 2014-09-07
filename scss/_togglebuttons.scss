@@ -16,17 +16,16 @@ label {
 	$color-inactive-bg: adjust-color($color-link, $saturation: -90%, $lightness: +50%);
 
 	$tickWidth: .7em;
-	$paddingV: .15em;
-	$paddingH: .5em;
+	$paddingV: .3em;
+	$paddingH: .6em;
 
-	font: .9em $font-secondary;
+	font-family: $font-secondary;
 	display: inline-block;
-	min-height: 1.3em;
-	margin-bottom: 2px;
 	padding: $paddingV $paddingH;
 	cursor: pointer;
 	@include transition(all, .1s);
 	border: 1px solid transparent;
+	overflow: hidden;
 	
 	@include colors($color-inactive-text, $color-inactive-bg);
 	&:before {
@@ -34,7 +33,7 @@ label {
 		width: $tickWidth;
 		margin-left: (-1 * $tickWidth) - .3em;
 		content: " ";
-		opacity: 0;
+		opacity: 1;
 	}
 	&:hover {
 		@include colors($color-inactive-text, $color-inactive-bg, hover);
