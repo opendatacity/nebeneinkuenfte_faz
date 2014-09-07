@@ -150,31 +150,51 @@ fieldset {
     padding: 0;
     list-style: none; }
 
-input[type=checkbox] {
-  display: none; }
-
 label {
-  font-family: Verdana, sans-serif;
+  font: 0.9em Verdana, sans-serif;
   display: inline-block;
   min-height: 1.3em;
-  padding: 0 0.1em 0 1em;
+  margin-bottom: 2px;
+  padding: 0.15em 0.5em;
   cursor: pointer;
-  transition: background-color 0.1s ease;
-  color: #555; }
+  transition: all 0.1s ease;
+  border: 1px solid transparent;
+  border-color: #dad2d2;
+  color: #6d5959;
+  background-color: #e5e0e0; }
   label:before {
     display: inline-block;
     width: 0.7em;
     margin-left: -1em;
-    content: " "; }
+    content: " ";
+    opacity: 0; }
+  label:hover {
+    border-color: #cec4c4;
+    color: #6d5959;
+    background-color: #dad2d2; }
+  label:active {
+    border-color: #c3b6b6;
+    color: #6d5959;
+    background-color: #cec4c4; }
+  label.active {
+    padding-left: 1.5em;
+    border-color: #ad0000;
+    color: #fff;
+    background-color: #c60000; }
+    label.active:before {
+      content: "✓";
+      opacity: 1; }
+    label.active:hover {
+      border-color: #930000;
+      color: #fff;
+      background-color: #ad0000; }
+    label.active:active {
+      border-color: #7a0000;
+      color: #fff;
+      background-color: #930000; }
 
-label:hover {
-  background-color: rgba(0, 0, 0, 0.1); }
-
-label.active {
-  color: #000;
-  border-left-color: transparent; }
-  label.active:before {
-    content: "✓"; }
+input[type=checkbox] {
+  display: none; }
 
 #land ul {
   display: none; }

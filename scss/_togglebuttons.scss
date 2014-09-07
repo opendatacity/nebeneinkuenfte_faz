@@ -1,27 +1,60 @@
 label {
+	
+	@mixin colors ($fg, $bg, $context: none) {
+		$darken: 0%;
+		@if $context == hover { $darken: 5%; }
+		@if $context == active { $darken: 10%; }
+		border-color: darken($bg, 5% + $darken);
+		color: $fg;
+		background-color: darken($bg, $darken);
+	}
+
+	$color-active-text: #fff;
+	$color-active-bg: $color-link;
+
+	$color-inactive-text: adjust-color($color-link, $saturation: -90%, $lightness: +0%);
+	$color-inactive-bg: adjust-color($color-link, $saturation: -90%, $lightness: +50%);
+
 	$tickWidth: .7em;
-	font-family: $font-secondary;
+	$paddingV: .15em;
+	$paddingH: .5em;
+
+	font: .9em $font-secondary;
 	display: inline-block;
 	min-height: 1.3em;
-	padding: 0 .1em 0 ($tickWidth + .3em);
+	margin-bottom: 2px;
+	padding: $paddingV $paddingH;
 	cursor: pointer;
-	@include transition(background-color, .1s);
-	color: #555;
+	@include transition(all, .1s);
+	border: 1px solid transparent;
+	
+	@include colors($color-inactive-text, $color-inactive-bg);
 	&:before {
 		display: inline-block;
 		width: $tickWidth;
 		margin-left: (-1 * $tickWidth) - .3em;
 		content: " ";
+		opacity: 0;
 	}
-}
-label:hover {
-	background-color: rgba($color-primary, .1);
-}
-label.active {
-	color: $color-primary;
-	border-left-color: transparent;
-	&:before {
-		content: "✓";
+	&:hover {
+		@include colors($color-inactive-text, $color-inactive-bg, hover);
+	}
+	&:active {
+		@include colors($color-inactive-text, $color-inactive-bg, active);
+	}
+	&.active {
+		padding-left: $tickWidth + .3em + $paddingH;
+		@include colors($color-active-text, $color-active-bg);
+		&:before {
+			content: "✓";
+			opacity: 1;
+		}
+		&:hover {
+			@include colors($color-active-text, $color-active-bg, hover);
+		}
+		&:active {
+			@include colors($color-active-text, $color-active-bg, active);
+		}
 	}
 }
 input[type=checkbox] {
