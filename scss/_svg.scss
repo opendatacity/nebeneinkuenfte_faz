@@ -30,20 +30,24 @@ circle {
 	cursor: pointer;
 }
 
-circle.linke:hover {
-	fill: lighten(#d703d7, 20);
-}
-circle.spd:hover {
-	fill: lighten(#da0000, 20);
-}
-circle.gruene:hover {
-	fill: lighten(#58d300, 20);
-}
-circle.cducsu:hover {
-	fill: lighten(#333, 20);
+@each $faction in $factions {
+	$color-faction: map_get($colors-faction, $faction);
+
+	circle.#{$faction} {
+		fill: $color-faction;
+		&:hover {
+			fill: lighten($color-faction, 20);
+		}
+	}
+	.arc.#{$faction} {
+		fill: change-color($color-faction, $lightness: 96%);
+	}
 }
 //.wrongPlacement { stroke: #fff; stroke-width: 3px; }
 
-.arc {
-	opacity: .25;
-}
+
+// .arc {
+// 	@for $i from 1 through 4 {
+// 		&:nth-child(#{$i}) { opacity: $i * 0.02; }
+// 	}
+// }

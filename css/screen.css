@@ -38,20 +38,37 @@ fieldset legend, .convenienceButtons .close, form, .repInspector.moving caption 
 circle {
   cursor: pointer; }
 
-circle.linke:hover {
-  fill: #fc44fc; }
+circle.linke {
+  fill: #d703d7; }
+  circle.linke:hover {
+    fill: #fc44fc; }
 
-circle.spd:hover {
-  fill: #ff4141; }
+.arc.linke {
+  fill: #ffebff; }
 
-circle.gruene:hover {
-  fill: #8cff3a; }
+circle.spd {
+  fill: #f90000; }
+  circle.spd:hover {
+    fill: #ff6060; }
 
-circle.cducsu:hover {
-  fill: #666666; }
+.arc.spd {
+  fill: #ffebeb; }
 
-.arc {
-  opacity: .25; }
+circle.gruene {
+  fill: #64dc00; }
+  circle.gruene:hover {
+    fill: #98ff43; }
+
+.arc.gruene {
+  fill: #f4ffeb; }
+
+circle.cducsu {
+  fill: #111; }
+  circle.cducsu:hover {
+    fill: #444444; }
+
+.arc.cducsu {
+  fill: whitesmoke; }
 
 .unsupportedMessage {
   font: 1.2em Verdana, sans-serif;
@@ -202,20 +219,16 @@ form .convenienceButtons {
   right: 1em; }
 
 .linke {
-  color: #d703d7;
-  fill: #d703d7; }
+  color: #d703d7; }
 
 .spd {
-  color: #da0000;
-  fill: #da0000; }
+  color: #f90000; }
 
 .gruene {
-  color: #58d300;
-  fill: #58d300; }
+  color: #64dc00; }
 
 .cducsu {
-  color: #333;
-  fill: #333; }
+  color: #111; }
 
 .hidden {
   display: none; }

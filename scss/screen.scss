@@ -172,21 +172,11 @@ form .convenienceButtons {
 	right: 1em;
 }
 
-.linke {
-	color: #d703d7;
-	fill: #d703d7;
-}
-.spd {
-	color: #da0000;
-	fill: #da0000;
-}
-.gruene {
-	color: #58d300;
-	fill: #58d300;
-}
-.cducsu {
-	color: #333;
-	fill: #333;
+@each $faction in $factions {
+	$color-faction: map_get($colors-faction, $faction);
+	.#{$faction} {
+		color: $color-faction;
+	}
 }
 
 .hidden {

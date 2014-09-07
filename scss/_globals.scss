@@ -1,9 +1,28 @@
+// List of factions currently in the Bundestag.
+// To be future-proof, we could also already include factions
+// that might join in future elections, but this would make
+// the CSS more bloated than it already is.
+// If the factions change, modify $factions and make sure
+// new arrivals have a color assigned to them in $colors-faction.
+$factions: linke spd gruene cducsu;
+
 $font-primary: Georgia, "Linux Libertine", serif;
 $font-secondary: Verdana, sans-serif;
 
 $color-link: #c60000;
 $color-primary: #000;
 $color-diminished: lighten($color-primary, 66%);
+
+$colors-faction: (
+	linke: #d703d7,
+	spd: #f90000,
+	gruene: #64dc00,
+	cducsu: #111,
+
+	fdp: #ffc100,
+	afd: #01009c, // Sad but likely
+	piraten: #f18200
+);
 
 $subtleBorder: 1px solid rgba(#000, .2);
 $modalSlidingDuration: .5s;
