@@ -87,38 +87,10 @@ fieldset {
 		padding: 0;
 		list-style: none;
 	}
-	li {
-		label {
-			$tickWidth: .7em;
-			font-family: $font-secondary;
-			display: inline-block;
-			min-height: 1.3em;
-			padding: 0 .1em 0 ($tickWidth + .3em);
-			cursor: pointer;
-			@include transition(background-color, .1s);
-			color: #555;
-			&:before {
-				display: inline-block;
-				width: $tickWidth;
-				margin-left: (-1 * $tickWidth) - .3em;
-				content: " ";
-			}
-		}
-	}
 }
-input[type=checkbox] {
-	display: none;
-}
-label:hover {
-	background-color: rgba($color-primary, .1);
-}
-label.active {
-	color: $color-primary;
-	border-left-color: transparent;
-	&:before {
-		content: "✓";
-	}
-}
+
+@import "togglebuttons";
+
 #land ul {
 	display: none;
 }

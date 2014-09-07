@@ -149,22 +149,23 @@ fieldset {
     margin: 0;
     padding: 0;
     list-style: none; }
-  fieldset li label {
-    font-family: Verdana, sans-serif;
-    display: inline-block;
-    min-height: 1.3em;
-    padding: 0 0.1em 0 1em;
-    cursor: pointer;
-    transition: background-color 0.1s ease;
-    color: #555; }
-    fieldset li label:before {
-      display: inline-block;
-      width: 0.7em;
-      margin-left: -1em;
-      content: " "; }
 
 input[type=checkbox] {
   display: none; }
+
+label {
+  font-family: Verdana, sans-serif;
+  display: inline-block;
+  min-height: 1.3em;
+  padding: 0 0.1em 0 1em;
+  cursor: pointer;
+  transition: background-color 0.1s ease;
+  color: #555; }
+  label:before {
+    display: inline-block;
+    width: 0.7em;
+    margin-left: -1em;
+    content: " "; }
 
 label:hover {
   background-color: rgba(0, 0, 0, 0.1); }
