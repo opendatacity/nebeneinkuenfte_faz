@@ -20,8 +20,3 @@
 - Hat man ein Bundesland ausgewählt, ist der Weg zurück zu allen Bundesländern zu umständlich. Daher: Klickt man ein Bundesland an, erscheint Textlink „Alle Länder“. Außerdem wird die Länderauswahl durch erneutes Anklicken  des Bundeslandes wieder aufgehoben.
 - Für Touch-Geräte sind die kleinen Punkte zu klein. Bitte optimieren (z.B. Punkte insgesamt so groß wie möglich, Abstände größer, touchablen Bereich erweitern o.ä.)
 - In der Quellenangabe ist "Quellcode" nicht verlinkt.
-
-
-# Smartphone
-
-- Bundeslandauswahl ohne Karte, stattdessen über Dropdownmenü („Alle Länder“ = default)

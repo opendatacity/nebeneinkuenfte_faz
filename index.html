@@ -29,43 +29,6 @@
 		<h1>Nebeneinkünfte von Bundestagsabgeordneten</h1>
 		<p>Abgeordnete mit mindestens einer Nebentätigkeit über 1000&nbsp;Euro</p>
 	</header>
-	<div id="parliamentContainer">
-		<svg id="parliament" preserveAspectRatio="xMinYMid">
-			<defs>
-				<pattern id="stripe" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
-					<polygon opacity="0.5" fill="#fff" points="0,0 10,0 0,10 "/>
-					<polygon opacity="0.5" fill="#fff" points="0,20 20,0 20,10 10,20 "/>
-				</pattern>
-			</defs>
-		</svg>
-	</div>
-	<div id="repInspector" class="repInspector hidden moving">
-		<h2><a href="#" class="name"></a></h2>
-		<p class="meta"><span class="faction"></span> <span class="land"></span> <span class="mandate"></span></p>
-		<p class="convenienceButtons"><input type="button" class="button close" value="×"></p>
-
-		<table class="nebeneinkuenfte">
-			<caption><span class="count">Nebeneinkünfte</span>, <abbr title="mindestens">min.</abbr> <span class="number minSum"></span></caption>
-			<thead>
-				<tr>
-					<th>Tätigkeit</th>
-					<th class="number">Einkünfte&nbsp;<abbr title="mindestens">min.</abbr></th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr class="nebeneinkunft">
-					<td class="description"></td>
-					<td class="number minAmount"></td>
-				</tr>
-			</tbody>
-			<tfoot>
-				<tr>
-					<th class="number">Summe <abbr title="mindestens">min.</abbr></th>
-					<td class="number minSum"></td>
-				</tr>
-			</tfoot>
-		</table>
-	</div>
 	<form action="/">
 		<p class="convenienceButtons"><input type="button" class="button close" value="×"></p>
 		<fieldset id="land">
@@ -136,6 +99,43 @@
 		</fieldset>
 		<input type="submit">
 	</form>
+	<div id="parliamentContainer">
+		<svg id="parliament" preserveAspectRatio="xMinYMid">
+			<defs>
+				<pattern id="stripe" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+					<polygon opacity="0.5" fill="#fff" points="0,0 10,0 0,10 "/>
+					<polygon opacity="0.5" fill="#fff" points="0,20 20,0 20,10 10,20 "/>
+				</pattern>
+			</defs>
+		</svg>
+	</div>
+	<div id="repInspector" class="repInspector hidden moving">
+		<h2><a href="#" class="name"></a></h2>
+		<p class="meta"><span class="faction"></span> <span class="land"></span> <span class="mandate"></span></p>
+		<p class="convenienceButtons"><input type="button" class="button close" value="×"></p>
+
+		<table class="nebeneinkuenfte">
+			<caption><span class="count">Nebeneinkünfte</span>, <abbr title="mindestens">min.</abbr> <span class="number minSum"></span></caption>
+			<thead>
+				<tr>
+					<th>Tätigkeit</th>
+					<th class="number">Einkünfte&nbsp;<abbr title="mindestens">min.</abbr></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr class="nebeneinkunft">
+					<td class="description"></td>
+					<td class="number minAmount"></td>
+				</tr>
+			</tbody>
+			<tfoot>
+				<tr>
+					<th class="number">Summe <abbr title="mindestens">min.</abbr></th>
+					<td class="number minSum"></td>
+				</tr>
+			</tfoot>
+		</table>
+	</div>
 	<footer>
 		<p>Eine Visualisierung von OpenDataCity und FAZ.net.</p>
 		<nav>

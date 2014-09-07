@@ -41,7 +41,7 @@ abbr {
 }
 
 header {
-	max-width: 800px;
+	@extend %width;
 	margin: 1.5em auto;
 	h1 {
 		font-size: 1.6em;
@@ -55,18 +55,22 @@ header {
 	width: 100%;
 	margin: 0 auto;
 }
-#parliament {
-	z-index: 3;
+%width {
 	width: 100%;
 	max-width: 800px;
+	margin: 0 auto;	
+}
+#parliament {
+	@extend %width;
+	z-index: 3;
 	height: auto;
-	margin: 0 auto;
 }
 
 form {
-	text-align: center;
-
+	@extend %width;
 	@extend %no-select;
+
+	text-align: left;
 }
 fieldset {
 	position: relative;
@@ -316,9 +320,10 @@ form .convenienceButtons {
 }
 footer,
 aside {
+	@extend %width;
+
 	font: .8em $font-secondary;
 	clear: both;
-	max-width: 800px;
 	margin: .5em auto;
 	padding-top: .5em;
 	color: $color-diminished;
@@ -459,6 +464,7 @@ html:not(.touch) form:hover {
 	form {
 		float: left;
 		max-width: 12em;
+		margin-right: 1em;
 	}
 	fieldset {
 		margin-top: 0;
@@ -466,7 +472,6 @@ html:not(.touch) form:hover {
 	}
 	#parliamentContainer {
 		float: left;
-		margin-right: 2em;
 	}
 	#parliament {
 		position: fixed;

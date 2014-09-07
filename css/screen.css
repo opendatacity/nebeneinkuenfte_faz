@@ -113,7 +113,6 @@ abbr {
   border: none; }
 
 header {
-  max-width: 800px;
   margin: 1.5em auto; }
   header h1 {
     font-size: 1.6em;
@@ -125,15 +124,18 @@ header {
   width: 100%;
   margin: 0 auto; }
 
-#parliament {
-  z-index: 3;
+header, #parliament, form, footer,
+aside {
   width: 100%;
   max-width: 800px;
-  height: auto;
   margin: 0 auto; }
 
+#parliament {
+  z-index: 3;
+  height: auto; }
+
 form {
-  text-align: center; }
+  text-align: left; }
 
 fieldset {
   position: relative;
@@ -383,7 +385,6 @@ footer,
 aside {
   font: 0.8em Verdana, sans-serif;
   clear: both;
-  max-width: 800px;
   margin: .5em auto;
   padding-top: .5em;
   color: #a8a8a8; }
@@ -493,13 +494,13 @@ html:not(.touch) form:hover {
   float: left; }
 .short.wide form {
   float: left;
-  max-width: 12em; }
+  max-width: 12em;
+  margin-right: 1em; }
 .short.wide fieldset {
   margin-top: 0;
   margin-bottom: 1em; }
 .short.wide #parliamentContainer {
-  float: left;
-  margin-right: 2em; }
+  float: left; }
 .short.wide #parliament {
   position: fixed; }
 .short.wide .uiHint {
