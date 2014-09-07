@@ -52,7 +52,7 @@ module.exports = (grunt) ->
           sourcemap: 'none'
           style: 'compressed'
         src: 'scss/screen.scss'
-        dest: '.tmp/css/screen.css'
+        dest: 'css/screen.css'
 
     autoprefixer:
       dev:
@@ -64,7 +64,7 @@ module.exports = (grunt) ->
       dist:
         options:
           browsers: ['> 1%', 'IE >= 9']
-        src: '.tmp/css/screen.css'
+        src: 'css/screen.css'
         dest: 'css/screen.css'
 
     uglify:
@@ -94,6 +94,9 @@ module.exports = (grunt) ->
         tasks: [] # trigger livereload
       js:
         files: 'js/*.js'
+        tasks: [] # trigger livereload
+      html:
+        files: '*.html'
         tasks: [] # trigger livereload
 
     connect:

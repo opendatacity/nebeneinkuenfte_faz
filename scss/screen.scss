@@ -40,6 +40,16 @@ abbr {
 	border: none;
 }
 
+header {
+	max-width: 800px;
+	margin: 1.5em auto;
+	h1 {
+		font-size: 1.6em;
+		line-height: 1em;
+		font-weight: normal;
+	}
+}
+
 #parliamentContainer {
 	overflow: hidden;
 	width: 100%;
