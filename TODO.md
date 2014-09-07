@@ -18,8 +18,6 @@
 
 # Grafik
 
-- Überschrift/Subline (In Georgia Regular, #000):
-- Bundesländer: Highlighting umkehren: Aktiv = grau, inaktiv = weiß
 - Buttonlayout: Vgl. Buttons "Bilderstrecke"/"Zur Homepage": http://www.faz.net/aktuell/sport/sportpolitik/vorstellung-berliner-und-hamburger-olympia-bewerbungen-13129924.html  
   Farbe: #C60000, hover #890000.
 

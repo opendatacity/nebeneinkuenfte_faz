@@ -22,18 +22,18 @@ fieldset legend, .convenienceButtons .close, form, .repInspector.moving caption 
     max-height: 14em; }
   #map path {
     cursor: pointer;
-    fill: #ddd;
+    fill: #fff;
     stroke-width: 1px;
-    stroke: #aaa; }
+    stroke: #ccc; }
   #map path:hover,
   #map path.active:hover {
     stroke-width: 2px;
-    stroke: #333;
+    stroke: #111;
     fill-opacity: .5; }
   #map path.active {
     stroke-width: 1px;
-    fill: #fff;
-    stroke: #333; }
+    fill: #ddd;
+    stroke: #111; }
 
 circle {
   cursor: pointer; }
