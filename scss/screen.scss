@@ -1,9 +1,8 @@
 @import "globals";
 @import "mixins";
-@import "webfonts";
 
 .unsupportedMessage {
-	font: 1.2em $secondaryFont;
+	font: 1.2em $font-secondary;
 	position: fixed;
 	z-index: 20;
 	display: none;
@@ -29,15 +28,18 @@
 }
 
 body {
-	font: 1em/1.2em $primaryFont;
+	font: 1em/1.2em $font-primary;
 }
 a {
 	&:link {
 		text-decoration: none;
-		color: $linkColor;
+		color: $color-link;
+	}
+	&:hover {
+		border-bottom: 1px solid $color-link;
 	}
 	&:visited {
-		color: lighten($linkColor, 10);
+		color: lighten($color-link, 10);
 	}
 }
 abbr {
@@ -113,7 +115,7 @@ fieldset {
 	li {
 		label {
 			$tickWidth: .7em;
-			font-family: $secondaryFont;
+			font-family: $font-secondary;
 			display: inline-block;
 			min-height: 1.3em;
 			padding: 0 .1em 0 ($tickWidth + .3em);
@@ -298,7 +300,7 @@ circle.cducsu:hover {
 	.faction,
 	.land,
 	.mandate {
-		font: .8em $secondaryFont;
+		font: .8em $font-secondary;
 	}
 	.faction,
 	.land {
@@ -396,7 +398,7 @@ circle.cducsu:hover {
 }
 footer,
 aside {
-	font: .8em $secondaryFont;
+	font: .8em $font-secondary;
 	clear: both;
 	max-width: 800px;
 	margin: .5em auto;
