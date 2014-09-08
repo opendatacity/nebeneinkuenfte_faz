@@ -13,8 +13,16 @@ nav.tabs {
 		display: inline-block;
 	}
 	a {
+		@extend %heading;
+		font-weight: normal;
+		font-size: .9em;
 		display: inline-block;
 		padding: .3em;
 		border-bottom: none;
+		cursor: pointer;
+		
+		&.inactive {
+			color: lighten(change-color($color-link, $saturation: 10%), 40%);
+		}
 	}
 }

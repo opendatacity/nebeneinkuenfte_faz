@@ -371,7 +371,7 @@
       return $(fieldset).append(div);
     });
     updateCheckboxLabelState($(':checkbox'));
-    return $('.invertSelection, .selectAll').click(function(event) {
+    $('.invertSelection, .selectAll').click(function(event) {
       var checkboxes, fieldset, selector;
       fieldset = $(this).parents('fieldset');
       selector = ':checkbox';
@@ -384,6 +384,26 @@
         return updateCheckboxLabelState(c);
       });
       return $(this).parents('form').triggerHandler('submit');
+    });
+    $('nav.tabs').on('mouseup touchend', 'a', function(event) {
+      var anchors, selected, selectedID;
+      selected = this;
+      selectedID = $(selected).attr('href');
+      anchors = $(selected).parents('nav').find('a');
+      return anchors.each(function(index, a) {
+        var anchorID;
+        if (a === selected) {
+          $(a).addClass('active').removeClass('inactive');
+          return $(selectedID).addClass('visible').removeClass('hidden');
+        } else {
+          anchorID = $(a).attr('href');
+          $(a).addClass('inactive').removeClass('active');
+          return $(anchorID).addClass('hidden').removeClass('visible');
+        }
+      });
+    });
+    return $('nav.tabs').on('click', function(event) {
+      return event.preventDefault();
     });
   });
 

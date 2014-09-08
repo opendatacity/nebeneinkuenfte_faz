@@ -268,6 +268,24 @@ $(document).ready ->
       updateCheckboxLabelState c
     $(this).parents('form').triggerHandler 'submit'
 
+  # Make tab buttons do something
+  $('nav.tabs').on 'mouseup touchend', 'a', (event) ->
+    selected = this
+    selectedID = $(selected).attr('href')
+    anchors = $(selected).parents('nav').find('a')
+
+    anchors.each (index, a) ->
+      if a is selected
+        $(a).addClass('active').removeClass('inactive')
+        $(selectedID).addClass('visible').removeClass('hidden')
+      else
+        anchorID = $(a).attr('href')
+        $(a).addClass('inactive').removeClass('active')
+        $(anchorID).addClass('hidden').removeClass('visible')
+  $('nav.tabs').on 'click', (event) ->
+    # Stop anchor showing up in URL bar
+    event.preventDefault()
+
 $.getJSON window.dataPath, (data) ->
   data = data.data
   window._data = _(data)

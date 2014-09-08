@@ -1,13 +1,13 @@
 @charset "UTF-8";
-fieldset legend, .convenienceButtons .close, .repInspector h2, th {
+nav.tabs a, fieldset legend, .convenienceButtons .close, .repInspector h2, th {
   font: 1em/1.2 Verdana, sans-serif; }
 
-fieldset legend, .convenienceButtons .close, .repInspector h2 {
+nav.tabs a, fieldset legend, .convenienceButtons .close, .repInspector h2 {
   text-transform: uppercase;
   letter-spacing: .05em;
   font-weight: bold; }
 
-fieldset legend, .convenienceButtons .close, form, .repInspector.moving caption {
+nav.tabs a, fieldset legend, .convenienceButtons .close, form, .repInspector.moving caption {
   cursor: default;
   -webkit-user-select: none;
      -moz-user-select: none;
@@ -83,9 +83,14 @@ nav.tabs {
   nav.tabs li {
     display: inline-block; }
   nav.tabs a {
+    font-weight: normal;
+    font-size: .9em;
     display: inline-block;
     padding: .3em;
-    border-bottom: none; }
+    border-bottom: none;
+    cursor: pointer; }
+    nav.tabs a.inactive {
+      color: #cec4c4; }
 
 .unsupportedMessage {
   font: 1.2em Verdana, sans-serif;
