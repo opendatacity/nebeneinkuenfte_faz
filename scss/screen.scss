@@ -31,6 +31,7 @@
 
 body {
 	font: 1em/1.2em $font-primary;
+	margin: $margin-body;
 }
 a {
 	text-decoration: none;
@@ -42,12 +43,19 @@ abbr {
 }
 
 header {
-	@extend %width;
-	margin: 1.5em auto;
+	margin: -$margin-body;
+	margin-bottom: 1em;
+	background-color: $color-chrome;
+	padding: 2em $margin-body 1em;
+
+	h1, p {
+		@extend %width;
+	}
 	h1 {
 		font-size: 1.6em;
 		line-height: 1em;
 		font-weight: normal;
+		margin-bottom: .5em;
 	}
 }
 
@@ -56,19 +64,8 @@ header {
 	width: 100%;
 	margin: 0 auto;
 }
-%width {
-	width: 100%;
-	max-width: 800px;
-	margin: 0 auto;	
-}
-#parliament {
-	@extend %width;
-	z-index: 3;
-	height: auto;
-}
 
 form {
-	@extend %width;
 	@extend %no-select;
 
 	text-align: left;
@@ -156,7 +153,7 @@ input[type=submit] {
 	top: 1em;
 	left: 0;
 	margin: 0;
-	
+
 	&.allSelected {
 		display: none;
 	}

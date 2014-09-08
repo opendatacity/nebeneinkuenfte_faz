@@ -15,6 +15,11 @@
 	cursor: default;
 	user-select: none;
 }
+%width {
+	width: 100%;
+	max-width: 800px;
+	margin: 0 auto;	
+}
 @mixin transition ($property, $duration: .2s, $timing: ease) {
 	transition: $property $duration $timing;
 }

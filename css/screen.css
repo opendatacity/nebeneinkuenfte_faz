@@ -7,11 +7,17 @@ nav.tabs a, fieldset legend, .convenienceButtons .close, .repInspector h2 {
   letter-spacing: .05em;
   font-weight: bold; }
 
-nav.tabs a, fieldset legend, .convenienceButtons .close, form, .repInspector.moving caption {
+nav.tabs a, fieldset legend, .convenienceButtons .close, nav.tabs, form, .repInspector.moving caption {
   cursor: default;
   -webkit-user-select: none;
      -moz-user-select: none;
           user-select: none; }
+
+.tab, header h1, header p, footer,
+aside {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto; }
 
 #map {
   width: 10em;
@@ -70,11 +76,18 @@ circle.cducsu {
 .arc.cducsu {
   fill: whitesmoke; }
 
+@font-face {
+  font-family: 'icomoon';
+  src: url("../fonts/icomoon.eot?xtrrev");
+  src: url("../fonts/icomoon.eot?#iefixxtrrev") format("embedded-opentype"), url("../fonts/icomoon.woff?xtrrev") format("woff"), url("../fonts/icomoon.ttf?xtrrev") format("truetype"), url("../fonts/icomoon.svg?xtrrev#icomoon") format("svg");
+  font-weight: normal;
+  font-style: normal; }
 nav.tabs {
   position: fixed;
   bottom: 0;
   left: 0;
-  width: 100%; }
+  width: 100%;
+  background-color: rgba(249, 249, 249, 0.95); }
   nav.tabs ul {
     list-style-type: none;
     margin: 0;
@@ -84,13 +97,26 @@ nav.tabs {
     display: inline-block; }
   nav.tabs a {
     font-weight: normal;
-    font-size: .9em;
+    font-size: .8em;
     display: inline-block;
-    padding: .3em;
+    padding: .5em .7em;
     border-bottom: none;
     cursor: pointer; }
     nav.tabs a.inactive {
       color: #cec4c4; }
+    nav.tabs a:before {
+      content: '';
+      font: 20px/1em icomoon;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      display: block;
+      padding: .2em 0; }
+    nav.tabs a.filter:before {
+      content: "\e600"; }
+    nav.tabs a.parliament:before {
+      content: "\e601"; }
+    nav.tabs a.table:before {
+      content: "\e602"; }
 
 .unsupportedMessage {
   font: 1.2em Verdana, sans-serif;
@@ -118,7 +144,8 @@ nav.tabs {
     display: block; }
 
 body {
-  font: 1em/1.2em Georgia, "Linux Libertine", serif; }
+  font: 1em/1.2em Georgia, "Linux Libertine", serif;
+  margin: 10px; }
 
 a {
   text-decoration: none;
@@ -135,26 +162,20 @@ abbr {
   border: none; }
 
 header {
-  margin: 1.5em auto; }
+  margin: -10px;
+  margin-bottom: 1em;
+  background-color: rgba(249, 249, 249, 0.95);
+  padding: 2em 10px 1em; }
   header h1 {
     font-size: 1.6em;
     line-height: 1em;
-    font-weight: normal; }
+    font-weight: normal;
+    margin-bottom: .5em; }
 
 #parliamentView {
   overflow: hidden;
   width: 100%;
   margin: 0 auto; }
-
-header, #parliament, form, footer,
-aside {
-  width: 100%;
-  max-width: 800px;
-  margin: 0 auto; }
-
-#parliament {
-  z-index: 3;
-  height: auto; }
 
 form {
   text-align: left; }

@@ -1,8 +1,13 @@
+@import "webfonts";
+
 nav.tabs {
+	@extend %no-select;
 	position: fixed;
 	bottom: 0;
 	left: 0;
 	width: 100%;
+	background-color: $color-chrome;
+
 	ul {
 		list-style-type: none;
 		margin: 0;
@@ -15,14 +20,28 @@ nav.tabs {
 	a {
 		@extend %heading;
 		font-weight: normal;
-		font-size: .9em;
+		font-size: .8em;
 		display: inline-block;
-		padding: .3em;
+		padding: .5em .7em;
 		border-bottom: none;
 		cursor: pointer;
-		
+
 		&.inactive {
 			color: lighten(change-color($color-link, $saturation: 10%), 40%);
 		}
+		&:before {
+			content: '';
+			font: 20px/1em icomoon;
+			-webkit-font-smoothing: antialiased;
+			-moz-osx-font-smoothing: grayscale;
+			display: block;
+			padding: .2em 0;
+		}
+		&.filter:before { content: "\e600"; }
+		&.parliament:before { content: "\e601"; }
+		&.table:before { content: "\e602"; }
 	}
+}
+.tab {
+	@extend %width;
 }
