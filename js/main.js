@@ -604,7 +604,6 @@
           return 'hidden';
         }
       });
-      console.log(data.length);
       return row.exit().remove();
     };
     $('#tableView tbody').on('click touchend', 'tr', function(event) {

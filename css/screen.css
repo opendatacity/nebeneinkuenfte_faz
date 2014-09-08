@@ -70,6 +70,23 @@ circle.cducsu {
 .arc.cducsu {
   fill: whitesmoke; }
 
+nav.tabs {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%; }
+  nav.tabs ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    text-align: center; }
+  nav.tabs li {
+    display: inline-block; }
+  nav.tabs a {
+    display: inline-block;
+    padding: .3em;
+    border-bottom: none; }
+
 .unsupportedMessage {
   font: 1.2em Verdana, sans-serif;
   position: fixed;
@@ -120,7 +137,6 @@ header {
     font-weight: normal; }
 
 #parliamentView {
-  display: none;
   overflow: hidden;
   width: 100%;
   margin: 0 auto; }

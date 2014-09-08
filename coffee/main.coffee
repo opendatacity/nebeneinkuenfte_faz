@@ -477,8 +477,6 @@ $.getJSON window.dataPath, (data) ->
     row.transition()
     .attr 'class', (rep) -> if rep.radius >= 1 then 'visible' else 'hidden'
 
-    console.log data.length
-
     row.exit().remove()
 
   $('#tableView tbody').on 'click touchend', 'tr', (event) ->

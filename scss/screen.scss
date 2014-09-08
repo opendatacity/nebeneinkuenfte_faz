@@ -1,6 +1,7 @@
 @import "globals";
 @import "mixins";
 @import "svg";
+@import "tabs";
 
 .unsupportedMessage {
 	font: 1.2em $font-secondary;
@@ -51,7 +52,6 @@ header {
 }
 
 #parliamentView {
-	display: none;
 	overflow: hidden;
 	width: 100%;
 	margin: 0 auto;
