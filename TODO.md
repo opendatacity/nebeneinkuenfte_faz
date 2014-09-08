@@ -17,5 +17,4 @@
 
 # Navigation
 
-- Für Touch-Geräte sind die kleinen Punkte zu klein. Bitte optimieren (z.B. Punkte insgesamt so groß wie möglich, Abstände größer, touchablen Bereich erweitern o.ä.)
 - In der Quellenangabe ist "Quellcode" nicht verlinkt.

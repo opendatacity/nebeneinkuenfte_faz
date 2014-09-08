@@ -388,7 +388,7 @@
   });
 
   $.getJSON(window.dataPath, function(data) {
-    var arc, collide, dataByFaction, drawRepresentatives, factions, filterData, force, g, initializeRepPositions, inspector, minSumPerSeat, node, parliament, pie, renderInterval, renderStart, repRadius, repRadiusScaleFactor, rowHTML, seats, seatsPie, svg, table, tableData, tableRow, tick, tickI, totalSeats, updateTable;
+    var arc, collide, dataByFaction, drawRepresentatives, factions, filterData, force, g, initializeRepPositions, inspector, minSumPerSeat, node, parliament, pie, repRadius, repRadiusScaleFactor, rowHTML, seats, seatsPie, svg, table, tableData, tableRow, tick, totalSeats, updateTable;
     data = data.data;
     window._data = _(data);
     factions = Factions.filter(function(faction) {
@@ -433,14 +433,8 @@
     tableData = data.sort(function(rep1, rep2) {
       return rep2.nebeneinkuenfteMinSum - rep1.nebeneinkuenfteMinSum;
     });
-    renderStart = null;
-    renderInterval = 1;
-    tickI = 0;
     tick = function(e) {
-      var alpha, qt, renderSpeed;
-      if (renderStart === null) {
-        renderStart = new Date();
-      }
+      var alpha, qt;
       alpha = e.alpha * e.alpha;
       qt = d3.geom.quadtree(data);
       data.forEach(function(rep, i) {
@@ -481,18 +475,17 @@
         }
         return collide(.3, qt)(rep);
       });
-      if (tickI % renderInterval === 0 || alpha < 1e-3) {
-        node.attr('cx', function(d) {
-          return d.x;
+      if (!window.animationFrameRequested) {
+        window.requestAnimationFrame(function() {
+          window.animationFrameRequested = false;
+          node.attr('cx', function(d) {
+            return d.x;
+          });
+          return node.attr('cy', function(d) {
+            return d.y;
+          });
         });
-        node.attr('cy', function(d) {
-          return d.y;
-        });
-      }
-      tickI++;
-      if (tickI === 5) {
-        renderSpeed = (new Date() - renderStart) / 5;
-        return renderInterval = Math.ceil(renderSpeed / 40);
+        return window.animationFrameRequested = true;
       }
     };
     collide = function(alpha, qt) {

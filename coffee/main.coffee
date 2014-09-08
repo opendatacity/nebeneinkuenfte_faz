@@ -306,13 +306,7 @@ $.getJSON window.dataPath, (data) ->
   # for the data table
   tableData = data.sort (rep1, rep2) -> rep2.nebeneinkuenfteMinSum - rep1.nebeneinkuenfteMinSum
 
-  # To improve performance, we'll measure how long it takes the browser
-  # to render the first 5 ticks and then only render every n-th tick.
-  renderStart = null
-  renderInterval = 1
-  tickI = 0
   tick = (e) ->
-    renderStart = new Date() if renderStart is null
     alpha = e.alpha * e.alpha
     qt = d3.geom.quadtree data
     data.forEach (rep, i) ->
@@ -356,15 +350,12 @@ $.getJSON window.dataPath, (data) ->
 
       collide(.3, qt)(rep) # .4
 
-    if tickI % renderInterval == 0 or alpha < 1e-3
-      node.attr 'cx', (d) -> d.x
-      node.attr 'cy', (d) -> d.y
-    tickI++
-
-    if tickI == 5
-      renderSpeed = (new Date() - renderStart) / 5
-      # We're aiming at 25-30 f/s, or about 40 s/f
-      renderInterval = Math.ceil renderSpeed/40
+    unless window.animationFrameRequested
+      window.requestAnimationFrame ->
+        window.animationFrameRequested = false
+        node.attr 'cx', (d) -> d.x
+        node.attr 'cy', (d) -> d.y
+      window.animationFrameRequested = true
 
   collide = (alpha, qt) ->
     return (d) ->
