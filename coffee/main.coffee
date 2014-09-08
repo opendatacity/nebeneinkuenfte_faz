@@ -28,7 +28,7 @@ nebeneinkuenfteMinSum = (rep) ->
   sum = rep.nebeneinkuenfte.reduce ((sum, einkunft) -> sum += NebeneinkunftMinAmounts[einkunft.level]), 0
   return Math.max parseInt(sum, 10), 1
 
-formatCurrency = _.memoize (amount, html) ->
+formatCurrency = _.memoize (amount, html = true) ->
   prepend = if html then '<span class="digitGroup">' else ''
   append = if html then '</span>' else ''
   glue = if html then '' else ' '
@@ -266,6 +266,7 @@ $.getJSON window.dataPath, (data) ->
 
   _data.each (rep) ->
     rep.nebeneinkuenfteMinSum = nebeneinkuenfteMinSum rep
+    rep.nebeneinkuenfteCount = rep.nebeneinkuenfte.length
     rep.nebeneinkuenfte.sort (a, b) -> b.level - a.level
   # To distribute the reps evenly in the parliament,
   # we first have to establish where we should draw the boundaries
@@ -289,6 +290,10 @@ $.getJSON window.dataPath, (data) ->
   console.log data
   # Recalculate dataByFaction from `data`
   dataByFaction = _.groupBy data, 'fraktion'
+
+  # We'll create a clone of the data array that can be sorted in place
+  # for the data table
+  tableData = data.sort (rep1, rep2) -> rep2.nebeneinkuenfteMinSum - rep1.nebeneinkuenfteMinSum
 
   # To improve performance, we'll measure how long it takes the browser
   # to render the first 5 ticks and then only render every n-th tick.
@@ -452,6 +457,30 @@ $.getJSON window.dataPath, (data) ->
     force.start() if initialize
     force.alpha .07
 
+  table = d3.select '#tableContainer tbody'
+  rowHTML = $('#tableContainer tbody tr').remove().html()
+
+  tableRow = (rep) ->
+    rowHTML.replace /<span (?:data-type="(.*?)" )?data-field="(.*?)"><\/span>/g, (match, type, property) ->
+      return formatCurrency rep[property] if type is 'currency'
+      rep[property]
+
+  updateTable = ->
+    row = table.selectAll 'tr'
+    .data tableData
+
+    row.enter().append 'tr'
+    .html tableRow
+    .select '.faction'
+    .attr 'class', (rep) -> 'faction ' + _.find(Factions, name: rep.fraktion).class
+
+    row.transition()
+    .attr 'class', (rep) -> if rep.radius >= 1 then 'visible' else 'hidden'
+
+    console.log data.length
+
+    row.exit().remove()
+
   filterData = (filter) ->
     _(data).each (rep) ->
       visible = _.reduce filter, (sum, filterValues, filterProperty) ->
@@ -470,6 +499,7 @@ $.getJSON window.dataPath, (data) ->
   filterData {}
 
   drawRepresentatives(true)
+  updateTable()
 
   inspector = new RepInspector '#repInspector'
 
@@ -488,6 +518,7 @@ $.getJSON window.dataPath, (data) ->
 
     filterData filter
     drawRepresentatives()
+    updateTable()
     #hideRepresentatives groupedData.false if groupedData.false
 
   $('form').on 'change', 'input', ->

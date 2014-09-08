@@ -27,7 +27,11 @@ module.exports = (grunt) ->
         sourceMap: true
       compile:
         src: 'coffee/*.coffee'
-        dest: 'js/dist.js'
+        expand: true
+        flatten: true
+        dest: 'js/'
+        ext: '.js'
+        extDot: 'last'
 
     concat:
       dist:

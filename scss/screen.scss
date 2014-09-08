@@ -51,6 +51,7 @@ header {
 }
 
 #parliamentContainer {
+	display: none;
 	overflow: hidden;
 	width: 100%;
 	margin: 0 auto;
@@ -228,62 +229,6 @@ form .convenienceButtons {
 		padding-right: .5em;
 		border-right: $subtleBorder;
 	}
-	tr.cat0 {
-		color: $color-diminished;
-	}
-	table {
-		font-size: .8em;
-		display: block;
-		width: 100%;
-		border-collapse: collapse;
-	}
-	tfoot th,
-	tfoot td {
-		line-height: 2em;
-		padding: 0;
-	}
-	thead,
-	tbody,
-	tfoot {
-		display: block;
-		margin: 0 -.8em;
-		padding: 0 .8em;
-	}
-	thead,
-	tfoot {
-		z-index: 3;
-	}
-	tbody {
-		z-index: 2;
-		overflow: auto;
-		max-height: 10em;
-		border: 1px solid rgba($color-primary, .05);
-		border-right: none;
-		border-left: none;
-		-webkit-overflow-scrolling: touch;
-	}
-	.minAmount,
-	.minSum {
-		min-width: 5em;
-		text-align: right;
-	}
-	td,
-	th {
-		width: 100%;
-		vertical-align: bottom;
-	}
-	th {
-		text-align: left;
-
-		@extend %heading-minor;
-	}
-	th.number {
-		text-align: right;
-	}
-	td,
-	th {
-		padding: .3em 0;
-	}
 	// We can't have CDU politicians' names appear in bright red
 	@if lightness($color-link) > 20% {
 		a { @include link($color-primary); }
@@ -295,6 +240,7 @@ form .convenienceButtons {
 	display: block;
 	visibility: hidden;
 }
+@import "table";
 .number {
 	text-align: right;
 	white-space: nowrap;

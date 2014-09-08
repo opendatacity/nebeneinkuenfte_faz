@@ -1,18 +1,6 @@
 (function() {
-  var Arc, Factions, NebeneinkunftMinAmounts, Rep, RepInspector, T, Tp, Viewport, formatCurrency, getEventPosition, nebeneinkuenfteMinSum, showOrHideConvenienceButtons, updateCheckboxLabelState;
-
-  window.dictionary = {
-    direkt: 'Direktmandat',
-    liste: 'Listenmandat',
-    Nebentaetigkeit0: 'keine Nebentätigkeiten',
-    Nebentaetigkeit: 'Nebentätigkeit',
-    Nebentaetigkeit1: 'eine Nebentätigkeit',
-    NebentaetigkeitPlural: 'Nebentätigkeiten',
-    'Bündnis 90/Die Grünen': 'Grüne',
-    'Die Linke': 'Linke'
-  };
-
   'use strict';
+  var Arc, Factions, NebeneinkunftMinAmounts, Rep, RepInspector, T, Tp, Viewport, formatCurrency, getEventPosition, nebeneinkuenfteMinSum, showOrHideConvenienceButtons, updateCheckboxLabelState;
 
   Viewport = {
     width: 800,
@@ -88,6 +76,9 @@
 
   formatCurrency = _.memoize(function(amount, html) {
     var append, currency, glue, group, groups, prepend;
+    if (html == null) {
+      html = true;
+    }
     prepend = html ? '<span class="digitGroup">' : '';
     append = html ? '</span>' : '';
     glue = html ? '' : ' ';
@@ -381,7 +372,7 @@
   });
 
   $.getJSON(window.dataPath, function(data) {
-    var arc, collide, dataByFaction, drawRepresentatives, factions, filterData, force, g, initializeRepPositions, inspector, minSumPerSeat, node, parliament, pie, renderInterval, renderStart, repRadius, repRadiusScaleFactor, seats, seatsPie, svg, table, tick, tickI, totalSeats, updateTable;
+    var arc, collide, dataByFaction, drawRepresentatives, factions, filterData, force, g, initializeRepPositions, inspector, minSumPerSeat, node, parliament, pie, renderInterval, renderStart, repRadius, repRadiusScaleFactor, rowHTML, seats, seatsPie, svg, table, tableData, tableRow, tick, tickI, totalSeats, updateTable;
     data = data.data;
     window._data = _(data);
     factions = Factions.filter(function(faction) {
@@ -391,6 +382,7 @@
     });
     _data.each(function(rep) {
       rep.nebeneinkuenfteMinSum = nebeneinkuenfteMinSum(rep);
+      rep.nebeneinkuenfteCount = rep.nebeneinkuenfte.length;
       return rep.nebeneinkuenfte.sort(function(a, b) {
         return b.level - a.level;
       });
@@ -422,6 +414,9 @@
     }).value();
     console.log(data);
     dataByFaction = _.groupBy(data, 'fraktion');
+    tableData = data.sort(function(rep1, rep2) {
+      return rep2.nebeneinkuenfteMinSum - rep1.nebeneinkuenfteMinSum;
+    });
     renderStart = null;
     renderInterval = 1;
     tickI = 0;
@@ -585,11 +580,32 @@
       return force.alpha(.07);
     };
     table = d3.select('#tableContainer tbody');
+    rowHTML = $('#tableContainer tbody tr').remove().html();
+    tableRow = function(rep) {
+      return rowHTML.replace(/<span (?:data-type="(.*?)" )?data-field="(.*?)"><\/span>/g, function(match, type, property) {
+        if (type === 'currency') {
+          return formatCurrency(rep[property]);
+        }
+        return rep[property];
+      });
+    };
     updateTable = function() {
       var row;
-      row = table.selectAll('tr').data(data);
-      console.log(data);
-      return row.enter().append('tr');
+      row = table.selectAll('tr').data(tableData);
+      row.enter().append('tr').html(tableRow).select('.faction').attr('class', function(rep) {
+        return 'faction ' + _.find(Factions, {
+          name: rep.fraktion
+        })["class"];
+      });
+      row.transition().attr('class', function(rep) {
+        if (rep.radius >= 1) {
+          return 'visible';
+        } else {
+          return 'hidden';
+        }
+      });
+      console.log(data.length);
+      return row.exit().remove();
     };
     filterData = function(filter) {
       return _(data).each(function(rep) {
@@ -633,7 +649,8 @@
         });
       }).value();
       filterData(filter);
-      return drawRepresentatives();
+      drawRepresentatives();
+      return updateTable();
     });
     $('form').on('change', 'input', function() {
       $(this).submit();
@@ -726,4 +743,4 @@
 
 }).call(this);
 
-//# sourceMappingURL=dist.js.map
+//# sourceMappingURL=main.js.map

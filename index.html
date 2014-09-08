@@ -109,6 +109,31 @@
 			</defs>
 		</svg>
 	</div>
+	<div id="tableContainer">
+		<table class="representatives">
+			<thead>
+				<tr>
+					<th class="name">Name</th>
+					<th class="faction">Fraktion</th>
+					<th class="land">Land</th>
+					<th class="mandate">Mandat</th>
+					<th class="count number">Anzahl der Nebentätigkeiten</th>
+					<th class="minSum number">Mindesteinnahmen aus Nebentätigkeiten</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<th class="name"><span data-field="name"></span></th>
+					<td class="faction"><span data-field="fraktion"></span></td>
+					<td class="land"><span data-field="land"></span></td>
+					<td class="mandate"><span data-field="mandat"></span></td>
+					<td class="count number"><span data-field="nebeneinkuenfteCount"></span></td>
+					<td class="minSum number"><span data-type="currency" data-field="nebeneinkuenfteMinSum"></span></td>
+				</tr>
+			</tbody>
+
+		</table>
+	</div>
 	<div id="repInspector" class="repInspector hidden moving">
 		<h2><a href="#" class="name"></a></h2>
 		<p class="meta"><span class="faction"></span> <span class="land"></span> <span class="mandate"></span></p>
@@ -152,7 +177,11 @@
 	</aside>
 
 	<script type="text/javascript">var dataPath = 'data/data.json';</script>
-	<script src="js/dist.min.js" charset="utf-8"></script>
+	<script src="bower_components/d3/d3.js" charset="utf-8"></script>
+	<script src="bower_components/jquery/dist/jquery.js" charset="utf-8"></script>
+	<script src="bower_components/lodash/dist/lodash.js" charset="utf-8"></script>
+	<script src="js/lib/modernizr.custom.69569.js" charset="utf-8"></script>
+	<script src="js/de-de.dict.js" charset="utf-8"></script>
+	<script src="js/main.js" charset="utf-8"></script>
 </body>
-
 </html>
