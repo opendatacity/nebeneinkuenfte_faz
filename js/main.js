@@ -275,7 +275,7 @@
   })();
 
   $(document).ready(function() {
-    var ignoreNext, longTap, longTapTimeout, mapClickCount, mapClickCountResetTimeout;
+    var checkAllInParentFieldset, ignoreNext, longTap, longTapTimeout, mapClickCount, mapClickCountResetTimeout;
     $('.startCollapsed').each(function(i, e) {
       return $(e).css({
         height: $(e).height()
@@ -307,18 +307,21 @@
         return land.trigger('touchend');
       }, 500);
     });
-    $('#map').on('dblclick', 'path', function() {
+    checkAllInParentFieldset = function(element) {
       var checkboxes;
-      checkboxes = $(this).parents('fieldset').find(':checkbox');
+      checkboxes = $(element).parents('fieldset').find(':checkbox');
       checkboxes.prop('checked', true);
       updateCheckboxLabelState(checkboxes);
-      return $(this).parents('form').submit();
+      return $(element).parents('form').submit();
+    };
+    $('#map').on('dblclick', 'path', function() {
+      return checkAllInParentFieldset(this);
     });
     mapClickCount = 0;
     mapClickCountResetTimeout = null;
     ignoreNext = false;
     $('#map').on('mouseup touchend', 'path', function(event) {
-      var checkbox, fieldset, hint, land, selectMultiple;
+      var checkbox, fieldset, hint, land, selectAll, selectMultiple;
       mapClickCount++;
       clearTimeout(longTapTimeout);
       clearTimeout(mapClickCountResetTimeout);
@@ -335,11 +338,17 @@
       selectMultiple = event.shiftKey || event.metaKey || event.ctrlKey || longTap;
       land = $(this).attr('title');
       fieldset = $(this).parents('fieldset');
-      if (!selectMultiple) {
-        fieldset.find(':checkbox').prop('checked', false);
+      selectAll = $(this).attr('class') === 'active' && $(this).siblings('.active').length === 0;
+      if (selectAll) {
+        fieldset.find(':checkbox').prop('checked', true);
+        $(this).parents('form').triggerHandler('submit');
+      } else {
+        if (!selectMultiple) {
+          fieldset.find(':checkbox').prop('checked', false);
+        }
+        checkbox = fieldset.find("input[value=" + land + "]");
+        checkbox.click();
       }
-      checkbox = fieldset.find("input[value=" + land + "]");
-      checkbox.click();
       updateCheckboxLabelState($(':checkbox'));
       hint = fieldset.find('.uiHint');
       if (mapClickCount === 2 && !selectMultiple) {

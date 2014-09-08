@@ -201,11 +201,13 @@ $(document).ready ->
       land.trigger 'touchend'
     , 500
 
-  $('#map').on 'dblclick', 'path', ->
-    checkboxes = $(this).parents('fieldset').find(':checkbox')
+  checkAllInParentFieldset = (element) ->
+    checkboxes = $(element).parents('fieldset').find(':checkbox')
     checkboxes.prop 'checked', true
     updateCheckboxLabelState checkboxes
-    $(this).parents('form').submit()
+    $(element).parents('form').submit()
+
+  $('#map').on 'dblclick', 'path', -> checkAllInParentFieldset this
 
   # Count clicks on the map so we can display a hint about multiple selection
   # after the second click
@@ -225,9 +227,18 @@ $(document).ready ->
     selectMultiple = event.shiftKey or event.metaKey or event.ctrlKey or longTap
     land = $(this).attr 'title'
     fieldset = $(this).parents 'fieldset'
-    fieldset.find(':checkbox').prop('checked', false) unless selectMultiple
-    checkbox = fieldset.find "input[value=#{land}]"
-    checkbox.click()
+
+    # Return to "all selected" if the user clicks on the only selected land
+    selectAll = $(this).attr('class') == 'active' and $(this).siblings('.active').length is 0
+
+    if selectAll
+      fieldset.find(':checkbox').prop('checked', true)
+      $(this).parents('form').triggerHandler 'submit'
+    else
+      fieldset.find(':checkbox').prop('checked', false) unless selectMultiple
+      checkbox = fieldset.find "input[value=#{land}]"
+      checkbox.click()
+
     updateCheckboxLabelState $(':checkbox')
 
     hint = fieldset.find('.uiHint')
