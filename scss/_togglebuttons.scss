@@ -1,4 +1,4 @@
-label {
+label, %button {
 	
 	@mixin colors ($fg, $bg, $context: none) {
 		$darken: 0%;
@@ -54,6 +54,9 @@ label {
 		&:active {
 			@include colors($color-active-text, $color-active-bg, active);
 		}
+	}
+	&:focus {
+		outline: none;
 	}
 }
 input[type=checkbox] {

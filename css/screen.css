@@ -171,7 +171,7 @@ fieldset {
     line-height: 1em;
     font-size: .9em; }
 
-label {
+label, #land .convenienceButtons input {
   font-family: Verdana, sans-serif;
   display: inline-block;
   padding: 0.3em 0.6em;
@@ -182,36 +182,38 @@ label {
   border-color: #dad2d2;
   color: #6d5959;
   background-color: #e5e0e0; }
-  label:before {
+  label:before, #land .convenienceButtons input:before {
     display: inline-block;
     width: 0.7em;
     margin-left: -1em;
     content: " ";
     opacity: 1; }
-  label:hover {
+  label:hover, #land .convenienceButtons input:hover {
     border-color: #cec4c4;
     color: #6d5959;
     background-color: #dad2d2; }
-  label:active {
+  label:active, #land .convenienceButtons input:active {
     border-color: #c3b6b6;
     color: #6d5959;
     background-color: #cec4c4; }
-  label.active {
+  label.active, #land .convenienceButtons input.active {
     padding-left: 1.6em;
     border-color: #ad0000;
     color: #fff;
     background-color: #c60000; }
-    label.active:before {
+    label.active:before, #land .convenienceButtons input.active:before {
       content: "✓";
       opacity: 1; }
-    label.active:hover {
+    label.active:hover, #land .convenienceButtons input.active:hover {
       border-color: #930000;
       color: #fff;
       background-color: #ad0000; }
-    label.active:active {
+    label.active:active, #land .convenienceButtons input.active:active {
       border-color: #7a0000;
       color: #fff;
       background-color: #930000; }
+  label:focus, #land .convenienceButtons input:focus {
+    outline: none; }
 
 input[type=checkbox] {
   display: none; }
@@ -242,11 +244,7 @@ input[type=submit] {
   display: none; }
 
 .convenienceButtons {
-  position: absolute;
-  top: 1em;
-  right: 1em;
-  display: inline-block;
-  margin: 0; }
+  display: none; }
   .convenienceButtons .close {
     line-height: 2em;
     width: 2em;
@@ -262,7 +260,20 @@ input[type=submit] {
     .convenienceButtons .close:active {
       background-color: rgba(0, 0, 0, 0.3); }
 
-form .convenienceButtons {
+#land .convenienceButtons {
+  display: inline-block;
+  position: absolute;
+  top: 1em;
+  left: 0;
+  margin: 0; }
+  #land .convenienceButtons.allSelected {
+    display: none; }
+  #land .convenienceButtons input {
+    font-size: .9em; }
+  #land .convenienceButtons .invertSelection {
+    display: none; }
+
+form > .convenienceButtons {
   display: none;
   top: .4em;
   right: 1em; }

@@ -128,11 +128,7 @@ input[type=submit] {
 	display: none;
 }
 .convenienceButtons {
-	position: absolute;
-	top: 1em;
-	right: 1em;
-	display: inline-block;
-	margin: 0;
+	display: none;
 
 	.close {
 		line-height: 2em;
@@ -154,8 +150,26 @@ input[type=submit] {
 		}
 	}
 }
+#land .convenienceButtons {
+	display: inline-block;
+	position: absolute;
+	top: 1em;
+	left: 0;
+	margin: 0;
+	
+	&.allSelected {
+		display: none;
+	}
+	input {
+		@extend %button;
+		font-size: .9em;
+	}
+	.invertSelection {
+		display: none;
+	}
+}
 
-form .convenienceButtons {
+form>.convenienceButtons {
 	display: none;
 	top: .4em;
 	right: 1em;

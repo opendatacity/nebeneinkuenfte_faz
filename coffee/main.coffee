@@ -61,9 +61,9 @@ showOrHideConvenienceButtons = (checkbox) ->
   all = fieldset.find ':checkbox'
   checked = fieldset.find ':checkbox:checked'
   buttons = fieldset.find('.convenienceButtons')
-  buttons.toggleClass 'allChecked', checked.length == all.length
-  buttons.toggleClass 'someChecked', checked.length > 0
-  buttons.toggleClass 'noneChecked', checked.length is 0
+  buttons.toggleClass 'allSelected', checked.length == all.length
+  buttons.toggleClass 'someSelected', checked.length > 0
+  buttons.toggleClass 'noneSelected', checked.length is 0
 
 getEventPosition = (event) ->
   if event.originalEvent.touches
@@ -249,14 +249,14 @@ $(document).ready ->
     else if mapClickCount > 2 and selectMultiple
       hint.addClass 'collapsed'
 
-  updateCheckboxLabelState $(':checkbox')
-
   # Add 'Select All' and 'Invert Selection buttons to fieldsets'
-  # $('fieldset').each (i, fieldset) ->
-  #   div = $ '<div class="convenienceButtons">'
-  #   div.append $ '<input type="button" value="Alle auswählen" class="selectAll">'
-  #   div.append $ '<input type="button" value="Auswahl umkehren" class="invertSelection">'
-  #   $(fieldset).append div
+  $('fieldset').each (i, fieldset) ->
+    div = $ '<div class="convenienceButtons">'
+    div.append $ '<input type="button" value="alle" title="Alle auswählen" class="selectAll">'
+    div.append $ '<input type="button" value="umkehren" title="Auswahl umkehren" class="invertSelection">'
+    $(fieldset).append div
+
+  updateCheckboxLabelState $(':checkbox')
 
   $('.invertSelection, .selectAll').click (event) ->
     fieldset = $(this).parents('fieldset')

@@ -121,9 +121,9 @@
     all = fieldset.find(':checkbox');
     checked = fieldset.find(':checkbox:checked');
     buttons = fieldset.find('.convenienceButtons');
-    buttons.toggleClass('allChecked', checked.length === all.length);
-    buttons.toggleClass('someChecked', checked.length > 0);
-    return buttons.toggleClass('noneChecked', checked.length === 0);
+    buttons.toggleClass('allSelected', checked.length === all.length);
+    buttons.toggleClass('someSelected', checked.length > 0);
+    return buttons.toggleClass('noneSelected', checked.length === 0);
   };
 
   getEventPosition = function(event) {
@@ -362,6 +362,13 @@
       } else if (mapClickCount > 2 && selectMultiple) {
         return hint.addClass('collapsed');
       }
+    });
+    $('fieldset').each(function(i, fieldset) {
+      var div;
+      div = $('<div class="convenienceButtons">');
+      div.append($('<input type="button" value="alle" title="Alle auswählen" class="selectAll">'));
+      div.append($('<input type="button" value="umkehren" title="Auswahl umkehren" class="invertSelection">'));
+      return $(fieldset).append(div);
     });
     updateCheckboxLabelState($(':checkbox'));
     return $('.invertSelection, .selectAll').click(function(event) {
