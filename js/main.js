@@ -579,8 +579,8 @@
       }
       return force.alpha(.07);
     };
-    table = d3.select('#tableContainer tbody');
-    rowHTML = $('#tableContainer tbody tr').remove().html();
+    table = d3.select('#tableView tbody');
+    rowHTML = $('#tableView tbody tr').remove().html();
     tableRow = function(rep) {
       return rowHTML.replace(/<span (?:data-type="(.*?)" )?data-field="(.*?)"><\/span>/g, function(match, type, property) {
         if (type === 'currency') {
@@ -607,7 +607,7 @@
       console.log(data.length);
       return row.exit().remove();
     };
-    $('#tableContainer tbody').on('click touchend', 'tr', function(event) {
+    $('#tableView tbody').on('click touchend', 'tr', function(event) {
       var position, rep;
       rep = d3.select(this).datum();
       position = getEventPosition(event);
@@ -724,7 +724,7 @@
       wScale = Math.min(1, (windowSize.width - 16) / Viewport.width);
       hScale = Math.min(1, (windowSize.height - 16) / (Viewport.height + 10));
       scale = Math.min(wScale, hScale);
-      $('#parliament, #parliamentContainer').height((Viewport.height + 10) * scale).width(Viewport.width * scale);
+      $('#parliament, #parliamentView').height((Viewport.height + 10) * scale).width(Viewport.width * scale);
       body = $('body');
       vSpace = windowSize.height - 26 - Viewport.height * scale;
       hSpace = windowSize.width - 16 - Viewport.width * scale;

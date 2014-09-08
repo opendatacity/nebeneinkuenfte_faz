@@ -119,7 +119,7 @@ header {
     line-height: 1em;
     font-weight: normal; }
 
-#parliamentContainer {
+#parliamentView {
   display: none;
   overflow: hidden;
   width: 100%;
@@ -511,7 +511,7 @@ html:not(.touch) form:hover {
 .short.wide fieldset {
   margin-top: 0;
   margin-bottom: 1em; }
-.short.wide #parliamentContainer {
+.short.wide #parliamentView {
   float: left; }
 .short.wide #parliament {
   position: fixed; }

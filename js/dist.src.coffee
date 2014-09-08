@@ -462,7 +462,7 @@ $.getJSON window.dataPath, (data) ->
     force.start() if initialize
     force.alpha .07
 
-  table = d3.select '#tableContainer tbody'
+  table = d3.select '#tableView tbody'
   updateTable = ->
     row = table.selectAll 'tr'
     .data data
@@ -556,7 +556,7 @@ $.getJSON window.dataPath, (data) ->
     wScale = Math.min 1, (windowSize.width - 16) / Viewport.width
     hScale = Math.min 1, (windowSize.height - 16) / (Viewport.height + 10)
     scale = Math.min wScale, hScale
-    $('#parliament, #parliamentContainer').height (Viewport.height + 10) * scale
+    $('#parliament, #parliamentView').height (Viewport.height + 10) * scale
     .width Viewport.width * scale
 
     # Due to the variable height of the parliament we can't reliably use media

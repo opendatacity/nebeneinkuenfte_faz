@@ -584,7 +584,7 @@
       }
       return force.alpha(.07);
     };
-    table = d3.select('#tableContainer tbody');
+    table = d3.select('#tableView tbody');
     updateTable = function() {
       var row;
       row = table.selectAll('tr').data(data);
@@ -699,7 +699,7 @@
       wScale = Math.min(1, (windowSize.width - 16) / Viewport.width);
       hScale = Math.min(1, (windowSize.height - 16) / (Viewport.height + 10));
       scale = Math.min(wScale, hScale);
-      $('#parliament, #parliamentContainer').height((Viewport.height + 10) * scale).width(Viewport.width * scale);
+      $('#parliament, #parliamentView').height((Viewport.height + 10) * scale).width(Viewport.width * scale);
       body = $('body');
       vSpace = windowSize.height - 26 - Viewport.height * scale;
       hSpace = windowSize.width - 16 - Viewport.width * scale;

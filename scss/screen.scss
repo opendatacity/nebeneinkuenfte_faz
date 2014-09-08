@@ -50,7 +50,7 @@ header {
 	}
 }
 
-#parliamentContainer {
+#parliamentView {
 	display: none;
 	overflow: hidden;
 	width: 100%;
@@ -416,7 +416,7 @@ html:not(.touch) form:hover {
 		margin-top: 0;
 		margin-bottom: 1em;
 	}
-	#parliamentContainer {
+	#parliamentView {
 		float: left;
 	}
 	#parliament {
