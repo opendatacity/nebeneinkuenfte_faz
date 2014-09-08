@@ -607,6 +607,14 @@
       console.log(data.length);
       return row.exit().remove();
     };
+    $('#tableContainer tbody').on('click touchend', 'tr', function(event) {
+      var position, rep;
+      rep = d3.select(this).datum();
+      position = getEventPosition(event);
+      inspector.update(rep);
+      inspector.show(position);
+      return inspector.fix();
+    });
     filterData = function(filter) {
       return _(data).each(function(rep) {
         var visible;

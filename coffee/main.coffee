@@ -481,6 +481,13 @@ $.getJSON window.dataPath, (data) ->
 
     row.exit().remove()
 
+  $('#tableContainer tbody').on 'click touchend', 'tr', (event) ->
+    rep = d3.select(this).datum()
+    position = getEventPosition event
+    inspector.update rep
+    inspector.show position
+    inspector.fix()
+
   filterData = (filter) ->
     _(data).each (rep) ->
       visible = _.reduce filter, (sum, filterValues, filterProperty) ->
