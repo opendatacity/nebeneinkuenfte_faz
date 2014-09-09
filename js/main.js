@@ -3,17 +3,17 @@
   var Arc, Factions, NebeneinkunftMinAmounts, Rep, RepInspector, T, Tp, Viewport, abbreviate, formatCurrency, getEventPosition, nebeneinkuenfteMinSum, showOrHideConvenienceButtons, updateCheckboxLabelState;
 
   Viewport = {
-    width: 800,
-    height: 400,
+    width: 700,
+    height: 350,
     center: {
-      x: 400,
-      y: 400
+      x: 350,
+      y: 350
     }
   };
 
   Arc = {
-    innerR: 100,
-    outerR: 400,
+    innerR: 80,
+    outerR: 350,
     phiMax: 180
   };
 
@@ -152,7 +152,7 @@
     function RepInspector(selector) {
       this.tooltip = $(selector);
       this.tooltip.find('tbody').on('scroll', this.handleScroll);
-      this.tooltip.find('input.close').on('mouseup touchend', null, {
+      this.tooltip.find('.closeButton').on('mouseup touchend', null, {
         inspector: this
       }, function(event) {
         event.data.inspector.hide();
@@ -282,7 +282,7 @@
   })();
 
   $(document).ready(function() {
-    var checkAllInParentFieldset, ignoreNext, longTap, longTapTimeout, mapClickCount, mapClickCountResetTimeout;
+    var checkAllInParentFieldset, ignoreNext, longTap, longTapTimeout, mapClickCount, mapClickCountResetTimeout, tabs;
     $('.startCollapsed').each(function(i, e) {
       return $(e).css({
         height: $(e).height()
@@ -392,16 +392,18 @@
       });
       return $(this).parents('form').triggerHandler('submit');
     });
+    tabs = {};
     $('nav.tabs').on('mouseup touchend', 'a', function(event) {
-      var anchors, selected, selectedID;
-      selected = this;
-      selectedID = $(selected).attr('href');
-      anchors = $(selected).parents('nav').find('a');
-      return anchors.each(function(index, a) {
+      tabs.selected = this;
+      tabs.selectedID = $(tabs.selected).attr('href');
+      if (!tabs.anchors) {
+        tabs.anchors = $(tabs.selected).parents('nav').find('a');
+      }
+      return tabs.anchors.each(function(index, a) {
         var anchorID;
-        if (a === selected) {
+        if (a === tabs.selected) {
           $(a).addClass('active').removeClass('inactive');
-          return $(selectedID).addClass('visible').removeClass('hidden');
+          return $(tabs.selectedID).addClass('visible').removeClass('hidden');
         } else {
           anchorID = $(a).attr('href');
           $(a).addClass('inactive').removeClass('active');
@@ -409,8 +411,36 @@
         }
       });
     });
-    return $('nav.tabs').on('click touchstart', function(event) {
+    $('.tabs .parliament').trigger('mouseup');
+    $('nav.tabs').on('click touchstart', function(event) {
       return event.preventDefault();
+    });
+    return $(window).on('resize', function(event) {
+      var body, hScale, hSpace, scale, vSpace, wScale;
+      window.windowSize = {
+        width: $(window).width(),
+        height: $(window).height()
+      };
+      wScale = Math.min(1, (windowSize.width - 16) / Viewport.width);
+      hScale = Math.min(1, (windowSize.height - 16) / (Viewport.height + 10));
+      scale = Math.min(wScale, hScale);
+      $('#parliament, #parliamentView').height((Viewport.height + 10) * scale).width(Viewport.width * scale);
+      body = $('body');
+      vSpace = windowSize.height - 26 - Viewport.height * scale;
+      hSpace = windowSize.width - 16 - Viewport.width * scale;
+      if (vSpace < 300 || vSpace < 500 && Modernizr.touch) {
+        body.removeClass('tall').addClass('short');
+      } else {
+        body.addClass('tall').removeClass('short');
+      }
+      if (hSpace > 220) {
+        body.addClass('wide').removeClass('narrow');
+      } else {
+        body.removeClass('wide').addClass('narrow');
+      }
+      if (windowSize.width >= 900 && tabs.selectedID === '#filterView') {
+        return $('.tabs .parliament').trigger('mouseup');
+      }
     });
   });
 
@@ -448,7 +478,7 @@
     });
     maxNebeneinkuenfteMinSum = _.max(data, 'nebeneinkuenfteMinSum').nebeneinkuenfteMinSum;
     console.log(maxNebeneinkuenfteMinSum);
-    repRadiusScaleFactor = 900 / _.max(minSumPerSeat);
+    repRadiusScaleFactor = 850 / _.max(minSumPerSeat);
     repRadius = function(rep) {
       return repRadiusScaleFactor * Math.sqrt(rep.nebeneinkuenfteMinSum);
     };
@@ -671,8 +701,9 @@
       });
       return dataTable.sortedBy = sortField;
     };
-    $('#tableView thead').on('click', 'th', function(event) {
+    $('#tableView thead').on('mouseup touchend', 'th', function(event) {
       var sortField;
+      event.preventDefault();
       sortField = $(this).attr('data-sortfield');
       sortTable(sortField);
       $(this).parent().children().removeClass('sorted-1 sorted1');
@@ -773,42 +804,8 @@
         return inspector.fix();
       }
     });
-    $('form').on('touchstart', function(event) {
-      $(this).addClass('fullScreen');
-      return event.stopPropagation();
-    });
-    $('form').on('touchend', '.close', function(event) {
-      return $(this).parents('form').removeClass('fullScreen');
-    });
     $('.toggler').on('mouseup touchend', function(event) {
       return $(this.getAttribute('href')).toggleClass('hidden');
-    });
-    $('.toggler').click(function(event) {
-      return event.preventDefault();
-    });
-    $(window).on('resize', function(event) {
-      var body, hScale, hSpace, scale, vSpace, wScale;
-      window.windowSize = {
-        width: $(window).width(),
-        height: $(window).height()
-      };
-      wScale = Math.min(1, (windowSize.width - 16) / Viewport.width);
-      hScale = Math.min(1, (windowSize.height - 16) / (Viewport.height + 10));
-      scale = Math.min(wScale, hScale);
-      $('#parliament, #parliamentView').height((Viewport.height + 10) * scale).width(Viewport.width * scale);
-      body = $('body');
-      vSpace = windowSize.height - 26 - Viewport.height * scale;
-      hSpace = windowSize.width - 16 - Viewport.width * scale;
-      if (vSpace < 300 || vSpace < 500 && Modernizr.touch) {
-        body.removeClass('tall').addClass('short');
-      } else {
-        body.addClass('tall').removeClass('short');
-      }
-      if (hSpace > 220) {
-        return body.addClass('wide').removeClass('narrow');
-      } else {
-        return body.removeClass('wide').addClass('narrow');
-      }
     });
     $('label, a').on('touchend', function(event) {
       event.preventDefault();

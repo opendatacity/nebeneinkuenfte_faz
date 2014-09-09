@@ -1,7 +1,7 @@
 'use strict'
 
-Viewport = width: 800, height: 400, center: {x: 400, y: 400}
-Arc = innerR: 100, outerR: 400, phiMax: 180
+Viewport = width: 700, height: 350, center: {x: 350, y: 350}
+Arc = innerR: 80, outerR: 350, phiMax: 180
 Rep = r: 5, spacing: 12
 
 Factions = [
@@ -78,7 +78,7 @@ class RepInspector
   constructor: (selector) ->
     @tooltip = $(selector)
     @tooltip.find('tbody').on 'scroll', @handleScroll
-    @tooltip.find('input.close').on 'mouseup touchend', null, inspector: this, (event) ->
+    @tooltip.find('.closeButton').on 'mouseup touchend', null, inspector: this, (event) ->
       event.data.inspector.hide()
       event.preventDefault()
 
@@ -272,23 +272,53 @@ $(document).ready ->
     $(this).parents('form').triggerHandler 'submit'
 
   # Make tab buttons do something
+  tabs = {}
   $('nav.tabs').on 'mouseup touchend', 'a', (event) ->
-    selected = this
-    selectedID = $(selected).attr('href')
-    anchors = $(selected).parents('nav').find('a')
+    tabs.selected = this
+    tabs.selectedID = $(tabs.selected).attr('href')
+    tabs.anchors = $(tabs.selected).parents('nav').find('a') unless tabs.anchors
 
-    anchors.each (index, a) ->
-      if a is selected
+    tabs.anchors.each (index, a) ->
+      if a is tabs.selected
         $(a).addClass('active').removeClass('inactive')
-        $(selectedID).addClass('visible').removeClass('hidden')
+        $(tabs.selectedID).addClass('visible').removeClass('hidden')
       else
         anchorID = $(a).attr('href')
         $(a).addClass('inactive').removeClass('active')
         $(anchorID).addClass('hidden').removeClass('visible')
+  $('.tabs .parliament').trigger 'mouseup'
+
   $('nav.tabs').on 'click touchstart', (event) ->
     # Stop anchor showing up in URL bar
     # and grey rectangle on Mobile Safari
     event.preventDefault()
+
+  $(window).on 'resize', (event) ->
+    window.windowSize = width: $(window).width(), height: $(window).height()
+    wScale = Math.min 1, (windowSize.width - 16) / Viewport.width
+    hScale = Math.min 1, (windowSize.height - 16) / (Viewport.height + 10)
+    scale = Math.min wScale, hScale
+    $('#parliament, #parliamentView').height (Viewport.height + 10) * scale
+    .width Viewport.width * scale
+
+    # Due to the variable height of the parliament we can't reliably use media
+    # queries. Instead we'll attach/remove classes from the body depending on
+    # the most suitable layout.
+    body = $('body')
+    vSpace = windowSize.height - 26 - Viewport.height * scale
+    hSpace = windowSize.width - 16 - Viewport.width * scale
+    if vSpace < 300 or vSpace < 500 and Modernizr.touch
+      body.removeClass('tall').addClass('short')
+    else
+      body.addClass('tall').removeClass('short')
+      
+    if hSpace > 220
+      body.addClass('wide').removeClass('narrow')
+    else
+      body.removeClass('wide').addClass('narrow')
+
+    if windowSize.width >= 900 and tabs.selectedID is '#filterView'
+      $('.tabs .parliament').trigger 'mouseup'
 
 $.getJSON window.dataPath, (data) ->
   data = data.data
@@ -313,7 +343,7 @@ $.getJSON window.dataPath, (data) ->
     minSum/factionSeats
   maxNebeneinkuenfteMinSum = _.max(data, 'nebeneinkuenfteMinSum').nebeneinkuenfteMinSum
   console.log maxNebeneinkuenfteMinSum
-  repRadiusScaleFactor = 900 / _.max minSumPerSeat
+  repRadiusScaleFactor = 850 / _.max minSumPerSeat
 
   repRadius = (rep) -> repRadiusScaleFactor * Math.sqrt rep.nebeneinkuenfteMinSum
   _data.each (rep) -> rep.radius = repRadius rep
@@ -520,7 +550,8 @@ $.getJSON window.dataPath, (data) ->
 
     dataTable.sortedBy = sortField
 
-  $('#tableView thead').on 'click', 'th', (event) ->
+  $('#tableView thead').on 'mouseup touchend', 'th', (event) ->
+    event.preventDefault()
     sortField = $(this).attr 'data-sortfield'
     sortTable sortField
     $(this).parent().children().removeClass 'sorted-1 sorted1'
@@ -605,39 +636,8 @@ $.getJSON window.dataPath, (data) ->
       event.stopPropagation() # Otherwise the click would fire on the document node and hide the inspector
       inspector.fix()
 
-  $('form').on 'touchstart', (event) ->
-    $(this).addClass 'fullScreen'
-    event.stopPropagation()
-  $('form').on 'touchend', '.close', (event) ->
-    $(this).parents('form').removeClass 'fullScreen'
-
   $('.toggler').on 'mouseup touchend', (event) ->
     $(this.getAttribute 'href').toggleClass 'hidden'
-  $('.toggler').click (event) -> event.preventDefault()
-
-  $(window).on 'resize', (event) ->
-    window.windowSize = width: $(window).width(), height: $(window).height()
-    wScale = Math.min 1, (windowSize.width - 16) / Viewport.width
-    hScale = Math.min 1, (windowSize.height - 16) / (Viewport.height + 10)
-    scale = Math.min wScale, hScale
-    $('#parliament, #parliamentView').height (Viewport.height + 10) * scale
-    .width Viewport.width * scale
-
-    # Due to the variable height of the parliament we can't reliably use media
-    # queries. Instead we'll attach/remove classes from the body depending on
-    # the most suitable layout.
-    body = $('body')
-    vSpace = windowSize.height - 26 - Viewport.height * scale
-    hSpace = windowSize.width - 16 - Viewport.width * scale
-    if vSpace < 300 or vSpace < 500 and Modernizr.touch
-      body.removeClass('tall').addClass('short')
-    else
-      body.addClass('tall').removeClass('short')
-      
-    if hSpace > 220
-      body.addClass('wide').removeClass('narrow')
-    else
-      body.removeClass('wide').addClass('narrow')
 
   $('label, a').on 'touchend', (event) ->
     event.preventDefault()

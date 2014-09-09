@@ -1,13 +1,13 @@
 @charset "UTF-8";
-nav.tabs a, fieldset legend, .convenienceButtons .close, .repInspector h2, th {
+nav.tabs a, .closeButton, .repInspector h2, th {
   font: 1em/1.2 Verdana, sans-serif; }
 
-nav.tabs a, fieldset legend, .convenienceButtons .close, .repInspector h2 {
+nav.tabs a, .closeButton, .repInspector h2 {
   text-transform: uppercase;
   letter-spacing: .05em;
   font-weight: bold; }
 
-nav.tabs a, fieldset legend, .convenienceButtons .close, nav.tabs, form, .repInspector.moving caption {
+nav.tabs a, .closeButton, nav.tabs, header, form, .repInspector.moving caption, .representatives thead, footer {
   cursor: default;
   -webkit-user-select: none;
      -moz-user-select: none;
@@ -16,7 +16,7 @@ nav.tabs a, fieldset legend, .convenienceButtons .close, nav.tabs, form, .repIns
 .tab, header h1, header p, footer,
 aside {
   width: 100%;
-  max-width: 800px;
+  max-width: 700px;
   margin: 0 auto; }
 
 #map {
@@ -167,12 +167,15 @@ header {
   margin: -10px;
   margin-bottom: 1em;
   background-color: rgba(249, 249, 249, 0.95);
-  padding: 2em 10px 1em; }
+  border-bottom: 1px solid rgba(236, 236, 236, 0.95);
+  padding: 0.8em 10px 0.5em; }
   header h1 {
-    font-size: 1.6em;
+    font-size: 1.2em;
     line-height: 1em;
-    font-weight: normal;
-    margin-bottom: .5em; }
+    font-weight: normal; }
+  header p {
+    margin-top: .5em;
+    display: none; }
 
 #parliamentView {
   overflow: hidden;
@@ -184,14 +187,15 @@ form {
 
 fieldset {
   position: relative;
-  display: inline-block;
-  margin: 2em 1em 0 0;
+  float: left;
+  margin: 0 1em 1em 0;
   padding: 0;
   text-align: left;
   vertical-align: top;
-  border: none; }
+  border: none;
+  width: 180px; }
   fieldset legend {
-    margin: 1em 0 .2em 0; }
+    display: none; }
   fieldset ul {
     margin: 0;
     padding: 0;
@@ -199,14 +203,22 @@ fieldset {
     line-height: 1em;
     font-size: .9em; }
 
+fieldset:last-child:after {
+  display: block;
+  content: "";
+  clear: left; }
+
 label, #land .convenienceButtons input {
   font-family: Verdana, sans-serif;
+  text-align: left;
   display: inline-block;
   padding: 0.3em 0.6em;
   cursor: pointer;
   transition: all 0.1s ease;
   border: 1px solid transparent;
   overflow: hidden;
+  -webkit-appearance: none;
+  -webkit-border-radius: 0;
   border-color: #dad2d2;
   color: #6d5959;
   background-color: #e5e0e0; }
@@ -273,20 +285,24 @@ input[type=submit] {
 
 .convenienceButtons {
   display: none; }
-  .convenienceButtons .close {
-    line-height: 2em;
-    width: 2em;
-    height: 2em;
-    margin: -.25em;
-    cursor: pointer;
-    border: none;
-    border-radius: 1em;
-    outline: none;
-    background-color: transparent; }
-    .convenienceButtons .close:hover {
-      background-color: rgba(0, 0, 0, 0.2); }
-    .convenienceButtons .close:active {
-      background-color: rgba(0, 0, 0, 0.3); }
+
+.closeButton {
+  position: absolute;
+  top: .7em;
+  right: .7em;
+  line-height: 1em;
+  width: 2em;
+  height: 2em;
+  margin: -.25em;
+  cursor: pointer;
+  border: none;
+  border-radius: 1em;
+  outline: none;
+  background-color: transparent; }
+  .closeButton:hover {
+    background-color: rgba(0, 0, 0, 0.2); }
+  .closeButton:active {
+    background-color: rgba(0, 0, 0, 0.3); }
 
 #land .convenienceButtons {
   display: inline-block;
@@ -297,7 +313,8 @@ input[type=submit] {
   #land .convenienceButtons.allSelected {
     display: none; }
   #land .convenienceButtons input {
-    font-size: .9em; }
+    font-size: .9em;
+    margin: 0; }
   #land .convenienceButtons .invertSelection {
     display: none; }
 
@@ -475,6 +492,7 @@ th {
   vertical-align: top; }
 .representatives .faction abbr {
   display: inline-block;
+  box-sizing: border-box;
   width: 14px;
   height: 14px;
   margin-bottom: -3px;
@@ -495,13 +513,17 @@ th {
   z-index: 2;
   position: relative; }
 .representatives .linke abbr {
-  background-color: #d703d7; }
+  background-color: #d703d7;
+  border: 1px solid #af02af; }
 .representatives .spd abbr {
-  background-color: #f90000; }
+  background-color: #f90000;
+  border: 1px solid #d00000; }
 .representatives .gruene abbr {
-  background-color: #64dc00; }
+  background-color: #64dc00;
+  border: 1px solid #51b300; }
 .representatives .cducsu abbr {
-  background-color: #111; }
+  background-color: #111;
+  border: 1px solid black; }
 @media screen and (max-width: 30em) {
   .representatives .land abbr {
     display: inline; }
@@ -534,7 +556,7 @@ aside {
   footer p,
   aside p {
     float: left;
-    margin: 0; }
+    margin: 0 0 .2em; }
 
 footer nav ul {
   float: right;
@@ -547,5 +569,41 @@ footer nav ul {
     padding: 0 .4em 0 .1em; }
     footer nav ul li:last-of-type {
       border: none; }
+
+@media screen and (min-width: 900px) {
+  #filterView {
+    display: block !important;
+    position: fixed;
+    width: 180px;
+    top: 7em;
+    bottom: 0;
+    padding-bottom: 3em;
+    overflow: auto; }
+
+  .tabs .filter {
+    display: none; }
+
+  #parliamentView, #tableView, header h1, header p, footer, aside {
+    margin-right: 0; }
+
+  h1 {
+    font-size: 1.6em; } }
+@media screen and (min-width: 900px), screen and (min-height: 600px) {
+  header {
+    padding: 2em 10px 1em; }
+    header p {
+      display: block; } }
+.touch label, .touch #land .selectAll {
+  display: block;
+  box-sizing: border-box;
+  width: 180px;
+  padding-top: .8em;
+  padding-bottom: .8em; }
+.touch li + li label, .touch #land .selectAll {
+  border-top: none; }
+.touch #land .convenienceButtons {
+  position: static; }
+.touch .repInspector .convenienceButtons {
+  display: inline-block; }
 
 /*# sourceMappingURL=screen.css.map */

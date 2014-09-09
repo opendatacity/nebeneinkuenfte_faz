@@ -95,6 +95,9 @@ th {
 	tbody {
 		max-height: 50em;
 	}
+	thead {
+		@extend %no-select;
+	}
 	thead th {
 		height: 2.5em;
 	}
@@ -116,6 +119,7 @@ th {
 	}
 	.faction abbr {
 		display: inline-block;
+		box-sizing: border-box;
 		width: 14px;
 		height: 14px;
 		margin-bottom: -3px;
@@ -144,6 +148,7 @@ th {
 		$color-faction: map_get($colors-faction, $faction);
 		.#{$faction} abbr {
 			background-color: $color-faction;
+			border: 1px solid darken($color-faction, 8%);
 		}
 	}
 	@media screen and (max-width: 30em) {

@@ -20,13 +20,16 @@ label, %button {
 	$paddingH: .6em;
 
 	font-family: $font-secondary;
+	text-align: left;
 	display: inline-block;
 	padding: $paddingV $paddingH;
 	cursor: pointer;
 	@include transition(all, .1s);
 	border: 1px solid transparent;
 	overflow: hidden;
-	
+	-webkit-appearance: none; // For buttons on iOS
+	-webkit-border-radius: 0; // For buttons on iOS
+
 	@include colors($color-inactive-text, $color-inactive-bg);
 	&:before {
 		display: inline-block;
