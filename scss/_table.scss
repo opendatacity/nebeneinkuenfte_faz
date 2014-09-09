@@ -3,7 +3,6 @@ tr.cat0 {
 }
 table {
 	font-size: .8em;
-	display: block;
 	width: 100%;
 	border-collapse: collapse;
 }
@@ -15,7 +14,6 @@ tfoot td {
 thead,
 tbody,
 tfoot {
-	display: block;
 	margin: 0 -.8em;
 	padding: 0 .8em;
 }
@@ -26,21 +24,18 @@ tfoot {
 tbody {
 	z-index: 2;
 	overflow: auto;
-	max-height: 10em;
 	border: 1px solid rgba($color-primary, .05);
 	border-right: none;
 	border-left: none;
 	-webkit-overflow-scrolling: touch;
+	tr:hover {
+		background-color: rgba($color-primary, .05);
+	}
 }
 .minAmount,
 .minSum {
 	min-width: 5em;
 	text-align: right;
-}
-td,
-th {
-	width: 100%;
-	vertical-align: bottom;
 }
 th {
 	text-align: left;
@@ -53,7 +48,84 @@ th.number {
 td,
 th {
 	padding: .3em 0;
+	vertical-align: bottom;
+}
+
+.nebeneinkuenfte {
+	td, th {
+		width: 100%;
+	}
+	tbody {
+		max-height: 10em;
+	}
+	thead,
+	tbody,
+	tfoot {
+		display: block;
+	}
 }
 
 .representatives {
+	th, td {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		padding: .3em .2em;
+	}
+	tbody {
+		max-height: 50em;
+	}
+	thead tr {
+
+	}
+	tbody tr {
+		cursor: pointer;
+	}
+	thead .faction {
+		color: transparent;
+	}
+	tbody .name {
+		text-overflow: ellipsis
+	}
+	.land abbr {
+		display: none;
+	}
+	.faction {
+		max-width: 1em;
+	}
+	.faction abbr {
+		display: inline-block;
+		width: 14px;
+		height: 14px;
+		margin-bottom: -2px;
+		border-radius: 50%;
+		overflow: hidden;
+	}
+	.minSum {
+		position: relative;
+	}
+	.bar {
+		z-index: 1;
+		position: absolute;
+		right: 0;
+		top: 1px;
+		background-color: rgba($color-primary, .1);
+		height: 100%;
+	}
+	.label {
+		z-index: 2;
+		position: relative;
+	}
+	@each $faction in $factions {
+		$color-faction: map_get($colors-faction, $faction);
+		.#{$faction} abbr {
+			background-color: $color-faction;
+		}
+	}
+	@media screen and (max-width: 30em) {
+		// Use Bundesland abbreviations
+		.land {
+			abbr { display: inline; }
+			.long { display: none; }
+		}
+	}
 }

@@ -84,6 +84,7 @@ circle.cducsu {
   font-style: normal; }
 nav.tabs {
   position: fixed;
+  z-index: 10;
   bottom: 0;
   left: 0;
   width: 100%;
@@ -145,7 +146,8 @@ nav.tabs {
 
 body {
   font: 1em/1.2em Georgia, "Linux Libertine", serif;
-  margin: 10px; }
+  margin: 10px;
+  padding-bottom: 5em; }
 
 a {
   text-decoration: none;
@@ -381,7 +383,6 @@ tr.cat0 {
 
 table {
   font-size: .8em;
-  display: block;
   width: 100%;
   border-collapse: collapse; }
 
@@ -393,7 +394,6 @@ tfoot td {
 thead,
 tbody,
 tfoot {
-  display: block;
   margin: 0 -.8em;
   padding: 0 .8em; }
 
@@ -404,21 +404,17 @@ tfoot {
 tbody {
   z-index: 2;
   overflow: auto;
-  max-height: 10em;
   border: 1px solid rgba(0, 0, 0, 0.05);
   border-right: none;
   border-left: none;
   -webkit-overflow-scrolling: touch; }
+  tbody tr:hover {
+    background-color: rgba(0, 0, 0, 0.05); }
 
 .minAmount,
 .minSum {
   min-width: 5em;
   text-align: right; }
-
-td,
-th {
-  width: 100%;
-  vertical-align: bottom; }
 
 th {
   text-align: left; }
@@ -428,7 +424,66 @@ th.number {
 
 td,
 th {
-  padding: .3em 0; }
+  padding: .3em 0;
+  vertical-align: bottom; }
+
+.nebeneinkuenfte td, .nebeneinkuenfte th {
+  width: 100%; }
+.nebeneinkuenfte tbody {
+  max-height: 10em; }
+.nebeneinkuenfte thead,
+.nebeneinkuenfte tbody,
+.nebeneinkuenfte tfoot {
+  display: block; }
+
+.representatives th, .representatives td {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: .3em .2em; }
+.representatives tbody {
+  max-height: 50em; }
+.representatives tbody tr {
+  cursor: pointer; }
+.representatives thead .faction {
+  color: transparent; }
+.representatives tbody .name {
+  text-overflow: ellipsis; }
+.representatives .land abbr {
+  display: none; }
+.representatives .faction {
+  max-width: 1em; }
+.representatives .faction abbr {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  margin-bottom: -2px;
+  border-radius: 50%;
+  overflow: hidden; }
+.representatives .minSum {
+  position: relative; }
+.representatives .bar {
+  z-index: 1;
+  position: absolute;
+  right: 0;
+  top: 1px;
+  background-color: rgba(0, 0, 0, 0.1);
+  height: 100%; }
+.representatives .label {
+  z-index: 2;
+  position: relative; }
+.representatives .linke abbr {
+  background-color: #d703d7; }
+.representatives .spd abbr {
+  background-color: #f90000; }
+.representatives .gruene abbr {
+  background-color: #64dc00; }
+.representatives .cducsu abbr {
+  background-color: #111; }
+@media screen and (max-width: 30em) {
+  .representatives .land abbr {
+    display: inline; }
+  .representatives .land .long {
+    display: none; } }
 
 .number {
   text-align: right;

@@ -20,6 +20,9 @@ Tp = (number, string) ->
   return number + ' ' + dictionary[string+'Plural'] if number != 1 and dictionary[string+'Plural']
   return number + ' ' + dictionary[string] if dictionary[string]
   return number + ' ' + string
+abbreviate = (string) ->
+  return abbreviations[string] if abbreviations[string]
+  return string
 
 NebeneinkunftMinAmounts = [ 0.01, 1000, 3500, 7000, 15000, 30000, 50000, 75000, 100000, 150000, 250000 ]
 
@@ -298,9 +301,6 @@ $.getJSON window.dataPath, (data) ->
     rep.nebeneinkuenfteMinSum = nebeneinkuenfteMinSum rep
     rep.nebeneinkuenfteCount = rep.nebeneinkuenfte.length
     rep.nebeneinkuenfte.sort (a, b) -> b.level - a.level
-  # To distribute the reps evenly in the parliament,
-  # we first have to establish where we should draw the boundaries
-  # between their groups
 
   dataByFaction = _data.groupBy('fraktion').value()
   seats = _.mapValues dataByFaction, (f) -> f.length
@@ -310,6 +310,8 @@ $.getJSON window.dataPath, (data) ->
     minSum = _.reduce representatives, ((sum, rep) -> sum + rep.nebeneinkuenfteMinSum), 0
     factionSeats = seats[faction]
     minSum/factionSeats
+  maxNebeneinkuenfteMinSum = _.max(data, 'nebeneinkuenfteMinSum').nebeneinkuenfteMinSum
+  console.log maxNebeneinkuenfteMinSum
   repRadiusScaleFactor = 900 / _.max minSumPerSeat
 
   repRadius = (rep) -> repRadiusScaleFactor * Math.sqrt rep.nebeneinkuenfteMinSum
@@ -482,9 +484,10 @@ $.getJSON window.dataPath, (data) ->
   rowHTML = $('#tableView tbody tr').remove().html()
 
   tableRow = (rep) ->
-    rowHTML.replace /<span (?:data-type="(.*?)" )?data-field="(.*?)"><\/span>/g, (match, type, property) ->
+    rowHTML.replace /\{(?:([^\}]*?):)?([^\}]*?)\}/g, (match, type, property) ->
       return formatCurrency rep[property] if type is 'currency'
-      rep[property]
+      return abbreviate rep[property] if type is 'abbr'
+      T rep[property]
 
   updateTable = ->
     row = table.selectAll 'tr'
@@ -494,6 +497,9 @@ $.getJSON window.dataPath, (data) ->
     .html tableRow
     .select '.faction'
     .attr 'class', (rep) -> 'faction ' + _.find(Factions, name: rep.fraktion).class
+
+    row.select '.bar'
+    .style 'width', (rep) -> rep.nebeneinkuenfteMinSum / maxNebeneinkuenfteMinSum * 100 + '%'
 
     row.transition()
     .attr 'class', (rep) -> if rep.radius >= 1 then 'visible' else 'hidden'

@@ -27,7 +27,7 @@
 
 	<header>
 		<h1>Nebeneinkünfte von Bundestagsabgeordneten</h1>
-		<p>Abgeordnete mit Nebentätigkeiten ab 1000&nbsp;Euro</p>
+		<p>Abgeordnete mit Nebentätigkeiten ab tausend&nbsp;Euro</p>
 	</header>
 	
 	<nav class="tabs">
@@ -124,22 +124,20 @@
 		<table class="representatives">
 			<thead>
 				<tr>
-					<th class="name">Name</th>
-					<th class="faction">Fraktion</th>
-					<th class="land">Land</th>
-					<th class="mandate">Mandat</th>
-					<th class="count number">Anzahl der Nebentätigkeiten</th>
-					<th class="minSum number">Mindesteinnahmen aus Nebentätigkeiten</th>
+					<th class="faction" title="Fraktion">Fraktion</th>
+					<th class="name" title="Name">Name</th>
+					<th class="land" title="Land">Land</th>
+					<th class="count number" title="Anzahl der Nebentätigkeiten"><abbr title="Anzahl der Nebentätigkeiten">Anz.</abbr></th>
+					<th class="minSum number" title="Mindesteinkünfte aus Nebentätigkeiten">Einkünfte <abbr title="mindestens">min.</abbr></th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr>
-					<th class="name"><span data-field="name"></span></th>
-					<td class="faction"><span data-field="fraktion"></span></td>
-					<td class="land"><span data-field="land"></span></td>
-					<td class="mandate"><span data-field="mandat"></span></td>
-					<td class="count number"><span data-field="nebeneinkuenfteCount"></span></td>
-					<td class="minSum number"><span data-type="currency" data-field="nebeneinkuenfteMinSum"></span></td>
+					<td class="faction" title="Fraktion"><abbr title="{fraktion}">{fraktion}</abbr></span></td>
+					<td class="name" title="Name">{name}</td>
+					<td class="land" title="Land"><span class="long">{land}</span> <abbr title="{land}">{abbr:land}</abbr></td>
+					<td class="count number" title="Anzahl der Nebentätigkeiten">{nebeneinkuenfteCount}</td>
+					<td class="minSum number" title="Mindesteinkünfte aus Nebentätigkeiten"><span class="bar"></span><span class="label">{currency:nebeneinkuenfteMinSum}</span></td>
 				</tr>
 			</tbody>
 

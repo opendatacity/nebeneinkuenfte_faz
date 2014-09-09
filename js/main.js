@@ -1,6 +1,6 @@
 (function() {
   'use strict';
-  var Arc, Factions, NebeneinkunftMinAmounts, Rep, RepInspector, T, Tp, Viewport, formatCurrency, getEventPosition, nebeneinkuenfteMinSum, showOrHideConvenienceButtons, updateCheckboxLabelState;
+  var Arc, Factions, NebeneinkunftMinAmounts, Rep, RepInspector, T, Tp, Viewport, abbreviate, formatCurrency, getEventPosition, nebeneinkuenfteMinSum, showOrHideConvenienceButtons, updateCheckboxLabelState;
 
   Viewport = {
     width: 800,
@@ -59,6 +59,13 @@
       return number + ' ' + dictionary[string];
     }
     return number + ' ' + string;
+  };
+
+  abbreviate = function(string) {
+    if (abbreviations[string]) {
+      return abbreviations[string];
+    }
+    return string;
   };
 
   NebeneinkunftMinAmounts = [0.01, 1000, 3500, 7000, 15000, 30000, 50000, 75000, 100000, 150000, 250000];
@@ -408,7 +415,7 @@
   });
 
   $.getJSON(window.dataPath, function(data) {
-    var arc, collide, dataByFaction, drawRepresentatives, factions, filterData, force, g, initializeRepPositions, inspector, minSumPerSeat, node, parliament, pie, repRadius, repRadiusScaleFactor, rowHTML, seats, seatsPie, svg, table, tableData, tableRow, tick, totalSeats, updateTable;
+    var arc, collide, dataByFaction, drawRepresentatives, factions, filterData, force, g, initializeRepPositions, inspector, maxNebeneinkuenfteMinSum, minSumPerSeat, node, parliament, pie, repRadius, repRadiusScaleFactor, rowHTML, seats, seatsPie, svg, table, tableData, tableRow, tick, totalSeats, updateTable;
     data = data.data;
     window._data = _(data);
     factions = Factions.filter(function(faction) {
@@ -438,6 +445,8 @@
       factionSeats = seats[faction];
       return minSum / factionSeats;
     });
+    maxNebeneinkuenfteMinSum = _.max(data, 'nebeneinkuenfteMinSum').nebeneinkuenfteMinSum;
+    console.log(maxNebeneinkuenfteMinSum);
     repRadiusScaleFactor = 900 / _.max(minSumPerSeat);
     repRadius = function(rep) {
       return repRadiusScaleFactor * Math.sqrt(rep.nebeneinkuenfteMinSum);
@@ -611,11 +620,14 @@
     table = d3.select('#tableView tbody');
     rowHTML = $('#tableView tbody tr').remove().html();
     tableRow = function(rep) {
-      return rowHTML.replace(/<span (?:data-type="(.*?)" )?data-field="(.*?)"><\/span>/g, function(match, type, property) {
+      return rowHTML.replace(/\{(?:([^\}]*?):)?([^\}]*?)\}/g, function(match, type, property) {
         if (type === 'currency') {
           return formatCurrency(rep[property]);
         }
-        return rep[property];
+        if (type === 'abbr') {
+          return abbreviate(rep[property]);
+        }
+        return T(rep[property]);
       });
     };
     updateTable = function() {
@@ -625,6 +637,9 @@
         return 'faction ' + _.find(Factions, {
           name: rep.fraktion
         })["class"];
+      });
+      row.select('.bar').style('width', function(rep) {
+        return rep.nebeneinkuenfteMinSum / maxNebeneinkuenfteMinSum * 100 + '%';
       });
       row.transition().attr('class', function(rep) {
         if (rep.radius >= 1) {

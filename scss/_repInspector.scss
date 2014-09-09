@@ -1,0 +1,68 @@
+.repInspector {
+	position: absolute;
+	z-index: 10;
+	box-sizing: border-box;
+	max-height: 100%;
+	margin: 1em 0 0 0;
+	padding: .65em;
+	border: $subtleBorder;
+	border-radius: 4px;
+	background-color: rgba(#fff, .95);
+	box-shadow: 0 .1em .75em rgba($color-primary, .1);
+	&.moving {
+		//width: 15em;
+		pointer-events: none;
+		thead,
+		tbody,
+		tfoot {
+			display: none;
+		}
+		caption {
+			display: block;
+			text-align: left;
+
+			@extend %no-select;
+			&:after {
+				display: block;
+				content: " (Für Details klicken)";
+			}
+		}
+	}
+	&.fixed {
+		overflow: auto;
+		width: 22em;
+		caption {
+			display: none;
+		}
+	}
+	h2 {
+		margin: .2em 0 .5em;
+		padding: 0 1.5em 0 0; // for close button; remove on wider screens
+
+		@extend %heading-selectable;
+	}
+	.faction {
+		text-transform: uppercase;
+	}
+	.faction,
+	.land,
+	.mandate {
+		font: .8em $font-secondary;
+	}
+	.faction,
+	.land {
+		margin-right: .1em;
+		padding-right: .5em;
+		border-right: $subtleBorder;
+	}
+	// We can't have CDU politicians' names appear in bright red
+	@if lightness($color-link) > 20% {
+		a { @include link($color-primary); }
+	}
+}
+.repInspector.clone {
+	top: 0 !important;
+	left: 0 !important;
+	display: block;
+	visibility: hidden;
+}
