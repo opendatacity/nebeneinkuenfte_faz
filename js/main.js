@@ -415,7 +415,7 @@
   });
 
   $.getJSON(window.dataPath, function(data) {
-    var arc, collide, dataByFaction, drawRepresentatives, factions, filterData, force, g, initializeRepPositions, inspector, maxNebeneinkuenfteMinSum, minSumPerSeat, node, parliament, pie, repRadius, repRadiusScaleFactor, rowHTML, seats, seatsPie, svg, table, tableData, tableRow, tick, totalSeats, updateTable;
+    var arc, collide, dataByFaction, dataTable, drawRepresentatives, factions, filterData, force, g, initializeRepPositions, inspector, maxNebeneinkuenfteMinSum, minSumPerSeat, node, parliament, pie, repRadius, repRadiusScaleFactor, rowHTML, rows, seats, seatsPie, sortTable, svg, table, tableRow, tick, totalSeats, updateTable;
     data = data.data;
     window._data = _(data);
     factions = Factions.filter(function(faction) {
@@ -423,9 +423,10 @@
         fraktion: faction.name
       });
     });
-    _data.each(function(rep) {
+    _data.each(function(rep, i) {
       rep.nebeneinkuenfteMinSum = nebeneinkuenfteMinSum(rep);
       rep.nebeneinkuenfteCount = rep.nebeneinkuenfte.length;
+      rep.alphabeticOrder = i;
       return rep.nebeneinkuenfte.sort(function(a, b) {
         return b.level - a.level;
       });
@@ -459,9 +460,13 @@
     }).value();
     console.log(data);
     dataByFaction = _.groupBy(data, 'fraktion');
-    tableData = data.sort(function(rep1, rep2) {
-      return rep2.nebeneinkuenfteMinSum - rep1.nebeneinkuenfteMinSum;
-    });
+    dataTable = {
+      data: data.sort(function(rep1, rep2) {
+        return rep2.nebeneinkuenfteMinSum - rep1.nebeneinkuenfteMinSum;
+      }),
+      sortedBy: 'nebeneinkuenfteMinSum',
+      sortOrder: -1
+    };
     tick = function(e) {
       var alpha, qt;
       alpha = e.alpha * e.alpha;
@@ -619,6 +624,7 @@
     };
     table = d3.select('#tableView tbody');
     rowHTML = $('#tableView tbody tr').remove().html();
+    rows = table.selectAll('tr').data(dataTable.data);
     tableRow = function(rep) {
       return rowHTML.replace(/\{(?:([^\}]*?):)?([^\}]*?)\}/g, function(match, type, property) {
         if (type === 'currency') {
@@ -630,26 +636,48 @@
         return T(rep[property]);
       });
     };
+    rows.enter().append('tr').html(tableRow);
+    rows.select('.faction').attr('class', function(rep) {
+      return 'faction ' + _.find(Factions, {
+        name: rep.fraktion
+      })["class"];
+    });
+    rows.select('.bar').style('width', function(rep) {
+      return rep.nebeneinkuenfteMinSum / maxNebeneinkuenfteMinSum * 100 + '%';
+    });
     updateTable = function() {
-      var row;
-      row = table.selectAll('tr').data(tableData);
-      row.enter().append('tr').html(tableRow).select('.faction').attr('class', function(rep) {
-        return 'faction ' + _.find(Factions, {
-          name: rep.fraktion
-        })["class"];
-      });
-      row.select('.bar').style('width', function(rep) {
-        return rep.nebeneinkuenfteMinSum / maxNebeneinkuenfteMinSum * 100 + '%';
-      });
-      row.transition().attr('class', function(rep) {
+      return rows.attr('class', function(rep) {
         if (rep.radius >= 1) {
           return 'visible';
         } else {
           return 'hidden';
         }
       });
-      return row.exit().remove();
     };
+    sortTable = function(sortField) {
+      if (dataTable.sortedBy === sortField) {
+        dataTable.sortOrder *= -1;
+      } else {
+        dataTable.sortOrder = 1;
+      }
+      table.selectAll('tr').sort(function(rep1, rep2) {
+        if (rep2[sortField] > rep1[sortField]) {
+          return -dataTable.sortOrder;
+        }
+        if (rep2[sortField] < rep1[sortField]) {
+          return dataTable.sortOrder;
+        }
+        return 0;
+      });
+      return dataTable.sortedBy = sortField;
+    };
+    $('#tableView thead').on('click', 'th', function(event) {
+      var sortField;
+      sortField = $(this).attr('data-sortfield');
+      sortTable(sortField);
+      $(this).parent().children().removeClass('sorted-1 sorted1');
+      return $(this).addClass("sorted" + dataTable.sortOrder);
+    });
     $('#tableView tbody').on('click touchend', 'tr', function(event) {
       var position, rep;
       rep = d3.select(this).datum();

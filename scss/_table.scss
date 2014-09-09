@@ -32,6 +32,27 @@ tbody {
 		background-color: rgba($color-primary, .05);
 	}
 }
+thead th {
+	cursor: pointer;
+	&:active {
+		background-color: rgba($color-primary, .05);
+	}
+}
+thead .sorted-1,
+thead .sorted1 {
+	&:after {
+		content: "";
+		font-size: .8em;
+		margin-left: .5em;
+		color: lighten($color-primary, 60%);
+	}
+}
+thead .sorted-1:after {
+	content: "▼";
+}
+thead .sorted1:after {
+	content: "▲";
+}
 .minAmount,
 .minSum {
 	min-width: 5em;
@@ -74,8 +95,8 @@ th {
 	tbody {
 		max-height: 50em;
 	}
-	thead tr {
-
+	thead th {
+		height: 2.5em;
 	}
 	tbody tr {
 		cursor: pointer;
@@ -91,14 +112,18 @@ th {
 	}
 	.faction {
 		max-width: 1em;
+		vertical-align: top;
 	}
 	.faction abbr {
 		display: inline-block;
 		width: 14px;
 		height: 14px;
-		margin-bottom: -2px;
+		margin-bottom: -3px;
 		border-radius: 50%;
 		overflow: hidden;
+	}
+	.count {
+		max-width: 2.5em;
 	}
 	.minSum {
 		position: relative;

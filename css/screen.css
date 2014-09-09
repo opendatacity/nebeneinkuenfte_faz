@@ -411,6 +411,24 @@ tbody {
   tbody tr:hover {
     background-color: rgba(0, 0, 0, 0.05); }
 
+thead th {
+  cursor: pointer; }
+  thead th:active {
+    background-color: rgba(0, 0, 0, 0.05); }
+
+thead .sorted-1:after,
+thead .sorted1:after {
+  content: "";
+  font-size: .8em;
+  margin-left: .5em;
+  color: #999999; }
+
+thead .sorted-1:after {
+  content: "▼"; }
+
+thead .sorted1:after {
+  content: "▲"; }
+
 .minAmount,
 .minSum {
   min-width: 5em;
@@ -442,6 +460,8 @@ th {
   padding: .3em .2em; }
 .representatives tbody {
   max-height: 50em; }
+.representatives thead th {
+  height: 2.5em; }
 .representatives tbody tr {
   cursor: pointer; }
 .representatives thead .faction {
@@ -451,14 +471,17 @@ th {
 .representatives .land abbr {
   display: none; }
 .representatives .faction {
-  max-width: 1em; }
+  max-width: 1em;
+  vertical-align: top; }
 .representatives .faction abbr {
   display: inline-block;
   width: 14px;
   height: 14px;
-  margin-bottom: -2px;
+  margin-bottom: -3px;
   border-radius: 50%;
   overflow: hidden; }
+.representatives .count {
+  max-width: 2.5em; }
 .representatives .minSum {
   position: relative; }
 .representatives .bar {

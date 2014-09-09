@@ -297,9 +297,10 @@ $.getJSON window.dataPath, (data) ->
   # Which of the possible factions are actually represented in parliament?
   factions = Factions.filter (faction) -> _data.find fraktion: faction.name
 
-  _data.each (rep) ->
+  _data.each (rep, i) ->
     rep.nebeneinkuenfteMinSum = nebeneinkuenfteMinSum rep
     rep.nebeneinkuenfteCount = rep.nebeneinkuenfte.length
+    rep.alphabeticOrder = i
     rep.nebeneinkuenfte.sort (a, b) -> b.level - a.level
 
   dataByFaction = _data.groupBy('fraktion').value()
@@ -325,7 +326,10 @@ $.getJSON window.dataPath, (data) ->
 
   # We'll create a clone of the data array that can be sorted in place
   # for the data table
-  tableData = data.sort (rep1, rep2) -> rep2.nebeneinkuenfteMinSum - rep1.nebeneinkuenfteMinSum
+  dataTable = 
+    data: data.sort (rep1, rep2) -> rep2.nebeneinkuenfteMinSum - rep1.nebeneinkuenfteMinSum
+    sortedBy: 'nebeneinkuenfteMinSum'
+    sortOrder: -1
 
   tick = (e) ->
     alpha = e.alpha * e.alpha
@@ -482,6 +486,7 @@ $.getJSON window.dataPath, (data) ->
 
   table = d3.select '#tableView tbody'
   rowHTML = $('#tableView tbody tr').remove().html()
+  rows = table.selectAll('tr').data(dataTable.data)
 
   tableRow = (rep) ->
     rowHTML.replace /\{(?:([^\}]*?):)?([^\}]*?)\}/g, (match, type, property) ->
@@ -489,22 +494,37 @@ $.getJSON window.dataPath, (data) ->
       return abbreviate rep[property] if type is 'abbr'
       T rep[property]
 
+  rows.enter().append 'tr'
+  .html tableRow
+  
+  rows.select '.faction'
+  .attr 'class', (rep) -> 'faction ' + _.find(Factions, name: rep.fraktion).class
+
+  rows.select '.bar'
+  .style 'width', (rep) -> rep.nebeneinkuenfteMinSum / maxNebeneinkuenfteMinSum * 100 + '%'
+
   updateTable = ->
-    row = table.selectAll 'tr'
-    .data tableData
+    rows.attr 'class', (rep) -> if rep.radius >= 1 then 'visible' else 'hidden'
 
-    row.enter().append 'tr'
-    .html tableRow
-    .select '.faction'
-    .attr 'class', (rep) -> 'faction ' + _.find(Factions, name: rep.fraktion).class
+  sortTable = (sortField) ->
+    # If the array is _already_ sorted by this field, reverse the sort order
+    if dataTable.sortedBy is sortField
+      dataTable.sortOrder *= -1
+    else
+      dataTable.sortOrder = 1
+    table.selectAll 'tr'
+    .sort (rep1, rep2) ->
+      return -dataTable.sortOrder if rep2[sortField] > rep1[sortField]
+      return  dataTable.sortOrder if rep2[sortField] < rep1[sortField]
+      return 0
 
-    row.select '.bar'
-    .style 'width', (rep) -> rep.nebeneinkuenfteMinSum / maxNebeneinkuenfteMinSum * 100 + '%'
+    dataTable.sortedBy = sortField
 
-    row.transition()
-    .attr 'class', (rep) -> if rep.radius >= 1 then 'visible' else 'hidden'
-
-    row.exit().remove()
+  $('#tableView thead').on 'click', 'th', (event) ->
+    sortField = $(this).attr 'data-sortfield'
+    sortTable sortField
+    $(this).parent().children().removeClass 'sorted-1 sorted1'
+    $(this).addClass "sorted#{dataTable.sortOrder}"
 
   $('#tableView tbody').on 'click touchend', 'tr', (event) ->
     rep = d3.select(this).datum()
