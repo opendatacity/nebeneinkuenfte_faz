@@ -1,6 +1,6 @@
 (function() {
   'use strict';
-  var Arc, Factions, NebeneinkunftMinAmounts, Rep, RepInspector, T, Tp, Viewport, abbreviate, formatCurrency, getEventPosition, nebeneinkuenfteMinSum, showOrHideConvenienceButtons, updateCheckboxLabelState;
+  var Arc, Factions, JSONSuccess, NebeneinkunftMinAmounts, Rep, RepInspector, T, Tp, Viewport, abbreviate, formatCurrency, getEventPosition, nebeneinkuenfteMinSum, showOrHideConvenienceButtons, updateCheckboxLabelState;
 
   Viewport = {
     width: 700,
@@ -138,13 +138,13 @@
     if (event.originalEvent.touches) {
       offset = $(event.target).offset();
       return {
-        x: offset.left,
-        y: offset.top
+        x: offset.left - $(window).scrollLeft(),
+        y: offset.top - $(window).scrollTop()
       };
     }
     return {
-      x: event.pageX,
-      y: event.pageY
+      x: event.pageX - $(window).scrollLeft(),
+      y: event.pageY - $(window).scrollTop()
     };
   };
 
@@ -152,7 +152,7 @@
     function RepInspector(selector) {
       this.tooltip = $(selector);
       this.tooltip.find('tbody').on('scroll', this.handleScroll);
-      this.tooltip.find('.closeButton').on('mouseup touchend', null, {
+      this.tooltip.find('.closeButton').on('click', null, {
         inspector: this
       }, function(event) {
         event.data.inspector.hide();
@@ -281,170 +281,7 @@
 
   })();
 
-  $(document).ready(function() {
-    var checkAllInParentFieldset, ignoreNext, longTap, longTapTimeout, mapClickCount, mapClickCountResetTimeout, tabs;
-    $('.startCollapsed').each(function(i, e) {
-      return $(e).css({
-        height: $(e).height()
-      }).addClass('collapsed').removeClass('startCollapsed');
-    });
-    $('#map').on('mouseenter touchstart', 'path', function() {
-      var node;
-      node = $(this);
-      return node.insertAfter(node.siblings().last());
-    });
-    $('#map').on('mouseleave touchend', 'path', function() {
-      var node, nodeClass;
-      node = $(this);
-      nodeClass = node.attr('class');
-      if (nodeClass === 'active') {
-        return node.insertAfter(node.siblings().last());
-      } else {
-        return node.insertBefore(node.siblings().first());
-      }
-    });
-    longTap = false;
-    longTapTimeout = null;
-    $('#map').on('touchstart', 'path', function(event) {
-      var land;
-      longTap = false;
-      land = $(this);
-      return longTapTimeout = setTimeout(function() {
-        longTap = true;
-        return land.trigger('touchend');
-      }, 500);
-    });
-    checkAllInParentFieldset = function(element) {
-      var checkboxes;
-      checkboxes = $(element).parents('fieldset').find(':checkbox');
-      checkboxes.prop('checked', true);
-      updateCheckboxLabelState(checkboxes);
-      return $(element).parents('form').submit();
-    };
-    $('#map').on('dblclick', 'path', function() {
-      return checkAllInParentFieldset(this);
-    });
-    mapClickCount = 0;
-    mapClickCountResetTimeout = null;
-    ignoreNext = false;
-    $('#map').on('mouseup touchend', 'path', function(event) {
-      var checkbox, fieldset, hint, land, selectAll, selectMultiple;
-      mapClickCount++;
-      clearTimeout(longTapTimeout);
-      clearTimeout(mapClickCountResetTimeout);
-      mapClickCountResetTimeout = setTimeout((function() {
-        return mapClickCount = 0;
-      }), 30000);
-      event.preventDefault();
-      if (ignoreNext) {
-        return ignoreNext = false;
-      }
-      if (longTap) {
-        ignoreNext = true;
-      }
-      selectMultiple = event.shiftKey || event.metaKey || event.ctrlKey || longTap;
-      land = $(this).attr('title');
-      fieldset = $(this).parents('fieldset');
-      selectAll = $(this).attr('class') === 'active' && $(this).siblings('.active').length === 0;
-      if (selectAll) {
-        fieldset.find(':checkbox').prop('checked', true);
-        $(this).parents('form').triggerHandler('submit');
-      } else {
-        if (!selectMultiple) {
-          fieldset.find(':checkbox').prop('checked', false);
-        }
-        checkbox = fieldset.find("input[value=" + land + "]");
-        checkbox.click();
-      }
-      updateCheckboxLabelState($(':checkbox'));
-      hint = fieldset.find('.uiHint');
-      if (mapClickCount === 2 && !selectMultiple) {
-        if (Modernizr.touch) {
-          hint.text('Durch langes Tippen können Sie mehrere Länder auswählen.');
-        }
-        hint.removeClass('collapsed');
-        return setTimeout((function() {
-          return hint.addClass('collapsed');
-        }), 8000);
-      } else if (mapClickCount > 2 && selectMultiple) {
-        return hint.addClass('collapsed');
-      }
-    });
-    $('fieldset').each(function(i, fieldset) {
-      var div;
-      div = $('<div class="convenienceButtons">');
-      div.append($('<input type="button" value="alle" title="Alle auswählen" class="selectAll">'));
-      div.append($('<input type="button" value="umkehren" title="Auswahl umkehren" class="invertSelection">'));
-      return $(fieldset).append(div);
-    });
-    updateCheckboxLabelState($(':checkbox'));
-    $('.invertSelection, .selectAll').click(function(event) {
-      var checkboxes, fieldset, selector;
-      fieldset = $(this).parents('fieldset');
-      selector = ':checkbox';
-      if ($(this).hasClass('selectAll')) {
-        selector += ':not(:checked)';
-      }
-      checkboxes = fieldset.find(selector);
-      checkboxes.each(function(i, c) {
-        $(c).prop('checked', !$(c).prop('checked'));
-        return updateCheckboxLabelState(c);
-      });
-      return $(this).parents('form').triggerHandler('submit');
-    });
-    tabs = {};
-    $('nav.tabs').on('mouseup touchend', 'a', function(event) {
-      tabs.selected = this;
-      tabs.selectedID = $(tabs.selected).attr('href');
-      if (!tabs.anchors) {
-        tabs.anchors = $(tabs.selected).parents('nav').find('a');
-      }
-      return tabs.anchors.each(function(index, a) {
-        var anchorID;
-        if (a === tabs.selected) {
-          $(a).addClass('active').removeClass('inactive');
-          return $(tabs.selectedID).addClass('visible').removeClass('hidden');
-        } else {
-          anchorID = $(a).attr('href');
-          $(a).addClass('inactive').removeClass('active');
-          return $(anchorID).addClass('hidden').removeClass('visible');
-        }
-      });
-    });
-    $('.tabs .parliament').trigger('mouseup');
-    $('nav.tabs').on('click touchstart', function(event) {
-      return event.preventDefault();
-    });
-    return $(window).on('resize', function(event) {
-      var body, hScale, hSpace, scale, vSpace, wScale;
-      window.windowSize = {
-        width: $(window).width(),
-        height: $(window).height()
-      };
-      wScale = Math.min(1, (windowSize.width - 16) / Viewport.width);
-      hScale = Math.min(1, (windowSize.height - 16) / (Viewport.height + 10));
-      scale = Math.min(wScale, hScale);
-      $('#parliament, #parliamentView').height((Viewport.height + 10) * scale).width(Viewport.width * scale);
-      body = $('body');
-      vSpace = windowSize.height - 26 - Viewport.height * scale;
-      hSpace = windowSize.width - 16 - Viewport.width * scale;
-      if (vSpace < 300 || vSpace < 500 && Modernizr.touch) {
-        body.removeClass('tall').addClass('short');
-      } else {
-        body.addClass('tall').removeClass('short');
-      }
-      if (hSpace > 220) {
-        body.addClass('wide').removeClass('narrow');
-      } else {
-        body.removeClass('wide').addClass('narrow');
-      }
-      if (windowSize.width >= 900 && tabs.selectedID === '#filterView') {
-        return $('.tabs .parliament').trigger('mouseup');
-      }
-    });
-  });
-
-  $.getJSON(window.dataPath, function(data) {
+  JSONSuccess = function(data) {
     var arc, collide, dataByFaction, dataTable, drawRepresentatives, factions, filterData, force, g, initializeRepPositions, inspector, maxNebeneinkuenfteMinSum, minSumPerSeat, node, parliament, pie, repRadius, repRadiusScaleFactor, rowHTML, rows, seats, seatsPie, sortTable, svg, table, tableRow, tick, totalSeats, updateTable;
     data = data.data;
     window._data = _(data);
@@ -477,7 +314,6 @@
       return minSum / factionSeats;
     });
     maxNebeneinkuenfteMinSum = _.max(data, 'nebeneinkuenfteMinSum').nebeneinkuenfteMinSum;
-    console.log(maxNebeneinkuenfteMinSum);
     repRadiusScaleFactor = 850 / _.max(minSumPerSeat);
     repRadius = function(rep) {
       return repRadiusScaleFactor * Math.sqrt(rep.nebeneinkuenfteMinSum);
@@ -488,7 +324,6 @@
     data = _data.where(function(rep) {
       return rep.nebeneinkuenfteMinSum > 1;
     }).value();
-    console.log(data);
     dataByFaction = _.groupBy(data, 'fraktion');
     dataTable = {
       data: data.sort(function(rep1, rep2) {
@@ -583,6 +418,7 @@
     pie = d3.layout.pie().sort(null).value(function(faction) {
       return faction.seats;
     }).startAngle(Math.PI * -0.5).endAngle(Math.PI * 0.5);
+    $(document.body).removeClass('loading');
     seatsPie = pie(_.map(factions, function(faction) {
       return {
         faction: faction.name,
@@ -701,7 +537,7 @@
       });
       return dataTable.sortedBy = sortField;
     };
-    $('#tableView thead').on('mouseup touchend', 'th', function(event) {
+    $('#tableView thead').on('click', 'th', function(event) {
       var sortField;
       event.preventDefault();
       sortField = $(this).attr('data-sortfield');
@@ -709,7 +545,7 @@
       $(this).parent().children().removeClass('sorted-1 sorted1');
       return $(this).addClass("sorted" + dataTable.sortOrder);
     });
-    $('#tableView tbody').on('click touchend', 'tr', function(event) {
+    $('#tableView tbody').on('click', 'tr', function(event) {
       var position, rep;
       rep = d3.select(this).datum();
       position = getEventPosition(event);
@@ -768,7 +604,6 @@
     });
     $('svg').on('mousemove touchend', 'circle', function(event) {
       var position, rep;
-      event.preventDefault();
       position = getEventPosition(event);
       rep = d3.select(this).datum();
       if (!inspector.visible) {
@@ -798,23 +633,168 @@
         return inspector.moveTo(position);
       } else if (inspector.fixed) {
         inspector.update(rep);
-        return inspector.show(position);
+        inspector.show(position);
+        if (event.originalEvent.touches) {
+          return inspector.fix();
+        }
       } else {
         event.stopPropagation();
         return inspector.fix();
       }
     });
-    $('.toggler').on('mouseup touchend', function(event) {
+    $('.toggler').on('click', function(event) {
       return $(this.getAttribute('href')).toggleClass('hidden');
     });
-    $('label, a').on('touchend', function(event) {
-      event.preventDefault();
-      return $(this).trigger('click');
-    });
-    $('svg').on('touchend', function(event) {
-      return event.preventDefault();
-    });
     return $(window).trigger('resize');
+  };
+
+  $(document).ready(function() {
+    var checkAllInParentFieldset, ignoreNext, mapClickCount, mapClickCountResetTimeout, tabs;
+    FastClick.attach(document.body);
+    $.getJSON(window.dataPath, JSONSuccess);
+    $('.startCollapsed').each(function(i, e) {
+      return $(e).css({
+        height: $(e).height()
+      }).addClass('collapsed').removeClass('startCollapsed');
+    });
+    $('#map').on('mouseenter', 'path', function() {
+      var node;
+      node = $(this);
+      return node.insertAfter(node.siblings().last());
+    });
+    $('#map').on('mouseleave', 'path', function() {
+      var node, nodeClass;
+      node = $(this);
+      nodeClass = node.attr('class');
+      if (nodeClass === 'active') {
+        return node.insertAfter(node.siblings().last());
+      } else {
+        return node.insertBefore(node.siblings().first());
+      }
+    });
+    checkAllInParentFieldset = function(element) {
+      var checkboxes;
+      checkboxes = $(element).parents('fieldset').find(':checkbox');
+      checkboxes.prop('checked', true);
+      updateCheckboxLabelState(checkboxes);
+      return $(element).parents('form').submit();
+    };
+    $('#map').on('dblclick', 'path', function() {
+      return checkAllInParentFieldset(this);
+    });
+    mapClickCount = 0;
+    mapClickCountResetTimeout = null;
+    ignoreNext = false;
+    $('#map').on('mouseup', 'path', function(event) {
+      var checkbox, fieldset, hint, land, selectAll, selectMultiple;
+      mapClickCount++;
+      clearTimeout(mapClickCountResetTimeout);
+      mapClickCountResetTimeout = setTimeout((function() {
+        return mapClickCount = 0;
+      }), 30000);
+      event.preventDefault();
+      if (ignoreNext) {
+        return ignoreNext = false;
+      }
+      selectMultiple = event.shiftKey || event.metaKey || event.ctrlKey;
+      land = $(this).attr('title');
+      fieldset = $(this).parents('fieldset');
+      selectAll = $(this).attr('class') === 'active' && $(this).siblings('.active').length === 0;
+      if (selectAll) {
+        fieldset.find(':checkbox').prop('checked', true);
+        $(this).parents('form').triggerHandler('submit');
+      } else {
+        if (!selectMultiple) {
+          fieldset.find(':checkbox').prop('checked', false);
+        }
+        checkbox = fieldset.find("input[value=" + land + "]");
+        checkbox.click();
+      }
+      updateCheckboxLabelState($(':checkbox'));
+      hint = fieldset.find('.uiHint');
+      if (mapClickCount === 2 && !selectMultiple) {
+        if (Modernizr.touch) {
+          hint.text('Durch langes Tippen können Sie mehrere Länder auswählen.');
+        }
+        hint.removeClass('collapsed');
+        return setTimeout((function() {
+          return hint.addClass('collapsed');
+        }), 8000);
+      } else if (mapClickCount > 2 && selectMultiple) {
+        return hint.addClass('collapsed');
+      }
+    });
+    $('fieldset').each(function(i, fieldset) {
+      var div;
+      div = $('<div class="convenienceButtons">');
+      div.append($('<input type="button" value="alle" title="Alle auswählen" class="selectAll">'));
+      div.append($('<input type="button" value="umkehren" title="Auswahl umkehren" class="invertSelection">'));
+      return $(fieldset).append(div);
+    });
+    updateCheckboxLabelState($(':checkbox'));
+    $('.invertSelection, .selectAll').click(function(event) {
+      var checkboxes, fieldset, selector;
+      fieldset = $(this).parents('fieldset');
+      selector = ':checkbox';
+      if ($(this).hasClass('selectAll')) {
+        selector += ':not(:checked)';
+      }
+      checkboxes = fieldset.find(selector);
+      checkboxes.each(function(i, c) {
+        $(c).prop('checked', !$(c).prop('checked'));
+        return updateCheckboxLabelState(c);
+      });
+      return $(this).parents('form').triggerHandler('submit');
+    });
+    tabs = {};
+    $('nav.tabs').on('click', 'a', function(event) {
+      event.preventDefault();
+      tabs.selected = this;
+      tabs.selectedID = $(tabs.selected).attr('href');
+      if (!tabs.anchors) {
+        tabs.anchors = $(tabs.selected).parents('nav').find('a');
+      }
+      return tabs.anchors.each(function(index, a) {
+        var anchorID;
+        if (a === tabs.selected) {
+          $(a).addClass('active').removeClass('inactive');
+          return $(tabs.selectedID).addClass('visible').removeClass('hidden');
+        } else {
+          anchorID = $(a).attr('href');
+          $(a).addClass('inactive').removeClass('active');
+          return $(anchorID).addClass('hidden').removeClass('visible');
+        }
+      });
+    });
+    $('.tabs .parliament').trigger('click');
+    $(window).on('resize', function(event) {
+      var body, hScale, hSpace, scale, vSpace, wScale;
+      window.windowSize = {
+        width: $(window).width(),
+        height: $(window).height()
+      };
+      wScale = Math.min(1, (windowSize.width - 16) / Viewport.width);
+      hScale = Math.min(1, (windowSize.height - 16) / (Viewport.height + 10));
+      scale = Math.min(wScale, hScale);
+      $('#parliament, #parliamentView').height((Viewport.height + 10) * scale).width(Viewport.width * scale);
+      body = $('body');
+      vSpace = windowSize.height - 26 - Viewport.height * scale;
+      hSpace = windowSize.width - 16 - Viewport.width * scale;
+      if (vSpace < 300 || vSpace < 500 && Modernizr.touch) {
+        body.removeClass('tall').addClass('short');
+      } else {
+        body.addClass('tall').removeClass('short');
+      }
+      if (hSpace > 220) {
+        body.addClass('wide').removeClass('narrow');
+      } else {
+        body.removeClass('wide').addClass('narrow');
+      }
+      if (windowSize.width >= 900 && tabs.selectedID === '#filterView') {
+        return $('.tabs .parliament').trigger('click');
+      }
+    });
+    return $(window).triggerHandler('resize');
   });
 
 }).call(this);

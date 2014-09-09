@@ -119,6 +119,35 @@ nav.tabs {
     nav.tabs a.table:before {
       content: "\e602"; }
 
+/* Spinner and scaleout animation: Copyright (c) 2014 Tobias Ahlin, https://github.com/tobiasahlin/SpinKit, MIT License */
+.loading .spinner {
+  width: 40px;
+  height: 40px;
+  margin: 100px auto;
+  background-color: #333;
+  border-radius: 100%;
+  -webkit-animation: scaleout 1.0s infinite ease-in-out;
+          animation: scaleout 1.0s infinite ease-in-out; }
+.loading .tab, .loading footer {
+  display: none; }
+
+@-webkit-keyframes scaleout {
+  0% {
+    -webkit-transform: scale(0);
+            transform: scale(0); }
+  100% {
+    -webkit-transform: scale(1);
+            transform: scale(1);
+    opacity: 0; } }
+
+@keyframes scaleout {
+  0% {
+    -webkit-transform: scale(0);
+            transform: scale(0); }
+  100% {
+    -webkit-transform: scale(1);
+            transform: scale(1);
+    opacity: 0; } }
 .unsupportedMessage {
   font: 1.2em Verdana, sans-serif;
   position: fixed;
@@ -145,6 +174,7 @@ nav.tabs {
     display: block; }
 
 body {
+  position: relative;
   font: 1em/1.2em Georgia, "Linux Libertine", serif;
   margin: 10px;
   padding-bottom: 5em; }
@@ -262,9 +292,10 @@ input[type=checkbox] {
   display: none; }
 
 .uiHint {
+  z-index: 3;
   font-size: .8em;
   position: absolute;
-  bottom: 100%;
+  top: 100%;
   height: auto;
   margin-bottom: -1.5em;
   padding: .2em;
@@ -277,7 +308,7 @@ input[type=checkbox] {
 
 .collapsed,
 .startCollapsed {
-  bottom: 95%;
+  top: 95%;
   opacity: 0; }
 
 input[type=submit] {
@@ -287,27 +318,34 @@ input[type=submit] {
   display: none; }
 
 .closeButton {
+  display: none;
+  -webkit-appearance: none;
+  box-sizing: border-box;
   position: absolute;
-  top: .7em;
-  right: .7em;
+  top: .35em;
+  right: .35em;
   line-height: 1em;
   width: 2em;
   height: 2em;
-  margin: -.25em;
+  padding: 0;
   cursor: pointer;
   border: none;
   border-radius: 1em;
   outline: none;
-  background-color: transparent; }
+  background-color: transparent;
+  text-align: center; }
   .closeButton:hover {
     background-color: rgba(0, 0, 0, 0.2); }
   .closeButton:active {
     background-color: rgba(0, 0, 0, 0.3); }
 
+.fixed .closeButton {
+  display: inline-block; }
+
 #land .convenienceButtons {
   display: inline-block;
   position: absolute;
-  top: 1em;
+  top: 0;
   left: 0;
   margin: 0; }
   #land .convenienceButtons.allSelected {
@@ -339,7 +377,7 @@ form > .convenienceButtons {
   display: none; }
 
 .repInspector {
-  position: absolute;
+  position: fixed;
   z-index: 10;
   box-sizing: border-box;
   max-height: 100%;
@@ -593,6 +631,35 @@ footer nav ul {
     padding: 2em 10px 1em; }
     header p {
       display: block; } }
+@media screen and (max-width: 450px) {
+  .repInspector {
+    top: 0 !important;
+    left: 0 !important;
+    box-sizing: border-box;
+    width: 100% !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    margin: -1px 0 0 0;
+    padding: 1em;
+    transition: top 0.5s ease;
+    border-right: none;
+    border-bottom: none;
+    border-left: none;
+    border-radius: 0;
+    box-shadow: none; }
+
+  .repInspector.fixed {
+    margin: 0;
+    margin-top: -1px; }
+
+  .repInspector.hidden,
+  .repInspector.moving {
+    top: 100% !important;
+    display: block;
+    margin-top: 1px; }
+
+  body.inspectorFixed {
+    overflow: hidden; } }
 .touch label, .touch #land .selectAll {
   display: block;
   box-sizing: border-box;

@@ -2,6 +2,7 @@
 @import "mixins";
 @import "svg";
 @import "tabs";
+@import "loading";
 
 .unsupportedMessage {
 	font: 1.2em $font-secondary;
@@ -30,6 +31,7 @@
 }
 
 body {
+	position: relative;
 	font: 1em/1.2em $font-primary;
 	margin: $margin-body;
 	padding-bottom: 5em;
@@ -110,9 +112,10 @@ fieldset:last-child:after {
 	display: none;
 }
 .uiHint {
+	z-index: 3;
 	font-size: .8em;
 	position: absolute;
-	bottom: 100%;
+	top: 100%;
 	height: auto;
 	margin-bottom: -1.5em;
 	padding: .2em;
@@ -128,7 +131,7 @@ fieldset:last-child:after {
 
 .collapsed,
 .startCollapsed {
-	bottom: 95%;
+	top: 95%;
 	opacity: 0;
 }
 
@@ -139,18 +142,22 @@ input[type=submit] {
 	display: none;
 }
 .closeButton {
-	position: absolute;
-	top: .7em;
-	right: .7em;
+	display: none;
+	-webkit-appearance: none;
+	box-sizing: border-box;
+	position: absolute; // Go fuck yourself, Mobile Safari.
+	top: .35em;
+	right: .35em;
 	line-height: 1em;
 	width: 2em;
 	height: 2em;
-	margin: -.25em;
+	padding: 0;
 	cursor: pointer;
 	border: none;
 	border-radius: 1em;
 	outline: none;
 	background-color: transparent;
+	text-align: center;
 
 	@extend %heading;
 	&:hover {
@@ -160,10 +167,13 @@ input[type=submit] {
 		background-color: rgba($color-primary, .3);
 	}
 }
+.fixed .closeButton {
+	display: inline-block;
+}
 #land .convenienceButtons {
 	display: inline-block;
 	position: absolute;
-	top: 1em;
+	top: 0;
 	left: 0;
 	margin: 0;
 
@@ -284,6 +294,38 @@ footer {
 		p {
 			display: block;
 		}
+	}
+}
+@media screen and (max-width: 450px) {
+	.repInspector {
+		top: 0 !important;
+		left: 0 !important;
+		box-sizing: border-box;
+		width: 100% !important;
+		height: 100% !important;
+		max-height: 100% !important;
+		margin: -1px 0 0 0;
+		padding: 1em;
+
+		@include transition(top, $modalSlidingDuration);
+		border-right: none;
+		border-bottom: none;
+		border-left: none;
+		border-radius: 0;
+		box-shadow: none;
+	}
+	.repInspector.fixed {
+		margin: 0;
+		margin-top: -1px;
+	}
+	.repInspector.hidden,
+	.repInspector.moving {
+		top: 100% !important;
+		display: block;
+		margin-top: 1px;
+	}
+	body.inspectorFixed {
+		overflow: hidden;
 	}
 }
 .touch {

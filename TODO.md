@@ -17,9 +17,3 @@
 
 # Navigation
 - In der Quellenangabe ist "Quellcode" nicht verlinkt.
-- Tabs müssen responsive werden
-
-# Tabellenansicht
-- hübsch
-- responsive
-- sortierbar

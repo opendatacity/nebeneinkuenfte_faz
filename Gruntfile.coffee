@@ -39,6 +39,7 @@ module.exports = (grunt) ->
           'bower_components/d3/d3.js',
           'bower_components/jquery/dist/jquery.js',
           'bower_components/lodash/dist/lodash.js',
+          'bower_components/fastclick/lib/fastclick.js',
           'js/lib/*.js',
           '<%= coffee.compile.dest %>'
         ]
@@ -77,7 +78,7 @@ module.exports = (grunt) ->
         preserveComments: 'some'
         screw_ie8: true # absolutely!
         mangle:
-          except: ['jQuery', '_', 'd3', 'Modernizr']
+          except: ['jQuery', '_', 'd3', 'Modernizr', 'FastClick']
       dist:
         src: '<%= concat.dist.dest %>'
         dest: 'js/dist.min.js'

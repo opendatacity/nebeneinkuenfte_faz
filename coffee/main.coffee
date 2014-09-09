@@ -71,14 +71,14 @@ showOrHideConvenienceButtons = (checkbox) ->
 getEventPosition = (event) ->
   if event.originalEvent.touches
     offset = $(event.target).offset()
-    return x: offset.left, y: offset.top
-  return x: event.pageX, y: event.pageY
+    return x: offset.left - $(window).scrollLeft(), y: offset.top - $(window).scrollTop()
+  return x: event.pageX - $(window).scrollLeft(), y: event.pageY - $(window).scrollTop()
 
 class RepInspector
   constructor: (selector) ->
     @tooltip = $(selector)
     @tooltip.find('tbody').on 'scroll', @handleScroll
-    @tooltip.find('.closeButton').on 'mouseup touchend', null, inspector: this, (event) ->
+    @tooltip.find('.closeButton').on 'click', null, inspector: this, (event) ->
       event.data.inspector.hide()
       event.preventDefault()
 
@@ -171,156 +171,7 @@ class RepInspector
     @measure()
     @moveTo @position
 
-$(document).ready ->
-
-  # Collapse everything that's supposed to start collapsed
-  $('.startCollapsed').each (i, e) ->
-    $(e).css height: $(e).height()
-    .addClass 'collapsed'
-    .removeClass 'startCollapsed'
-
-  $('#map').on 'mouseenter touchstart', 'path', ->
-    # Move to the top of the map's child nodes
-    node = $ this
-    node.insertAfter node.siblings().last()
-
-  $('#map').on 'mouseleave touchend', 'path', ->
-    node = $ this
-    nodeClass = node.attr 'class'
-    if nodeClass is 'active'
-      node.insertAfter node.siblings().last()
-    else
-      node.insertBefore node.siblings().first()
-
-  # To enable multi-selection on mobile by long-tap, we need to measure the
-  # duration of the click/tap.
-  longTap = false
-  longTapTimeout = null
-  $('#map').on 'touchstart', 'path', (event) ->
-    longTap = false
-    land = $ this
-    longTapTimeout = setTimeout ->
-      longTap = true
-      land.trigger 'touchend'
-    , 500
-
-  checkAllInParentFieldset = (element) ->
-    checkboxes = $(element).parents('fieldset').find(':checkbox')
-    checkboxes.prop 'checked', true
-    updateCheckboxLabelState checkboxes
-    $(element).parents('form').submit()
-
-  $('#map').on 'dblclick', 'path', -> checkAllInParentFieldset this
-
-  # Count clicks on the map so we can display a hint about multiple selection
-  # after the second click
-  mapClickCount = 0
-  mapClickCountResetTimeout = null
-  ignoreNext = false
-  $('#map').on 'mouseup touchend', 'path', (event) ->
-    mapClickCount++
-    clearTimeout longTapTimeout
-    clearTimeout mapClickCountResetTimeout
-    mapClickCountResetTimeout = setTimeout (-> mapClickCount = 0), 30000
-    event.preventDefault() # To avoid grey rectangle on iOS
-
-    return ignoreNext = false if ignoreNext
-    ignoreNext = true if longTap
-
-    selectMultiple = event.shiftKey or event.metaKey or event.ctrlKey or longTap
-    land = $(this).attr 'title'
-    fieldset = $(this).parents 'fieldset'
-
-    # Return to "all selected" if the user clicks on the only selected land
-    selectAll = $(this).attr('class') == 'active' and $(this).siblings('.active').length is 0
-
-    if selectAll
-      fieldset.find(':checkbox').prop('checked', true)
-      $(this).parents('form').triggerHandler 'submit'
-    else
-      fieldset.find(':checkbox').prop('checked', false) unless selectMultiple
-      checkbox = fieldset.find "input[value=#{land}]"
-      checkbox.click()
-
-    updateCheckboxLabelState $(':checkbox')
-
-    hint = fieldset.find('.uiHint')
-    if mapClickCount == 2 and not selectMultiple
-      hint.text 'Durch langes Tippen können Sie mehrere Länder auswählen.' if Modernizr.touch
-      hint.removeClass 'collapsed'
-      setTimeout (-> hint.addClass 'collapsed'), 8000
-    else if mapClickCount > 2 and selectMultiple
-      hint.addClass 'collapsed'
-
-  # Add 'Select All' and 'Invert Selection buttons to fieldsets'
-  $('fieldset').each (i, fieldset) ->
-    div = $ '<div class="convenienceButtons">'
-    div.append $ '<input type="button" value="alle" title="Alle auswählen" class="selectAll">'
-    div.append $ '<input type="button" value="umkehren" title="Auswahl umkehren" class="invertSelection">'
-    $(fieldset).append div
-
-  updateCheckboxLabelState $(':checkbox')
-
-  $('.invertSelection, .selectAll').click (event) ->
-    fieldset = $(this).parents('fieldset')
-    selector = ':checkbox'
-    selector += ':not(:checked)' if $(this).hasClass 'selectAll'
-    checkboxes = fieldset.find selector
-    checkboxes.each (i, c) ->
-      $(c).prop 'checked', !$(c).prop 'checked'
-      updateCheckboxLabelState c
-    $(this).parents('form').triggerHandler 'submit'
-
-  # Make tab buttons do something
-  tabs = {}
-  $('nav.tabs').on 'mouseup touchend', 'a', (event) ->
-    tabs.selected = this
-    tabs.selectedID = $(tabs.selected).attr('href')
-    tabs.anchors = $(tabs.selected).parents('nav').find('a') unless tabs.anchors
-
-    tabs.anchors.each (index, a) ->
-      if a is tabs.selected
-        $(a).addClass('active').removeClass('inactive')
-        $(tabs.selectedID).addClass('visible').removeClass('hidden')
-      else
-        anchorID = $(a).attr('href')
-        $(a).addClass('inactive').removeClass('active')
-        $(anchorID).addClass('hidden').removeClass('visible')
-  $('.tabs .parliament').trigger 'mouseup'
-
-  $('nav.tabs').on 'click touchstart', (event) ->
-    # Stop anchor showing up in URL bar
-    # and grey rectangle on Mobile Safari
-    event.preventDefault()
-
-  $(window).on 'resize', (event) ->
-    window.windowSize = width: $(window).width(), height: $(window).height()
-    wScale = Math.min 1, (windowSize.width - 16) / Viewport.width
-    hScale = Math.min 1, (windowSize.height - 16) / (Viewport.height + 10)
-    scale = Math.min wScale, hScale
-    $('#parliament, #parliamentView').height (Viewport.height + 10) * scale
-    .width Viewport.width * scale
-
-    # Due to the variable height of the parliament we can't reliably use media
-    # queries. Instead we'll attach/remove classes from the body depending on
-    # the most suitable layout.
-    body = $('body')
-    vSpace = windowSize.height - 26 - Viewport.height * scale
-    hSpace = windowSize.width - 16 - Viewport.width * scale
-    if vSpace < 300 or vSpace < 500 and Modernizr.touch
-      body.removeClass('tall').addClass('short')
-    else
-      body.addClass('tall').removeClass('short')
-      
-    if hSpace > 220
-      body.addClass('wide').removeClass('narrow')
-    else
-      body.removeClass('wide').addClass('narrow')
-
-    if windowSize.width >= 900 and tabs.selectedID is '#filterView'
-      $('.tabs .parliament').trigger 'mouseup'
-
-$.getJSON window.dataPath, (data) ->
+JSONSuccess = (data) ->
   data = data.data
   window._data = _(data)
 
@@ -342,7 +193,6 @@ $.getJSON window.dataPath, (data) ->
     factionSeats = seats[faction]
     minSum/factionSeats
   maxNebeneinkuenfteMinSum = _.max(data, 'nebeneinkuenfteMinSum').nebeneinkuenfteMinSum
-  console.log maxNebeneinkuenfteMinSum
   repRadiusScaleFactor = 850 / _.max minSumPerSeat
 
   repRadius = (rep) -> repRadiusScaleFactor * Math.sqrt rep.nebeneinkuenfteMinSum
@@ -350,13 +200,12 @@ $.getJSON window.dataPath, (data) ->
 
   data = _data.where (rep) -> rep.nebeneinkuenfteMinSum > 1
   .value()
-  console.log data
   # Recalculate dataByFaction from `data`
   dataByFaction = _.groupBy data, 'fraktion'
 
   # We'll create a clone of the data array that can be sorted in place
   # for the data table
-  dataTable = 
+  dataTable =
     data: data.sort (rep1, rep2) -> rep2.nebeneinkuenfteMinSum - rep1.nebeneinkuenfteMinSum
     sortedBy: 'nebeneinkuenfteMinSum'
     sortOrder: -1
@@ -444,6 +293,9 @@ $.getJSON window.dataPath, (data) ->
   .value (faction) -> faction.seats
   .startAngle Math.PI * -0.5
   .endAngle Math.PI * 0.5
+
+  # Now we finally have something to display to the user. About time, too.
+  $(document.body).removeClass 'loading'
 
   # We'll be needing this not only for the pie chart but also in the collision
   # detector to make sure that representatives stay inside their own faction
@@ -550,14 +402,14 @@ $.getJSON window.dataPath, (data) ->
 
     dataTable.sortedBy = sortField
 
-  $('#tableView thead').on 'mouseup touchend', 'th', (event) ->
+  $('#tableView thead').on 'click', 'th', (event) ->
     event.preventDefault()
     sortField = $(this).attr 'data-sortfield'
     sortTable sortField
     $(this).parent().children().removeClass 'sorted-1 sorted1'
     $(this).addClass "sorted#{dataTable.sortOrder}"
 
-  $('#tableView tbody').on 'click touchend', 'tr', (event) ->
+  $('#tableView tbody').on 'click', 'tr', (event) ->
     rep = d3.select(this).datum()
     position = getEventPosition event
     inspector.update rep
@@ -609,7 +461,6 @@ $.getJSON window.dataPath, (data) ->
     updateCheckboxLabelState this
 
   $('svg').on 'mousemove touchend', 'circle', (event) ->
-    event.preventDefault()
     position = getEventPosition event
     rep = d3.select(this).datum()
     unless inspector.visible
@@ -632,18 +483,146 @@ $.getJSON window.dataPath, (data) ->
     else if inspector.fixed
       inspector.update rep
       inspector.show position
+      inspector.fix() if event.originalEvent.touches
     else
       event.stopPropagation() # Otherwise the click would fire on the document node and hide the inspector
       inspector.fix()
 
-  $('.toggler').on 'mouseup touchend', (event) ->
+  $('.toggler').on 'click', (event) ->
     $(this.getAttribute 'href').toggleClass 'hidden'
-
-  $('label, a').on 'touchend', (event) ->
-    event.preventDefault()
-    $(this).trigger 'click'
-
-  $('svg').on 'touchend', (event) -> event.preventDefault()
 
   $(window).trigger('resize')
 
+$(document).ready ->
+  FastClick.attach document.body
+  $.getJSON window.dataPath, JSONSuccess
+
+  # Collapse everything that's supposed to start collapsed
+  $('.startCollapsed').each (i, e) ->
+    $(e).css height: $(e).height()
+    .addClass 'collapsed'
+    .removeClass 'startCollapsed'
+
+  $('#map').on 'mouseenter', 'path', ->
+    # Move to the top of the map's child nodes
+    node = $ this
+    node.insertAfter node.siblings().last()
+
+  $('#map').on 'mouseleave', 'path', ->
+    node = $ this
+    nodeClass = node.attr 'class'
+    if nodeClass is 'active'
+      node.insertAfter node.siblings().last()
+    else
+      node.insertBefore node.siblings().first()
+
+  checkAllInParentFieldset = (element) ->
+    checkboxes = $(element).parents('fieldset').find(':checkbox')
+    checkboxes.prop 'checked', true
+    updateCheckboxLabelState checkboxes
+    $(element).parents('form').submit()
+
+  $('#map').on 'dblclick', 'path', -> checkAllInParentFieldset this
+
+  # Count clicks on the map so we can display a hint about multiple selection
+  # after the second click
+  mapClickCount = 0
+  mapClickCountResetTimeout = null
+  ignoreNext = false
+  $('#map').on 'mouseup', 'path', (event) ->
+    mapClickCount++
+    clearTimeout mapClickCountResetTimeout
+    mapClickCountResetTimeout = setTimeout (-> mapClickCount = 0), 30000
+    event.preventDefault() # To avoid grey rectangle on iOS
+
+    return ignoreNext = false if ignoreNext
+
+    selectMultiple = event.shiftKey or event.metaKey or event.ctrlKey
+    land = $(this).attr 'title'
+    fieldset = $(this).parents 'fieldset'
+
+    # Return to "all selected" if the user clicks on the only selected land
+    selectAll = $(this).attr('class') == 'active' and $(this).siblings('.active').length is 0
+
+    if selectAll
+      fieldset.find(':checkbox').prop('checked', true)
+      $(this).parents('form').triggerHandler 'submit'
+    else
+      fieldset.find(':checkbox').prop('checked', false) unless selectMultiple
+      checkbox = fieldset.find "input[value=#{land}]"
+      checkbox.click()
+
+    updateCheckboxLabelState $(':checkbox')
+
+    hint = fieldset.find('.uiHint')
+    if mapClickCount == 2 and not selectMultiple
+      hint.text 'Durch langes Tippen können Sie mehrere Länder auswählen.' if Modernizr.touch
+      hint.removeClass 'collapsed'
+      setTimeout (-> hint.addClass 'collapsed'), 8000
+    else if mapClickCount > 2 and selectMultiple
+      hint.addClass 'collapsed'
+
+  # Add 'Select All' and 'Invert Selection buttons to fieldsets'
+  $('fieldset').each (i, fieldset) ->
+    div = $ '<div class="convenienceButtons">'
+    div.append $ '<input type="button" value="alle" title="Alle auswählen" class="selectAll">'
+    div.append $ '<input type="button" value="umkehren" title="Auswahl umkehren" class="invertSelection">'
+    $(fieldset).append div
+
+  updateCheckboxLabelState $(':checkbox')
+
+  $('.invertSelection, .selectAll').click (event) ->
+    fieldset = $(this).parents('fieldset')
+    selector = ':checkbox'
+    selector += ':not(:checked)' if $(this).hasClass 'selectAll'
+    checkboxes = fieldset.find selector
+    checkboxes.each (i, c) ->
+      $(c).prop 'checked', !$(c).prop 'checked'
+      updateCheckboxLabelState c
+    $(this).parents('form').triggerHandler 'submit'
+
+  # Make tab buttons do something
+  tabs = {}
+  $('nav.tabs').on 'click', 'a', (event) ->
+    event.preventDefault()
+    tabs.selected = this
+    tabs.selectedID = $(tabs.selected).attr('href')
+    tabs.anchors = $(tabs.selected).parents('nav').find('a') unless tabs.anchors
+
+    tabs.anchors.each (index, a) ->
+      if a is tabs.selected
+        $(a).addClass('active').removeClass('inactive')
+        $(tabs.selectedID).addClass('visible').removeClass('hidden')
+      else
+        anchorID = $(a).attr('href')
+        $(a).addClass('inactive').removeClass('active')
+        $(anchorID).addClass('hidden').removeClass('visible')
+  $('.tabs .parliament').trigger 'click'
+
+  $(window).on 'resize', (event) ->
+    window.windowSize = width: $(window).width(), height: $(window).height()
+    wScale = Math.min 1, (windowSize.width - 16) / Viewport.width
+    hScale = Math.min 1, (windowSize.height - 16) / (Viewport.height + 10)
+    scale = Math.min wScale, hScale
+    $('#parliament, #parliamentView').height (Viewport.height + 10) * scale
+    .width Viewport.width * scale
+
+    # Due to the variable height of the parliament we can't reliably use media
+    # queries. Instead we'll attach/remove classes from the body depending on
+    # the most suitable layout.
+    body = $('body')
+    vSpace = windowSize.height - 26 - Viewport.height * scale
+    hSpace = windowSize.width - 16 - Viewport.width * scale
+    if vSpace < 300 or vSpace < 500 and Modernizr.touch
+      body.removeClass('tall').addClass('short')
+    else
+      body.addClass('tall').removeClass('short')
+      
+    if hSpace > 220
+      body.addClass('wide').removeClass('narrow')
+    else
+      body.removeClass('wide').addClass('narrow')
+
+    if windowSize.width >= 900 and tabs.selectedID is '#filterView'
+      $('.tabs .parliament').trigger 'click'
+  $(window).triggerHandler 'resize'

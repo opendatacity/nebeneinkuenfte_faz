@@ -19,8 +19,8 @@
 	<meta name="author" content="Philipp Bock/OpenDataCity; http://opendatacity.de, http://philippbock.de">
 </head>
 <!--[if lte IE 8]><body class="unsupported"><![endif]-->
-<!--[if gt IE 8]><body><![endif]-->
-<!--[if !IE]> --><body><!-- <![endif]-->
+<!--[if gt IE 8]><body class="loading"><![endif]-->
+<!--[if !IE]> --><body class="loading"><!-- <![endif]-->
 	<div class="unsupportedMessage">
 		<p>Leider kann diese interaktive Grafik in Ihrem Browser nicht dargestellt werden.</p>
 	</div>
@@ -30,6 +30,8 @@
 		<p>Abgeordnete mit Nebentätigkeiten ab tausend&nbsp;Euro</p>
 	</header>
 	
+	<div class="spinner"></div>
+
 	<nav class="tabs">
 		<ul>
 			<li><a class="filter" href="#filterView">Filter</a></li>
@@ -197,6 +199,7 @@
 	<script src="bower_components/d3/d3.js" charset="utf-8"></script>
 	<script src="bower_components/jquery/dist/jquery.js" charset="utf-8"></script>
 	<script src="bower_components/lodash/dist/lodash.js" charset="utf-8"></script>
+	<script src="bower_components/fastclick/lib/fastclick.js" charset="utf-8"></script>
 	<script src="js/lib/modernizr.custom.69569.js" charset="utf-8"></script>
 	<script src="js/lib/requestAnimationFrame.js" charset="utf-8"></script>
 	<script src="js/de-de.dict.js" charset="utf-8"></script>
