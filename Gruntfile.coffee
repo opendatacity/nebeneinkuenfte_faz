@@ -107,7 +107,7 @@ module.exports = (grunt) ->
       server:
         options:
           port: 5757
-          hostname: 'localhost'
+          hostname: '0.0.0.0'
           livereload: true
 
   # These plugins provide necessary tasks.

@@ -282,8 +282,9 @@ $(document).ready ->
         anchorID = $(a).attr('href')
         $(a).addClass('inactive').removeClass('active')
         $(anchorID).addClass('hidden').removeClass('visible')
-  $('nav.tabs').on 'click', (event) ->
+  $('nav.tabs').on 'click touchstart', (event) ->
     # Stop anchor showing up in URL bar
+    # and grey rectangle on Mobile Safari
     event.preventDefault()
 
 $.getJSON window.dataPath, (data) ->

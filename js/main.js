@@ -402,7 +402,7 @@
         }
       });
     });
-    return $('nav.tabs').on('click', function(event) {
+    return $('nav.tabs').on('click touchstart', function(event) {
       return event.preventDefault();
     });
   });
