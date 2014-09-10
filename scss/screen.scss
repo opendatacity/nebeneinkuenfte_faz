@@ -34,7 +34,7 @@ body {
 	position: relative;
 	font: 1em/1.2em $font-primary;
 	margin: $margin-body;
-	padding-bottom: 5em;
+	overflow-x: hidden;
 }
 a {
 	text-decoration: none;
@@ -47,6 +47,10 @@ abbr {
 
 header {
 	@extend %no-select;
+
+	width: 100%;
+
+	z-index: 10;
 
 	margin: -$margin-body;
 	margin-bottom: 1em;
@@ -90,6 +94,7 @@ fieldset {
 	width: $filterWidth;
 
 	legend {
+		display: none;
 		@extend %heading;
 		margin: .5em 0 .3em;
 	}
@@ -234,23 +239,25 @@ form>.convenienceButtons {
 		padding-bottom: .4em;
 	}
 }
-footer,
-aside {
+footer {
 	@extend %width;
+	@extend %no-select;
 
 	font: .8em $font-secondary;
 	clear: both;
 	margin: .5em auto;
 	padding-top: .5em;
+	padding-bottom: 4em;
 	color: $color-diminished;
+	&:after {
+		display: block;
+		content: "";
+		clear: left;
+	}
 	p {
 		float: left;
 		margin: 0 0 .2em;
 	}
-}
-footer {
-	@extend %width;
-	@extend %no-select;
 	nav ul {
 		float: right;
 		margin: 0 -.4em 0 0;
@@ -267,31 +274,53 @@ footer {
 	}
 }
 
-@media screen and (min-width: $breakpoint) {
+@media screen and (min-width: $breakpoint + 2 * $margin-body) {
 	#filterView {
 		display: block !important;
 		position: fixed;
-		width: $filterWidth;
+		width: $filterWidth + $margin-body;
 		top: 7em;
 		bottom: $height-tab-bar;
-		right: ($width-content/$breakpoint)*100%;
-		padding-left: $margin-body;
+		left: $margin-body;
 		overflow: auto;
+		overflow-x: hidden;
 	}
 	.tabs .filter {
 		display: none;
 	}
-	#parliamentView, #tableView, header h1, header p, footer, aside {
-		margin-left: (1-$width-content/$breakpoint)*100%;
+	#parliamentView, #tableView, header h1, header p, footer{
+		margin-left: $filterWidth + 2 * $margin-body;
 	}
 	h1 {
 		font-size: 1.6em;
 	}
-	legend {
+}
+@media screen and (min-width: $filterWidth + 2 * $width-content + 10 * $margin-body) {
+	#parliamentView, #tableView {
+		display: block;
+		top: 7em;
+	}
+	#parliamentView, header, footer {
+		position: fixed;
+	}
+	#filterView, footer {
+		bottom: 0;
+	}
+	footer {
+		padding-bottom: 0;
+		background-color: rgba(#fff, .9);
+	}
+	.tabs {
 		display: none;
 	}
+	#tableView {
+		z-index: 5;
+		position: absolute;
+		left: $filterWidth + $width-content + 6 * $margin-body;
+		margin: 0;
+	}
 }
-@media screen and (min-width: $breakpoint), screen and (min-height: 600px) {
+@media screen and (min-width: $breakpoint + 2 * $margin-body), screen and (min-height: 600px) {
 	header {
 		padding: 2em $margin-body 1em;
 		p {
@@ -357,6 +386,9 @@ footer {
 	}
 	.repInspector .convenienceButtons {
 		display: inline-block;
+	}
+	legend {
+		display: block;
 	}
 	@media screen and (max-width: 2*$filterWidth + 5*$margin-body) {
 		fieldset {

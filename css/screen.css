@@ -13,8 +13,7 @@
      -moz-user-select: none;
           user-select: none; }
 
-.tab, header h1, header p, footer,
-aside {
+.tab, header h1, header p, footer {
   width: 100%;
   max-width: 700px;
   margin: 0 auto; }
@@ -181,7 +180,7 @@ body {
   position: relative;
   font: 1em/1.2em Georgia, "Linux Libertine", serif;
   margin: 10px;
-  padding-bottom: 5em; }
+  overflow-x: hidden; }
 
 a {
   text-decoration: none;
@@ -198,6 +197,8 @@ abbr {
   border: none; }
 
 header {
+  width: 100%;
+  z-index: 10;
   margin: -10px;
   margin-bottom: 1em;
   background-color: rgba(249, 249, 249, 0.95);
@@ -229,6 +230,7 @@ fieldset {
   border: none;
   width: 180px; }
   fieldset legend {
+    display: none;
     margin: .5em 0 .3em; }
   fieldset ul {
     margin: 0;
@@ -594,52 +596,74 @@ th {
   padding-top: .4em;
   padding-bottom: .4em; }
 
-footer,
-aside {
+footer {
   font: 0.8em Verdana, sans-serif;
   clear: both;
   margin: .5em auto;
   padding-top: .5em;
+  padding-bottom: 4em;
   color: #a8a8a8; }
-  footer p,
-  aside p {
+  footer:after {
+    display: block;
+    content: "";
+    clear: left; }
+  footer p {
     float: left;
     margin: 0 0 .2em; }
+  footer nav ul {
+    float: right;
+    margin: 0 -.4em 0 0;
+    padding: 0;
+    list-style: none; }
+    footer nav ul li {
+      display: inline;
+      padding: 0 .15em 0 .4em; }
+      footer nav ul li + li {
+        border-left: 1px solid rgba(0, 0, 0, 0.2); }
 
-footer nav ul {
-  float: right;
-  margin: 0 -.4em 0 0;
-  padding: 0;
-  list-style: none; }
-  footer nav ul li {
-    display: inline;
-    padding: 0 .15em 0 .4em; }
-    footer nav ul li + li {
-      border-left: 1px solid rgba(0, 0, 0, 0.2); }
-
-@media screen and (min-width: 900px) {
+@media screen and (min-width: 920px) {
   #filterView {
     display: block !important;
     position: fixed;
-    width: 180px;
+    width: 190px;
     top: 7em;
     bottom: 3.5em;
-    right: 77.77778%;
-    padding-left: 10px;
-    overflow: auto; }
+    left: 10px;
+    overflow: auto;
+    overflow-x: hidden; }
 
   .tabs .filter {
     display: none; }
 
-  #parliamentView, #tableView, header h1, header p, footer, aside {
-    margin-left: 22.22222%; }
+  #parliamentView, #tableView, header h1, header p, footer {
+    margin-left: 200px; }
 
   h1 {
-    font-size: 1.6em; }
+    font-size: 1.6em; } }
+@media screen and (min-width: 1680px) {
+  #parliamentView, #tableView {
+    display: block;
+    top: 7em; }
 
-  legend {
-    display: none; } }
-@media screen and (min-width: 900px), screen and (min-height: 600px) {
+  #parliamentView, header, footer {
+    position: fixed; }
+
+  #filterView, footer {
+    bottom: 0; }
+
+  footer {
+    padding-bottom: 0;
+    background-color: rgba(255, 255, 255, 0.9); }
+
+  .tabs {
+    display: none; }
+
+  #tableView {
+    z-index: 5;
+    position: absolute;
+    left: 940px;
+    margin: 0; } }
+@media screen and (min-width: 920px), screen and (min-height: 600px) {
   header {
     padding: 2em 10px 1em; }
     header p {
@@ -691,6 +715,8 @@ footer nav ul {
   width: 100%; }
 .touch .repInspector .convenienceButtons {
   display: inline-block; }
+.touch legend {
+  display: block; }
 @media screen and (max-width: 410px) {
   .touch fieldset {
     width: 100%; } }
