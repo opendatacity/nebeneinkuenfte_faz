@@ -40,14 +40,13 @@ circle {
 		}
 	}
 	.arc.#{$faction} {
-		fill: change-color($color-faction, $lightness: 96%);
+		fill: change-color($color-faction, $lightness: 91%);
 	}
 }
 //.wrongPlacement { stroke: #fff; stroke-width: 3px; }
 
 
-// .arc {
-// 	@for $i from 1 through 4 {
-// 		&:nth-child(#{$i}) { opacity: $i * 0.02; }
-// 	}
-// }
+.arc {
+	// stroke: rgba(#fff, .9);
+	// stroke-width: 1px;
+}
