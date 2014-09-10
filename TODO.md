@@ -1,6 +1,5 @@
 - iframe auf ipad
 - scrollbalken in der filterdings
-- 1000 euro
 - shift-information
 - land-title
 - tab bar mouseover
