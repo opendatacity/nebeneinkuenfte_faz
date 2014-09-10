@@ -241,18 +241,20 @@ form>.convenienceButtons {
 }
 footer {
 	@extend %width;
-	@extend %no-select;
 
-	font: .8em $font-secondary;
+	font: .75em $font-secondary;
 	clear: both;
 	margin: .5em auto;
 	padding-top: .5em;
-	padding-bottom: 4em;
 	color: $color-diminished;
 	&:after {
 		display: block;
+		height: 4em;
 		content: "";
-		clear: left;
+		clear: both;
+	}
+	nav {
+		@extend %no-select;
 	}
 	p {
 		float: left;
@@ -307,8 +309,10 @@ footer {
 		bottom: 0;
 	}
 	footer {
-		padding-bottom: 0;
 		background-color: rgba(#fff, .9);
+		&:after {
+			display: none;
+		}
 	}
 	.tabs {
 		display: none;

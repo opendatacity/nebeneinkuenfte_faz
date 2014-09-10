@@ -1,2 +1,0 @@
-- iframe auf ipad
-- shift-information
