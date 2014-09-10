@@ -492,7 +492,7 @@
     rowHTML = $('#tableView tbody tr').remove().html();
     rows = table.selectAll('tr').data(dataTable.data);
     tableRow = function(rep) {
-      return rowHTML.replace(/\{(?:([^\}]*?):)?([^\}]*?)\}/g, function(match, type, property) {
+      return $(rowHTML.replace(/\{(?:([^\}]*?):)?([^\}]*?)\}/g, function(match, type, property) {
         if (type === 'currency') {
           return formatCurrency(rep[property]);
         }
@@ -500,9 +500,11 @@
           return abbreviate(rep[property]);
         }
         return T(rep[property]);
-      });
+      }));
     };
-    rows.enter().append('tr').html(tableRow);
+    rows.enter().append('tr').each(function(rep) {
+      return $(this).html(tableRow(rep));
+    });
     rows.select('.faction').attr('class', function(rep) {
       return 'faction ' + _.find(Factions, {
         name: rep.fraktion

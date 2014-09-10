@@ -371,13 +371,13 @@ JSONSuccess = (data) ->
   rows = table.selectAll('tr').data(dataTable.data)
 
   tableRow = (rep) ->
-    rowHTML.replace /\{(?:([^\}]*?):)?([^\}]*?)\}/g, (match, type, property) ->
+    $ rowHTML.replace /\{(?:([^\}]*?):)?([^\}]*?)\}/g, (match, type, property) ->
       return formatCurrency rep[property] if type is 'currency'
       return abbreviate rep[property] if type is 'abbr'
       T rep[property]
 
   rows.enter().append 'tr'
-  .html tableRow
+  .each (rep) -> $(this).html tableRow(rep)
   
   rows.select '.faction'
   .attr 'class', (rep) -> 'faction ' + _.find(Factions, name: rep.fraktion).class
