@@ -1,4 +1,3 @@
-- whitespace
 - iframe auf ipad
 - scrollbalken in der filterdings
 - 1000 euro

@@ -267,14 +267,14 @@ footer {
 	}
 }
 
-@media screen and (min-width: 900px) {
+@media screen and (min-width: $breakpoint) {
 	#filterView {
 		display: block !important;
 		position: fixed;
 		width: $filterWidth;
 		top: 7em;
 		bottom: $height-tab-bar;
-		left: 0;
+		right: ($width-content/$breakpoint)*100%;
 		padding-left: $margin-body;
 		overflow: auto;
 	}
@@ -282,7 +282,7 @@ footer {
 		display: none;
 	}
 	#parliamentView, #tableView, header h1, header p, footer, aside {
-		margin-right: 0;
+		margin-left: (1-$width-content/$breakpoint)*100%;
 	}
 	h1 {
 		font-size: 1.6em;
@@ -291,7 +291,7 @@ footer {
 		display: none;
 	}
 }
-@media screen and (min-width: 900px), screen and (min-height: 600px) {
+@media screen and (min-width: $breakpoint), screen and (min-height: 600px) {
 	header {
 		padding: 2em $margin-body 1em;
 		p {

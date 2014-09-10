@@ -624,7 +624,7 @@ footer nav ul {
     width: 180px;
     top: 7em;
     bottom: 3.5em;
-    left: 0;
+    right: 77.77778%;
     padding-left: 10px;
     overflow: auto; }
 
@@ -632,7 +632,7 @@ footer nav ul {
     display: none; }
 
   #parliamentView, #tableView, header h1, header p, footer, aside {
-    margin-right: 0; }
+    margin-left: 22.22222%; }
 
   h1 {
     font-size: 1.6em; }
