@@ -16,21 +16,28 @@ module.exports = (grunt) ->
         max_line_length:
           level: 'ignore'
       dist:
-        src: '<%= coffee.compile.src %>'
+        src: '<%= coffee.dist.src %>'
       dev:
-        src: '<%= coffee.compile.src %>'
+        src: '<%= coffee.dev.src %>'
         options:
           force: true
 
     coffee:
       options:
         sourceMap: true
-      compile:
+      dev:
         src: 'coffee/*.coffee'
         expand: true
         flatten: true
         dest: 'js/'
         ext: '.js'
+        extDot: 'last'
+      dist:
+        src: 'coffee/*.coffee'
+        expand: true
+        flatten: true
+        dest: 'js/'
+        ext: '.dist.js'
         extDot: 'last'
 
     concat:
@@ -41,7 +48,7 @@ module.exports = (grunt) ->
           'bower_components/lodash/dist/lodash.js',
           'bower_components/fastclick/lib/fastclick.js',
           'js/lib/*.js',
-          '<%= coffee.compile.dest %>'
+          '<%= coffee.dist.dest %>*.dist.js'
         ]
         dest: 'js/dist.js'
 
@@ -87,8 +94,8 @@ module.exports = (grunt) ->
       options:
         livereload: true
       coffee:
-        files: '<%= coffee.compile.src %>'
-        tasks: ['coffeelint:dev', 'coffee']
+        files: '<%= coffee.dev.src %>'
+        tasks: ['coffeelint:dev', 'coffee:dev']
         options: livereload: false
       sass:
         files: 'scss/*.scss'

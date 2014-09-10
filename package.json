@@ -5,9 +5,10 @@
     "name": "Philipp Bock",
     "organization": "OpenDataCity"
   },
+  "version": "0.9",
   "licenses": [
     {
-      "type": "cc-by 3.0 de"
+      "type": "MIT"
     }
   ],
   "engines": {

@@ -7,7 +7,7 @@ window.dictionary =
   NebentaetigkeitPlural: 'Nebentätigkeiten'
   'Bündnis 90/Die Grünen': 'Grüne'
   'Die Linke': 'Linke'
-window.abbreviations = 
+window.abbreviations =
   'Baden-Württemberg': 'BW'
   'Bayern': 'BY'
   'Berlin': 'BE'

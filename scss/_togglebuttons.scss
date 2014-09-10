@@ -1,3 +1,7 @@
+label {
+	// Fix weird Safari bug
+	visibility: visible !important;
+}
 label, %button {
 	
 	@mixin colors ($fg, $bg, $context: none) {

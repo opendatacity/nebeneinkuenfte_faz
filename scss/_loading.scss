@@ -1,4 +1,4 @@
-/* Spinner and scaleout animation: Copyright (c) 2014 Tobias Ahlin, https://github.com/tobiasahlin/SpinKit, MIT License */
+/*! Spinner and scaleout animation: Copyright (c) 2014 Tobias Ahlin, https://github.com/tobiasahlin/SpinKit, MIT License */
 
 .loading {
 	.spinner {
@@ -13,6 +13,7 @@
 
 	.tab, footer {
 		display: none;
+		visibility: hidden;
 	}
 }
 @keyframes scaleout {
