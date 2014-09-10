@@ -31,6 +31,9 @@ tbody {
 	tr:hover {
 		background-color: rgba($color-primary, .05);
 	}
+	tr:active {
+		background-color: rgba($color-primary, .08);
+	}
 }
 thead th {
 	cursor: pointer;
@@ -156,6 +159,12 @@ th {
 		.land {
 			abbr { display: inline; }
 			.long { display: none; }
+		}
+	}
+	@media screen and (min-width: 40em) {
+		td, th {
+			padding-top: .35em;
+			padding-bottom: .35em;
 		}
 	}
 }

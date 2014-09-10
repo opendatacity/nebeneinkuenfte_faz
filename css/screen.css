@@ -1,13 +1,13 @@
 @charset "UTF-8";
-nav.tabs a, .closeButton, .repInspector h2, th {
+nav.tabs a, fieldset legend, .closeButton, .repInspector h2, th {
   font: 1em/1.2 Verdana, sans-serif; }
 
-nav.tabs a, .closeButton, .repInspector h2 {
+nav.tabs a, fieldset legend, .closeButton, .repInspector h2 {
   text-transform: uppercase;
   letter-spacing: .05em;
   font-weight: bold; }
 
-nav.tabs a, .closeButton, nav.tabs, header, form, .repInspector.moving caption, .representatives thead, footer {
+nav.tabs a, fieldset legend, .closeButton, nav.tabs, header, form, .repInspector.moving caption, .representatives thead, footer {
   cursor: default;
   -webkit-user-select: none;
      -moz-user-select: none;
@@ -225,7 +225,7 @@ fieldset {
   border: none;
   width: 180px; }
   fieldset legend {
-    display: none; }
+    margin: .5em 0 .3em; }
   fieldset ul {
     margin: 0;
     padding: 0;
@@ -465,6 +465,8 @@ tbody {
   -webkit-overflow-scrolling: touch; }
   tbody tr:hover {
     background-color: rgba(0, 0, 0, 0.05); }
+  tbody tr:active {
+    background-color: rgba(0, 0, 0, 0.08); }
 
 thead th {
   cursor: pointer; }
@@ -567,6 +569,10 @@ th {
     display: inline; }
   .representatives .land .long {
     display: none; } }
+@media screen and (min-width: 40em) {
+  .representatives td, .representatives th {
+    padding-top: .35em;
+    padding-bottom: .35em; } }
 
 .number {
   text-align: right;
@@ -625,7 +631,10 @@ footer nav ul {
     margin-right: 0; }
 
   h1 {
-    font-size: 1.6em; } }
+    font-size: 1.6em; }
+
+  legend {
+    display: none; } }
 @media screen and (min-width: 900px), screen and (min-height: 600px) {
   header {
     padding: 2em 10px 1em; }
@@ -660,17 +669,26 @@ footer nav ul {
 
   body.inspectorFixed {
     overflow: hidden; } }
+.touch .representatives td, .touch .representatives th {
+  padding-top: .5em;
+  padding-bottom: .5em; }
+.touch .representatives tr:hover {
+  background-color: transparent; }
 .touch label, .touch #land .selectAll {
   display: block;
   box-sizing: border-box;
-  width: 180px;
-  padding-top: .8em;
-  padding-bottom: .8em; }
+  width: 100%;
+  padding-top: .9em;
+  padding-bottom: .9em; }
 .touch li + li label, .touch #land .selectAll {
   border-top: none; }
 .touch #land .convenienceButtons {
-  position: static; }
+  position: static;
+  width: 100%; }
 .touch .repInspector .convenienceButtons {
   display: inline-block; }
+@media screen and (max-width: 410px) {
+  .touch fieldset {
+    width: 100%; } }
 
 /*# sourceMappingURL=screen.css.map */

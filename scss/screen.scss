@@ -90,7 +90,8 @@ fieldset {
 	width: $filterWidth;
 
 	legend {
-		display: none;
+		@extend %heading;
+		margin: .5em 0 .3em;
 	}
 	ul {
 		margin: 0;
@@ -287,6 +288,9 @@ footer {
 	h1 {
 		font-size: 1.6em;
 	}
+	legend {
+		display: none;
+	}
 }
 @media screen and (min-width: 900px), screen and (min-height: 600px) {
 	header {
@@ -329,20 +333,35 @@ footer {
 	}
 }
 .touch {
+	.representatives {
+		td, th {
+			padding-top: .5em;
+			padding-bottom: .5em;
+		}
+		tr:hover {
+			background-color: transparent;
+		}
+	}
 	label, #land .selectAll {
 		display: block;
 		box-sizing: border-box;
-		width: $filterWidth;
-		padding-top: .8em;
-		padding-bottom: .8em;
+		width: 100%;
+		padding-top: .9em;
+		padding-bottom: .9em;
 	}
 	li+li label, #land .selectAll {
 		border-top: none;
 	}
 	#land .convenienceButtons {
 		position: static;
+		width: 100%;
 	}
 	.repInspector .convenienceButtons {
 		display: inline-block;
+	}
+	@media screen and (max-width: 2*$filterWidth + 5*$margin-body) {
+		fieldset {
+			width: 100%;
+		}
 	}
 }
