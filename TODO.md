@@ -1,5 +1,3 @@
 - iframe auf ipad
 - scrollbalken in der filterdings
 - shift-information
-- land-title
-- tab bar mouseover
