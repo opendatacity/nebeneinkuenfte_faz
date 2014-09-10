@@ -585,6 +585,9 @@ $(document).ready ->
   tabs = {}
   $('nav.tabs').on 'click', 'a', (event) ->
     event.preventDefault()
+    return null if $(this).hasClass 'active'
+    
+    $(window).scrollTop 0
     tabs.selected = this
     tabs.selectedID = $(tabs.selected).attr('href')
     tabs.anchors = $(tabs.selected).parents('nav').find('a') unless tabs.anchors

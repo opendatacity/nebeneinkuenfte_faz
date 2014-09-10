@@ -751,6 +751,10 @@
     tabs = {};
     $('nav.tabs').on('click', 'a', function(event) {
       event.preventDefault();
+      if ($(this).hasClass('active')) {
+        return null;
+      }
+      $(window).scrollTop(0);
       tabs.selected = this;
       tabs.selectedID = $(tabs.selected).attr('href');
       if (!tabs.anchors) {
