@@ -121,7 +121,7 @@ fieldset:last-child:after {
 	z-index: 3;
 	font-size: .8em;
 	position: absolute;
-	top: 100%;
+	bottom: 5%;
 	height: auto;
 	margin-bottom: -1.5em;
 	padding: .2em;
@@ -137,7 +137,7 @@ fieldset:last-child:after {
 
 .collapsed,
 .startCollapsed {
-	top: 95%;
+	bottom: 0;
 	opacity: 0;
 }
 

@@ -76,11 +76,14 @@ getEventPosition = (event) ->
 
 class RepInspector
   constructor: (selector) ->
+    me = this
     @tooltip = $(selector)
     @tooltip.find('tbody').on 'scroll', @handleScroll
     @tooltip.find('.closeButton').on 'click', null, inspector: this, (event) ->
       event.data.inspector.hide()
       event.preventDefault()
+    $(window).keyup (event) ->
+      me.hide() if event.keyCode is 27 # Escape
 
   field: (field) -> @tooltip.find ".#{field}"
 
@@ -121,8 +124,8 @@ class RepInspector
     topShadow = Math.max 0, 0.5 * Math.min(scrollTop, 15)
     bottomShadow = Math.max 0, 0.5 * Math.min(scrollBottom, 15)
 
-    table.siblings('thead').css '-webkit-box-shadow', "0 #{topShadow}px .5em -.5em rgba(0, 0, 0, .3)"
-    table.siblings('tfoot').css '-webkit-box-shadow', "0 -#{bottomShadow}px .5em -.5em rgba(0, 0, 0, .3)"
+    table.siblings('thead').css 'box-shadow', "0 #{topShadow}px .5em -.5em rgba(0, 0, 0, .3)"
+    table.siblings('tfoot').css 'box-shadow', "0 -#{bottomShadow}px .5em -.5em rgba(0, 0, 0, .3)"
 
   measure: ->
     # If it's currently hidden, we'll first move it to [0, 0] to measure it
@@ -457,8 +460,13 @@ JSONSuccess = (data) ->
     #hideRepresentatives groupedData.false if groupedData.false
 
   $('form').on 'change', 'input', ->
-    $(this).submit()
-    updateCheckboxLabelState this
+    changedCheckbox = this
+    if $(changedCheckbox).parents('fieldset').find(':checked').length == 0
+      $(changedCheckbox).parents('fieldset').find(':checkbox').each (index, checkbox) ->
+        $(checkbox).prop('checked', true) unless checkbox is changedCheckbox
+        updateCheckboxLabelState checkbox
+    $(changedCheckbox).submit()
+    updateCheckboxLabelState changedCheckbox
 
   $('svg').on 'mousemove touchend', 'circle', (event) ->
     position = getEventPosition event
@@ -533,11 +541,12 @@ $(document).ready ->
   # after the second click
   mapClickCount = 0
   mapClickCountResetTimeout = null
+  mapUserHasLearnt = false
   ignoreNext = false
   $('#map').on 'mouseup', 'path', (event) ->
     mapClickCount++
     clearTimeout mapClickCountResetTimeout
-    mapClickCountResetTimeout = setTimeout (-> mapClickCount = 0), 30000
+    mapClickCountResetTimeout = setTimeout (-> mapClickCount = 0), 15000
     event.preventDefault() # To avoid grey rectangle on iOS
 
     return ignoreNext = false if ignoreNext
@@ -559,12 +568,13 @@ $(document).ready ->
 
     updateCheckboxLabelState $(':checkbox')
 
+    mapUserHasLearnt = true if selectMultiple
+
     hint = fieldset.find('.uiHint')
-    if mapClickCount == 2 and not selectMultiple
-      hint.text 'Durch langes Tippen können Sie mehrere Länder auswählen.' if Modernizr.touch
+    if mapClickCount == 2 and not mapUserHasLearnt
       hint.removeClass 'collapsed'
       setTimeout (-> hint.addClass 'collapsed'), 8000
-    else if mapClickCount > 2 and selectMultiple
+    else if mapClickCount > 2 and mapUserHasLearnt
       hint.addClass 'collapsed'
 
   # Add 'Select All' and 'Invert Selection buttons to fieldsets'

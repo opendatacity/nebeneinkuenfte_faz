@@ -28,6 +28,10 @@
 		border-bottom: none !important;
 		cursor: pointer;
 
+		&:visited {
+			color: $color-link;
+		}
+
 		&.inactive {
 			color: lighten(change-color($color-link, $saturation: 10%), 40%);
 			&:hover {

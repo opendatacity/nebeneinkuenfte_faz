@@ -1,3 +1,2 @@
 - iframe auf ipad
-- scrollbalken in der filterdings
 - shift-information

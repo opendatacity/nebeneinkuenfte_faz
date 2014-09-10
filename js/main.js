@@ -150,6 +150,8 @@
 
   RepInspector = (function() {
     function RepInspector(selector) {
+      var me;
+      me = this;
       this.tooltip = $(selector);
       this.tooltip.find('tbody').on('scroll', this.handleScroll);
       this.tooltip.find('.closeButton').on('click', null, {
@@ -157,6 +159,11 @@
       }, function(event) {
         event.data.inspector.hide();
         return event.preventDefault();
+      });
+      $(window).keyup(function(event) {
+        if (event.keyCode === 27) {
+          return me.hide();
+        }
       });
     }
 
@@ -203,8 +210,8 @@
       scrollBottom = max - scrollTop - height;
       topShadow = Math.max(0, 0.5 * Math.min(scrollTop, 15));
       bottomShadow = Math.max(0, 0.5 * Math.min(scrollBottom, 15));
-      table.siblings('thead').css('-webkit-box-shadow', "0 " + topShadow + "px .5em -.5em rgba(0, 0, 0, .3)");
-      return table.siblings('tfoot').css('-webkit-box-shadow', "0 -" + bottomShadow + "px .5em -.5em rgba(0, 0, 0, .3)");
+      table.siblings('thead').css('box-shadow', "0 " + topShadow + "px .5em -.5em rgba(0, 0, 0, .3)");
+      return table.siblings('tfoot').css('box-shadow', "0 -" + bottomShadow + "px .5em -.5em rgba(0, 0, 0, .3)");
     };
 
     RepInspector.prototype.measure = function() {
@@ -601,8 +608,18 @@
       return updateTable();
     });
     $('form').on('change', 'input', function() {
-      $(this).submit();
-      return updateCheckboxLabelState(this);
+      var changedCheckbox;
+      changedCheckbox = this;
+      if ($(changedCheckbox).parents('fieldset').find(':checked').length === 0) {
+        $(changedCheckbox).parents('fieldset').find(':checkbox').each(function(index, checkbox) {
+          if (checkbox !== changedCheckbox) {
+            $(checkbox).prop('checked', true);
+          }
+          return updateCheckboxLabelState(checkbox);
+        });
+      }
+      $(changedCheckbox).submit();
+      return updateCheckboxLabelState(changedCheckbox);
     });
     $('svg').on('mousemove touchend', 'circle', function(event) {
       var position, rep;
@@ -659,7 +676,7 @@
   };
 
   $(document).ready(function() {
-    var checkAllInParentFieldset, ignoreNext, mapClickCount, mapClickCountResetTimeout, tabs;
+    var checkAllInParentFieldset, ignoreNext, mapClickCount, mapClickCountResetTimeout, mapUserHasLearnt, tabs;
     FastClick.attach(document.body);
     $.getJSON(window.dataPath, JSONSuccess);
     $('.startCollapsed').each(function(i, e) {
@@ -694,6 +711,7 @@
     });
     mapClickCount = 0;
     mapClickCountResetTimeout = null;
+    mapUserHasLearnt = false;
     ignoreNext = false;
     $('#map').on('mouseup', 'path', function(event) {
       var checkbox, fieldset, hint, land, selectAll, selectMultiple;
@@ -701,7 +719,7 @@
       clearTimeout(mapClickCountResetTimeout);
       mapClickCountResetTimeout = setTimeout((function() {
         return mapClickCount = 0;
-      }), 30000);
+      }), 15000);
       event.preventDefault();
       if (ignoreNext) {
         return ignoreNext = false;
@@ -721,16 +739,16 @@
         checkbox.click();
       }
       updateCheckboxLabelState($(':checkbox'));
+      if (selectMultiple) {
+        mapUserHasLearnt = true;
+      }
       hint = fieldset.find('.uiHint');
-      if (mapClickCount === 2 && !selectMultiple) {
-        if (Modernizr.touch) {
-          hint.text('Durch langes Tippen können Sie mehrere Länder auswählen.');
-        }
+      if (mapClickCount === 2 && !mapUserHasLearnt) {
         hint.removeClass('collapsed');
         return setTimeout((function() {
           return hint.addClass('collapsed');
         }), 8000);
-      } else if (mapClickCount > 2 && selectMultiple) {
+      } else if (mapClickCount > 2 && mapUserHasLearnt) {
         return hint.addClass('collapsed');
       }
     });

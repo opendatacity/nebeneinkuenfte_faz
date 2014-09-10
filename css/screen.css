@@ -104,6 +104,8 @@ circle.cducsu {
     padding: .5em .7em;
     border-bottom: none !important;
     cursor: pointer; }
+    .tabs a:visited {
+      color: #c60000; }
     .tabs a.inactive {
       color: #cec4c4; }
       .tabs a.inactive:hover {
@@ -301,7 +303,7 @@ input[type=checkbox] {
   z-index: 3;
   font-size: .8em;
   position: absolute;
-  top: 100%;
+  bottom: 5%;
   height: auto;
   margin-bottom: -1.5em;
   padding: .2em;
@@ -314,7 +316,7 @@ input[type=checkbox] {
 
 .collapsed,
 .startCollapsed {
-  top: 95%;
+  bottom: 0;
   opacity: 0; }
 
 input[type=submit] {
