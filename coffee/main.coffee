@@ -489,7 +489,12 @@ JSONSuccess = (data) ->
       inspector.fix()
 
   $('.toggler').on 'click', (event) ->
+    event.stopPropagation()
     $(this.getAttribute 'href').toggleClass 'hidden'
+
+  $(document.body).on 'mousedown touchstart', (event) ->
+    t = $(event.target)
+    $('.togglee').addClass 'hidden' unless t.hasClass('togglee') or t.parents('.togglee').length > 0
 
   $(window).trigger('resize')
 

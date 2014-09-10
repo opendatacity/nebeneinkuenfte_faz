@@ -103,10 +103,12 @@ circle.cducsu {
     font-size: .8em;
     display: inline-block;
     padding: .5em .7em;
-    border-bottom: none;
+    border-bottom: none !important;
     cursor: pointer; }
     .tabs a.inactive {
       color: #cec4c4; }
+      .tabs a.inactive:hover {
+        color: #b7a8a8; }
     .tabs a:before {
       content: '';
       font: 20px/1em icomoon;
@@ -470,9 +472,9 @@ tbody {
   tbody tr:active {
     background-color: rgba(0, 0, 0, 0.08); }
 
-thead th {
+.sortable th {
   cursor: pointer; }
-  thead th:active {
+  .sortable th:active {
     background-color: rgba(0, 0, 0, 0.05); }
 
 thead .sorted-1:after,

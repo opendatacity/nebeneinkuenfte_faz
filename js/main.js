@@ -645,7 +645,15 @@
       }
     });
     $('.toggler').on('click', function(event) {
+      event.stopPropagation();
       return $(this.getAttribute('href')).toggleClass('hidden');
+    });
+    $(document.body).on('mousedown touchstart', function(event) {
+      var t;
+      t = $(event.target);
+      if (!(t.hasClass('togglee') || t.parents('.togglee').length > 0)) {
+        return $('.togglee').addClass('hidden');
+      }
     });
     return $(window).trigger('resize');
   };

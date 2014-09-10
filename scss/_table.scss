@@ -35,7 +35,7 @@ tbody {
 		background-color: rgba($color-primary, .08);
 	}
 }
-thead th {
+.sortable th {
 	cursor: pointer;
 	&:active {
 		background-color: rgba($color-primary, .05);
