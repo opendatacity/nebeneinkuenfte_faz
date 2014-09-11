@@ -35,6 +35,7 @@ body {
 	font: 1em/1.2em $font-primary;
 	margin: $margin-body;
 	overflow-x: hidden;
+	background-color: $color-bg;
 }
 a {
 	text-decoration: none;
@@ -54,8 +55,6 @@ header {
 
 	margin: -$margin-body;
 	margin-bottom: 1em;
-	background-color: $color-chrome;
-	border-bottom: 1px solid darken($color-chrome, 5%);
 	padding: .8em $margin-body .5em;
 
 	h1, p {
@@ -129,7 +128,7 @@ fieldset:last-child:after {
 	@include transition(all);
 	pointer-events: none;
 	opacity: 1;
-	background-color: rgba(#fff, .9);
+	background-color: rgba($color-bg, .9);
 	.modifierKey:before {
 		content: "⇧";
 	}
@@ -239,10 +238,12 @@ form>.convenienceButtons {
 		padding-bottom: .4em;
 	}
 }
+header p, footer {
+	font: .75em $font-secondary;
+}
 footer {
 	@extend %width;
 
-	font: .75em $font-secondary;
 	clear: both;
 	margin: .5em auto;
 	padding-top: .5em;
@@ -309,7 +310,7 @@ footer {
 		bottom: 0;
 	}
 	footer {
-		background-color: rgba(#fff, .9);
+		background-color: $color-bg;
 		&:after {
 			display: none;
 		}
@@ -318,7 +319,7 @@ footer {
 		display: none;
 	}
 	#tableView {
-		z-index: 5;
+		z-index: 11;
 		position: absolute;
 		left: $filterWidth + $width-content + 6 * $margin-body;
 		margin: 0;

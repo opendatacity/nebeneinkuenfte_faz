@@ -8,21 +8,21 @@
 	}
 	path {
 		cursor: pointer;
-		fill: #fff;
+		fill: $color-bg;
 		//fill: url(#inactivePattern);
 		stroke-width: 1px;
-		stroke: #ccc;
+		stroke: darken($color-bg, 25%);
 	}
 	path:hover,
 	path.active:hover {
 		stroke-width: 2px;
-		stroke: #111;
+		stroke: darken($color-bg, 60%);
 		fill-opacity: .5;
 	}
 	path.active {
 		stroke-width: 1px;
-		fill: #ddd;
-		stroke: #111;
+		fill: darken($color-bg, 15%);
+		stroke: darken($color-bg, 60%);
 	}
 }
 
