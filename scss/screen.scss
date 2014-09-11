@@ -30,6 +30,30 @@
 	}
 }
 
+html.touch {
+	overflow: hidden !important;
+}
+
+.touch body {
+	margin: 0;
+	overflow: hidden;
+}
+
+.touch #iframeWrapper {
+	box-sizing: border-box;
+	position: absolute;
+	z-index: 5;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: $height-tab-bar;
+	width: 100%;
+	overflow: auto;
+	overflow-x: hidden;
+	-webkit-overflow-scrolling: touch;
+	padding: $margin-body;
+}
+
 body {
 	position: relative;
 	font: 1em/1.2em $font-primary;
@@ -67,7 +91,6 @@ header {
 	}
 	p {
 		margin-top: .5em;
-		display: none;
 	}
 }
 
@@ -263,7 +286,7 @@ footer {
 	}
 	nav ul {
 		float: right;
-		margin: 0 -.4em 0 0;
+		margin: 0 -.2em 0 0;
 		padding: 0;
 		list-style: none;
 
@@ -328,12 +351,12 @@ footer {
 @media screen and (min-width: $breakpoint + 2 * $margin-body), screen and (min-height: 600px) {
 	header {
 		padding: 2em $margin-body 1em;
-		p {
-			display: block;
-		}
 	}
 }
 @media screen and (max-width: 450px) {
+	header p {
+		display: none;
+	}
 	.repInspector {
 		top: 0 !important;
 		left: 0 !important;

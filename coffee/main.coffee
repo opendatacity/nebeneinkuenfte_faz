@@ -1,5 +1,8 @@
 'use strict'
 
+# I solemnly swear that I will never write code as unmaintainable
+# as this mess again. Sorry.
+
 Viewport = width: 700, height: 350, center: {x: 350, y: 350}
 Arc = innerR: 80, outerR: 350, phiMax: 180
 Rep = r: 5, spacing: 12
@@ -482,7 +485,7 @@ JSONSuccess = (data) ->
   $(document).on 'mouseup', (event) ->
     inspector.hide() if inspector.fixed and $(event.target).parents('.repInspector').length < 1
 
-  $('svg').on 'mouseup touchend', 'circle', (event) ->
+  $('svg').on 'click', 'circle', (event) ->
     position = getEventPosition event
     rep = d3.select(this).datum()
     if inspector.fixed and d3.select(this).datum() is inspector.rep
@@ -495,6 +498,7 @@ JSONSuccess = (data) ->
     else
       event.stopPropagation() # Otherwise the click would fire on the document node and hide the inspector
       inspector.fix()
+    event.stopPropagation()
 
   $('.toggler').on 'click', (event) ->
     event.stopPropagation()
@@ -509,6 +513,11 @@ JSONSuccess = (data) ->
 $(document).ready ->
   FastClick.attach document.body
   $.getJSON window.dataPath, JSONSuccess
+
+  if Modernizr.touch
+    $('html, body').css
+      width: window.innerWidth + 'px'
+      height: window.innerHeight + 'px'
 
   # Collapse everything that's supposed to start collapsed
   $('.startCollapsed').each (i, e) ->
