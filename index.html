@@ -198,10 +198,7 @@
 		</table>
 	</div>
 
-	<script type="text/javascript">var dataPath = 'data/data.json';</script>
+	<script type="text/javascript">var dataPath = 'data/data.json?' + (Date.now()/864e5 >> 0);</script>
 	<script src="js/dist.min.js" charset="utf-8"></script>
-	<script type="text/javascript">
-	if (Modernizr.touch) $('html, body').css({width: window.screen.innerWidth + 'px', height: window.innerHeight + 'px'});
-	</script>
 </body>
 </html>
