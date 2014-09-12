@@ -178,6 +178,13 @@ class RepInspector
     @moveTo @position
 
 JSONSuccess = (data) ->
+  lastUpdated = new Date data.date
+  $('.lastUpdated').html 'Stand der Daten: ' +
+    lastUpdated.getDay() + '.&nbsp;' +
+    T('month'+lastUpdated.getMonth()) + ' ' +
+    lastUpdated.getFullYear() + '.'
+  console.log lastUpdated
+
   data = data.data
   window._data = _(data)
 
@@ -391,6 +398,9 @@ JSONSuccess = (data) ->
   rows.select '.bar'
   .style 'width', (rep) -> rep.nebeneinkuenfteMinSum / maxNebeneinkuenfteMinSum * 100 + '%'
 
+  $('#tableView tfoot td').html Math.round((1 - data.length / _data.value().length) * 100) +
+    '&nbsp;Prozent sind bislang neben ihrem Mandat keinen vergüteten Tätigkeiten nachgegangen.'
+
   updateTable = ->
     rows.attr 'class', (rep) -> if rep.radius >= 1 then 'visible' else 'hidden'
 
@@ -519,7 +529,7 @@ $(document).ready ->
 
   if Modernizr.touch
     $('html, body').css
-      width: window.innerWidth + 'px'
+      width: window.screen.availWidth - 10 + 'px'
       height: window.innerHeight + 'px'
 
   # Collapse everything that's supposed to start collapsed
