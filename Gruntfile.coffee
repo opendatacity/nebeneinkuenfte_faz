@@ -1,7 +1,6 @@
 # global module: false
 module.exports = (grunt) ->
   grunt.initConfig
-    # Metadata
     pkg: grunt.file.readJSON 'package.json'
     banner: '/*! <%= pkg.title || pkg.name %> - v<%= pkg.version %> - ' +
       '<%= grunt.template.today("yyyy-mm-dd") %>\n' +
@@ -9,7 +8,6 @@ module.exports = (grunt) ->
       '* Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author.organization %>/<%= pkg.author.name %>;' +
       ' Licensed <%= _.pluck(pkg.licenses, "type").join(", ") %> */\n'
     
-    # Task Configuration
     coffeelint:
       options:
         force: false
@@ -118,7 +116,6 @@ module.exports = (grunt) ->
           hostname: '0.0.0.0'
           livereload: true
 
-  # These plugins provide necessary tasks.
   grunt.loadNpmTasks 'grunt-coffeelint'
   grunt.loadNpmTasks 'grunt-contrib-coffee'
   grunt.loadNpmTasks 'grunt-contrib-concat'
@@ -128,7 +125,8 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks 'grunt-contrib-watch'
   grunt.loadNpmTasks 'grunt-contrib-connect'
 
-  # Default task.
+  # Note to self: Output files to separate dev/ and dist/ directories next time.
+
   grunt.registerTask 'dist', ['coffeelint:dist', 'coffee', 'concat', 'uglify', 'sass:dist', 'autoprefixer:dist']
   grunt.registerTask 'default', ['coffeelint:dev', 'coffee', 'sass:dev', 'autoprefixer:dev']
   grunt.registerTask 'server', ['connect', 'watch']

@@ -1,7 +1,7 @@
 # Visualisierung der Nebeneinkünfte der Bundestagsabgeordneten
 
-Kann auch problemlos auf eine "externe" Datenquelle zugreifen (z.B. http://apps.opendatacity.de/nebeneinkuenfte/data/data.json), dann einfach in der index.html den `dataPath` entsprechend setzen. Je nachdem, wo das Ding gehostet wird, muss der Server das JSON dafür mit dem passenden `Access-Control-Allow-Origin`-Header ausliefern.
+[Ursprünglich erschienen auf FAZ.NET.](http://www.faz.net/aktuell/politik/inland/interaktiv-so-viel-verdienen-unsere-abgeordneten-nebenher-13148777.html)
 
-Im Footer muss dereinst noch der Link zum Quellcode nachgetragen werden.
+Das Skript benötigt den Pfad zu einem JSON der OpenDataCity-Nebeneinkunft-Daten [(z.B. diese hier)](http://apps.opendatacity.de/nebeneinkuenfte/#/daten). Dieser wird in der Variablen `dataPath` am Ende von `index.html` gesetzt.
 
 Funktioniert in IE9 aufwärts.

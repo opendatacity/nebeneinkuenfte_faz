@@ -1,5 +1,7 @@
 'use strict'
 
+# Warning: This code is hideous.
+
 # I solemnly swear that I will never write code as unmaintainable
 # as this mess again. Sorry.
 
@@ -180,10 +182,9 @@ class RepInspector
 JSONSuccess = (data) ->
   lastUpdated = new Date data.date
   $('.lastUpdated').html 'Stand der Daten: ' +
-    lastUpdated.getDay() + '.&nbsp;' +
+    lastUpdated.getDate() + '.&nbsp;' +
     T('month'+lastUpdated.getMonth()) + ' ' +
     lastUpdated.getFullYear() + '.'
-  console.log lastUpdated
 
   data = data.data
   window._data = _(data)
@@ -378,6 +379,8 @@ JSONSuccess = (data) ->
 
     force.start() if initialize
     force.alpha .07
+    window.deferredAnimation = false
+    null
 
   table = d3.select '#tableView tbody'
   rowHTML = $('#tableView tbody tr').remove().html()
@@ -529,7 +532,7 @@ $(document).ready ->
 
   if Modernizr.touch
     $('html, body').css
-      width: window.screen.availWidth - 10 + 'px'
+      width: window.screen.availWidth - 20 + 'px'
       height: window.innerHeight + 'px'
 
   # Collapse everything that's supposed to start collapsed
@@ -672,3 +675,11 @@ $(document).ready ->
     if windowSize.width >= 900 and tabs.selectedID is '#filterView'
       $('.tabs .parliament').trigger 'click'
   $(window).triggerHandler 'resize'
+
+# You read this far? That sort of devotion deserves a limerick!
+#
+# There once was a geek from Berlin
+# With a project he was keen to begin.
+#   And – much though he wrote –
+#   He never refactored the code
+# That still works but causes him chagrin.
