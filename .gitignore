@@ -1,6 +1,5 @@
 .DS_Store
-config.codekit
-scss/.sass-cache
-.sass-cache
+scss/.sass-cache/
+.sass-cache/
 node_modules/
 .tmp/
