@@ -132,8 +132,10 @@ th {
 	.count {
 		max-width: 2.5em;
 	}
-	.minSum {
+	.mini-chart {
 		position: relative;
+		padding: .3em 0;
+		margin: -.3em 0;
 	}
 	.bar {
 		z-index: 1;

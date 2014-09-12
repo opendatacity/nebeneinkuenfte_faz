@@ -353,7 +353,7 @@ JSONSuccess = (data) ->
 
   node = null
   initializeRepPositions()
-  drawRepresentatives = (initialize) ->
+  window.drawRepresentatives = (initialize) ->
     node = svg.selectAll 'circle'
     .data data
 
@@ -458,7 +458,10 @@ JSONSuccess = (data) ->
     .value()
 
     filterData filter
-    drawRepresentatives()
+    if $('#parliamentView:visible').length > 0
+      drawRepresentatives()
+    else # We need to defer the animation until the Parliament tab is shown
+      window.deferredAnimation = true
     updateTable()
     #hideRepresentatives groupedData.false if groupedData.false
 
@@ -624,6 +627,9 @@ $(document).ready ->
         anchorID = $(a).attr('href')
         $(a).addClass('inactive').removeClass('active')
         $(anchorID).addClass('hidden').removeClass('visible')
+  $('.tabs .parliament').click ->
+    if window.deferredAnimation
+      drawRepresentatives()
   $('.tabs .parliament').trigger 'click'
 
   $(window).on 'resize', (event) ->
@@ -633,6 +639,9 @@ $(document).ready ->
     scale = Math.min wScale, hScale
     $('#parliament, #parliamentView').height (Viewport.height + 10) * scale
     .width Viewport.width * scale
+
+    if window.deferredAnimation
+      drawRepresentatives()
 
     # Due to the variable height of the parliament we can't reliably use media
     # queries. Instead we'll attach/remove classes from the body depending on
