@@ -39,6 +39,15 @@ module.exports = (grunt) ->
         extDot: 'last'
 
     concat:
+      dev:
+        src: [
+          'bower_components/d3/d3.js',
+          'bower_components/jquery/dist/jquery.js',
+          'bower_components/lodash/dist/lodash.js',
+          'bower_components/fastclick/lib/fastclick.js',
+          'js/lib/*.js',
+        ]
+        dest: 'js/vendor.js'
       dist:
         src: [
           'bower_components/d3/d3.js',
@@ -127,6 +136,6 @@ module.exports = (grunt) ->
 
   # Note to self: Output files to separate dev/ and dist/ directories next time.
 
-  grunt.registerTask 'dist', ['coffeelint:dist', 'coffee', 'concat', 'uglify', 'sass:dist', 'autoprefixer:dist']
-  grunt.registerTask 'default', ['coffeelint:dev', 'coffee', 'sass:dev', 'autoprefixer:dev']
+  grunt.registerTask 'dist', ['coffeelint:dist', 'coffee', 'concat:dist', 'uglify', 'sass:dist', 'autoprefixer:dist']
+  grunt.registerTask 'default', ['coffeelint:dev', 'coffee', 'concat:dev', 'sass:dev', 'autoprefixer:dev']
   grunt.registerTask 'server', ['connect', 'watch']

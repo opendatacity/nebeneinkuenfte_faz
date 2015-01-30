@@ -197,6 +197,7 @@ JSONSuccess = (data) ->
     rep.nebeneinkuenfteCount = rep.nebeneinkuenfte.length
     rep.alphabeticOrder = i
     rep.nebeneinkuenfte.sort (a, b) -> b.level - a.level
+    rep.fraktion = rep.fraktion.replace /\s+\*/g, ''
 
   dataByFaction = _data.groupBy('fraktion').value()
   seats = _.mapValues dataByFaction, (f) -> f.length
@@ -532,7 +533,7 @@ $(document).ready ->
 
   if Modernizr.touch
     $('html, body').css
-      width: window.screen.availWidth - 20 + 'px'
+      width: Math.min(window.screen.availWidth - 20, 570) + 'px'
       height: window.innerHeight + 'px'
 
   # Collapse everything that's supposed to start collapsed
