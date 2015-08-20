@@ -103,7 +103,7 @@ class RepInspector
     @field('mandate')     .text T rep.mandat
     @field('constituency').text rep.wahlkreis
     @field('minSum')      .html minSum
-    
+
     @field('count')       .text Tp(rep.nebeneinkuenfte.length, 'Nebentaetigkeit')
 
     table = @tooltip.find 'table'
@@ -186,7 +186,7 @@ JSONSuccess = (data) ->
     T('month'+lastUpdated.getMonth()) + ' ' +
     lastUpdated.getFullYear() + '.'
 
-  data = data.data
+  data = data.data.filter (f) -> !f.hasLeftParliament
   window._data = _(data)
 
   # Which of the possible factions are actually represented in parliament?
@@ -247,7 +247,7 @@ JSONSuccess = (data) ->
         missing = (Arc.innerR + rep.radius - r) / r
         rep.x += dX * missing
         rep.y += dY * missing
-      
+
       rep.phi = phi
       rep.wrongPlacement = false
       # …and ensure they stay within their factions
@@ -394,7 +394,7 @@ JSONSuccess = (data) ->
 
   rows.enter().append 'tr'
   .each (rep) -> $(this).html tableRow(rep)
-  
+
   rows.select '.faction'
   .attr 'class', (rep) -> 'faction ' + _.find(Factions, name: rep.fraktion).class
 
@@ -626,7 +626,7 @@ $(document).ready ->
   $('nav.tabs').on 'click', 'a', (event) ->
     event.preventDefault()
     return null if $(this).hasClass 'active'
-    
+
     $(window).scrollTop 0
     tabs.selected = this
     tabs.selectedID = $(tabs.selected).attr('href')
@@ -666,7 +666,7 @@ $(document).ready ->
       body.removeClass('tall').addClass('short')
     else
       body.addClass('tall').removeClass('short')
-      
+
     if hSpace > 220
       body.addClass('wide').removeClass('narrow')
     else
