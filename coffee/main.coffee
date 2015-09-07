@@ -17,6 +17,8 @@ Factions = [
   { name: 'CDU/CSU',               class: 'cducsu' }
 ]
 
+termBegin = new Date 2013, 9, 22
+
 T = (string) ->
   return dictionary[string] if dictionary[string]
   return string
@@ -34,10 +36,23 @@ formatDate = (date) ->
   date.getFullYear()
 
 NebeneinkunftMinAmounts = [ 0.01, 1000, 3500, 7000, 15000, 30000, 50000, 75000, 100000, 150000, 250000 ]
+PeriodLength =
+  monatlich: 1000 * 60 * 60 * 24 * 365 / 12,
+  'jährlich': 1000 * 60 * 60 * 24 * 365
+
+nebeneinkunftMinAmount = (einkunft) ->
+  if einkunft.periodical is 'einmalig'
+    count = 1
+  else
+    begin = +new Date(einkunft.begin) or +termBegin
+    end = +new Date(einkunft.end) or Date.now()
+    duration = end - begin
+    count = Math.max 1, (duration / PeriodLength[einkunft.periodical]) | 0
+  return NebeneinkunftMinAmounts[einkunft.level] * count
 
 nebeneinkuenfteMinSum = (rep) ->
   return 0 if rep.nebeneinkuenfte.length == 0
-  sum = rep.nebeneinkuenfte.reduce ((sum, einkunft) -> sum += NebeneinkunftMinAmounts[einkunft.level]), 0
+  sum = rep.nebeneinkuenfte.reduce ((sum, einkunft) -> sum += nebeneinkunftMinAmount(einkunft)), 0
   return Math.max parseInt(sum, 10), 1
 
 formatCurrency = _.memoize (amount, html = true) ->
@@ -121,7 +136,7 @@ class RepInspector
       row = tableRow.clone()
       row.addClass 'cat' + item.level
       row.find('.description').text item.text
-      row.find('.minAmount').html formatCurrency NebeneinkunftMinAmounts[item.level], true
+      row.find('.minAmount').html formatCurrency nebeneinkunftMinAmount(item), true
       tableBody.append row
 
   handleScroll: (arg) ->
@@ -198,6 +213,7 @@ JSONSuccess = (data) ->
 
   _data.each (rep, i) ->
     rep.nebeneinkuenfteMinSum = nebeneinkuenfteMinSum rep
+    console.log(rep.nebeneinkuenfteMinSum, rep)
     rep.nebeneinkuenfteCount = rep.nebeneinkuenfte.length
     rep.alphabeticOrder = i
     rep.nebeneinkuenfte.sort (a, b) -> b.level - a.level
