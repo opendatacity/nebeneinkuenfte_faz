@@ -374,7 +374,8 @@ JSONSuccess = (data) ->
 
     node.transition()
     .attr 'r', (rep) -> rep.radius
-    .style 'opacity', (rep) -> if rep.radius < 1 then 0 else 1
+    .style 'opacity', (rep) ->
+      if rep.radius < 1 then 0 else if rep.ended then 0.3 else 1
 
     node.exit().remove()
 
