@@ -401,6 +401,7 @@ JSONSuccess = (data) ->
 
   rows.enter().append 'tr'
   .each (rep) -> $(this).html tableRow(rep)
+  .style 'opacity', (rep) -> if rep.ended then 0.5 else 1
 
   rows.select '.faction'
   .attr 'class', (rep) -> 'faction ' + _.find(Factions, name: rep.fraktion).class
