@@ -44,16 +44,13 @@
 	.faction {
 		text-transform: uppercase;
 	}
-	.faction,
-	.land,
-	.mandate {
+	.meta span {
 		font: .8em $font-secondary;
-	}
-	.faction,
-	.land {
-		margin-right: .1em;
-		padding-right: .5em;
-		border-right: $subtleBorder;
+		&:not(:last-of-type) {
+			margin-right: .1em;
+			padding-right: .5em;
+			border-right: $subtleBorder;
+		}
 	}
 	// We can't have CDU politicians' names appear in bright red
 	@if lightness($color-link) > 20% {

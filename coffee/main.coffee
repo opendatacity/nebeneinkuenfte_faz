@@ -28,6 +28,10 @@ Tp = (number, string) ->
 abbreviate = (string) ->
   return abbreviations[string] if abbreviations[string]
   return string
+formatDate = (date) ->
+  date.getDate() + '.&nbsp;' +
+  T('month'+date.getMonth()) + ' ' +
+  date.getFullYear()
 
 NebeneinkunftMinAmounts = [ 0.01, 1000, 3500, 7000, 15000, 30000, 50000, 75000, 100000, 150000, 250000 ]
 
@@ -103,6 +107,8 @@ class RepInspector
     @field('mandate')     .text T rep.mandat
     @field('constituency').text rep.wahlkreis
     @field('minSum')      .html minSum
+    @field('ended')       .toggleClass 'hidden', !rep.ended
+                          .html if rep.ended then 'ausgeschieden am ' + formatDate(rep.ended) else ''
 
     @field('count')       .text Tp(rep.nebeneinkuenfte.length, 'Nebentaetigkeit')
 
@@ -182,9 +188,7 @@ class RepInspector
 JSONSuccess = (data) ->
   lastUpdated = new Date data.date
   $('.lastUpdated').html 'Stand der Daten: ' +
-    lastUpdated.getDate() + '.&nbsp;' +
-    T('month'+lastUpdated.getMonth()) + ' ' +
-    lastUpdated.getFullYear() + '.'
+    formatDate(lastUpdated) + '.'
 
   data = data.data.filter (f) -> !f.hasLeftParliament
   window._data = _(data)
@@ -198,6 +202,7 @@ JSONSuccess = (data) ->
     rep.alphabeticOrder = i
     rep.nebeneinkuenfte.sort (a, b) -> b.level - a.level
     rep.fraktion = rep.fraktion.replace /\s+\*/g, ''
+    rep.ended = new Date(rep.ended) if rep.ended
 
   dataByFaction = _data.groupBy('fraktion').value()
   seats = _.mapValues dataByFaction, (f) -> f.length

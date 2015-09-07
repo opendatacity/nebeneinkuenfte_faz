@@ -24,7 +24,7 @@
 	<div class="unsupportedMessage">
 		<p>Leider kann diese interaktive Grafik in Ihrem Browser nicht dargestellt werden.</p>
 	</div>
-	
+
 	<nav class="tabs">
 		<ul>
 			<li><a class="filter" href="#filterView">Filter</a></li>
@@ -111,7 +111,7 @@
 			</fieldset>
 			<input type="submit">
 		</form>
-		
+
 		<div id="parliamentView" class="tab">
 			<svg id="parliament" preserveAspectRatio="xMinYMid">
 				<defs>
@@ -178,7 +178,12 @@
 
 	<div id="repInspector" class="repInspector hidden moving">
 		<h2><a href="#" class="name" target="_blank"></a></h2>
-		<p class="meta"><span class="faction"></span> <span class="land"></span> <span class="mandate"></span></p>
+		<p class="meta">
+			<span class="faction"></span>
+			<span class="land"></span>
+			<span class="mandate"></span>
+			<span class="ended"></span>
+		</p>
 		<input type="button" class="closeButton" value="×">
 
 		<table class="nebeneinkuenfte">
